@@ -1,0 +1,85 @@
+{
+  "name": "mdx-studio-work-kind-contract",
+  "mode": "deterministic-local",
+  "source": "docs/STUDIO-WORK-KIND-CONTRACT.md",
+  "runtime_steering_contract": "generated/world-model/studio-runtime-steering-contract.json",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "product_surface": "studio",
+  "surface_placement": "top-level-work-noun",
+  "verb_on_ramps": ["twin", "pages"],
+  "primary_user_v1": "solo-operator",
+  "artifact_kind_field": "artifact_kind",
+  "artifact_kind_default": "document",
+  "artifact_kinds": [
+    { "kind": "document", "renderer": "doc-editor", "status": "LIVE-LOCAL-SLICE-1", "lands_as": "pages-object" },
+    { "kind": "code", "renderer": "code-diff", "status": "EXISTING-VIA-FORGE", "lands_as": "forge-run", "studio_refusal": "code work opens in Forge, not Studio" },
+    { "kind": "sheet", "renderer": "sheet-grid", "status": "LIVE-LOCAL-SLICE-4", "lands_as": "pages-object", "lands_page_type": "knowledge" },
+    { "kind": "deck", "renderer": "slide-canvas", "status": "LIVE-LOCAL-SLICE-4", "lands_as": "pages-object", "lands_page_type": "knowledge" },
+    { "kind": "dataset", "renderer": "dataset-table", "status": "LIVE-LOCAL-SLICE-4", "lands_as": "pages-object", "lands_page_type": "knowledge" },
+    { "kind": "decision", "renderer": "decision-record", "status": "LIVE-LOCAL-SLICE-4", "lands_as": "pages-object", "lands_page_type": "decision" }
+  ],
+  "kind_landing_rule": "Every implemented kind lands as one typed Pages object - one body of truth. The Studio kind is authoritative and recorded as studio_artifact_kind on the publication; lands_page_type maps it onto the existing Pages vocabulary so Studio never widens the Pages contract. Rich per-kind renderers (sheet grid, slide canvas) are a later polish layer; Slice 4 makes the kinds real and provable, authored as text.",
+  "source_bindings": [
+    { "binding": "pages_object", "origin": "internal", "status": "LIVE-LOCAL-SLICE-2E" },
+    { "binding": "connector_item", "origin": "external", "status": "LIVE-LOCAL-SLICE-2E" },
+    { "binding": "paste_or_file", "origin": "operator", "status": "LIVE-LOCAL" },
+    { "binding": "studio_artifact", "origin": "internal", "status": "PLANNED" }
+  ],
+  "source_kinds": ["evals", "pages_object", "connector_item"],
+  "source_binding_rule": "A run records the kind and title of its bound source on the opened receipt. A connector_item carries its own sensitivity and handling from the connector rail; the sovereign gate is enforced at ingest, so Studio binds an already-governed item by reference, never re-ingests it.",
+  "multiplayer_presence": {
+    "route": "/studio/runs/{run_id}/presence.json",
+    "status": "LIVE-LOCAL-SLICE-3",
+    "derived_from": "receipts",
+    "realtime": false,
+    "is_co_edit": false,
+    "rule": "Presence names who is on a run, derived from its receipts in ledger order. It is not co-edit and opens no second write path to the document body, so live_co_edit_allowed stays false."
+  },
+  "studio_run_projection": {
+    "run_route": "/studio/runs.json",
+    "projection_route": "/studio/runs/projection.json",
+    "status": "LIVE-LOCAL",
+    "owns": ["run_session", "live_trace", "provenance"],
+    "does_not_own": ["document_body"]
+  },
+  "landed_object": {
+    "one_body_of_truth": true,
+    "body_store": "pages-object",
+    "studio_holds": "reference",
+    "body_ref_pattern": "govern-by-reference",
+    "source_contract": "generated/world-model/pages-publication-contract.json",
+    "rule": "The landed artifact is a single Pages object. Studio holds a body_ref plus run, trace, and provenance. Studio never stores its own copy of the document body."
+  },
+  "receipt_chain": [
+    "studio.run.opened",
+    "studio.kind.selected",
+    "studio.artifact.drafted",
+    "pages.document.published",
+    "studio.run.landed"
+  ],
+  "skill_palette": {
+    "substrate": "generated/marketplace/capability-registry.json",
+    "rule": "Coworker capabilities on an artifact are registered skills, not new UI. New ability registers a skill."
+  },
+  "forge_relationship": {
+    "code_is_a_kind": true,
+    "reuse": "forge-work-loop-shape",
+    "do_not": "rebrand-forge-route-namespace-as-canvas",
+    "rationale": "Forge is the hardest proven work lane: intent, plan, stages, receipts, worker/CI/ship boundaries, and review. Studio generalizes that pattern through this declared work-kind contract."
+  },
+  "authority_boundary": {
+    "standalone_document_store_allowed": false,
+    "auto_kind_select_allowed": false,
+    "live_co_edit_allowed": false,
+    "production_write_allowed": false,
+    "live_substrate_required": false
+  },
+  "slice_ladder": [
+    { "slice": 0, "name": "work-kind contract", "scope": "this contract plus one generated check" },
+    { "slice": 1, "name": "document proof", "scope": "goal to forge-style trace to document artifact landed as a pages object" },
+    { "slice": 2, "name": "steer mid-flight", "scope": "intervene on the running governed run plus connector source", "runtime_contract_required": true, "runtime_contract": "generated/world-model/studio-runtime-steering-contract.json" },
+    { "slice": 3, "name": "multiplayer", "scope": "human and agent presence on the live artifact" },
+    { "slice": 4, "name": "generalize kinds", "scope": "sheet, deck, dataset, decision, and forge beyond code-shaped work" }
+  ],
+  "checks": ["make studio-work-kind-contract-check"]
+}

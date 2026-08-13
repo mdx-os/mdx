@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesEditDraftLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "draft_count", "rich_editor_allowed", "approval_rail_allowed", "standalone_store_allowed", "live_substrate_required", "production_publish_allowed", "production_write_allowed", "drafts"],
+  "properties": {
+    "name": { "const": "mdx-pages-edit-draft-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/edit-drafts.json" },
+    "draft_count": { "type": "integer", "minimum": 0 },
+    "rich_editor_allowed": { "const": false },
+    "approval_rail_allowed": { "const": false },
+    "standalone_store_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_publish_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "drafts": { "type": "array" }
+  }
+}

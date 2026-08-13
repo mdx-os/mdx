@@ -1,0 +1,11 @@
+[package]
+name = "mdx-core"
+version = "0.1.0"
+description = "Core local contracts and runtime primitives for MDx Native."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"

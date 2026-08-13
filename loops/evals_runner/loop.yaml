@@ -1,0 +1,30 @@
+id: evals_runner_agent
+agent: evals_runner_agent
+description: Runs local eval fixtures, grades traces, and mints or withholds credentials.
+transitions:
+  - TRIGGER
+  - ACTION
+  - OUTCOME
+  - SIGNAL
+  - ADJUSTMENT
+receipt_kinds:
+  - loop.triggered
+  - loop.action.policy_decided
+  - eval.suite.ran
+  - eval.verdict.recorded
+  - credential.minted
+  - memory.consolidation_decided
+  - charter.evidence.recorded
+  - loop.adjustment.recorded
+policy_required: true
+memory_gate_required: true
+treasury_required_for_economic_actions: true
+budget:
+  max_runtime_ms: 250
+  max_receipts: 14
+  max_policy_decisions: 7
+  required_transitions: 5
+  max_outbox_events: 1
+  max_credentials: 1
+  max_memory_records: 1
+  max_charter_records: 1

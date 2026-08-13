@@ -1,0 +1,21 @@
+{
+  "name": "mdx-machine-league-fixture-registry",
+  "mode": "deterministic-local",
+  "source": "docs/FIXTURE-GRADUATION-SEAM.md",
+  "status": "REGISTRY_V0",
+  "purpose": "The versioned Machine League fixture allowlist and golden-set regression floor. Seed entries mirror the fixtures that were hardcoded in the scoreboard; graduated entries are appended by the human-curated graduation write and cite a finding receipt. The registry is append-only and never retro-edited: a failing scenario stays a fixture in history even after the fix lands.",
+  "append_only": true,
+  "origins": ["seed", "graduated"],
+  "graduation_write_reserved_kind": "fixture.graduation.graduated",
+  "draft_write_route": "/learning/fixture-graduations.json",
+  "draft_receipt_kind": "fixture.graduation.drafted",
+  "rust_allowlist": "generated/rust/machine-league-fixture-registry.rs",
+  "allowlist_const": "MACHINE_LEAGUE_FIXTURE_REGISTRY_IDS",
+  "entry_count": 3,
+  "entries": [
+    { "id": "rust_tax_rounding", "family": "rust_tax_rounding", "origin": "seed", "source_receipt_id": "", "never_retro_edited": true },
+    { "id": "rust_feature_policy_edge", "family": "rust_feature_policy_edge", "origin": "seed", "source_receipt_id": "", "never_retro_edited": true },
+    { "id": "rust_feature_policy_edge_variant", "family": "rust_feature_policy_edge", "origin": "seed", "source_receipt_id": "", "never_retro_edited": true }
+  ],
+  "checks": ["make fixture-registry-check", "make learning-loop-check"]
+}

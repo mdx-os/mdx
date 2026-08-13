@@ -1,0 +1,25 @@
+{
+  "name": "mdx-public-ci-verification",
+  "mode": "public",
+  "source": ".github/workflows/ci.yml",
+  "required_receipt_kind": "ci.verification.observed",
+  "producer": "github_actions_ci",
+  "required_workflow": ".github/workflows/ci.yml",
+  "required_jobs": ["web-and-runtime", "apple-clients"],
+  "required_upstream_jobs": [],
+  "required_steps": [
+    "Install workspace",
+    "Check repository setup contract",
+    "Build and smoke test the web app",
+    "Check the Rust workspace",
+    "Check package posture",
+    "Check committed history for secrets",
+    "Test macOS app",
+    "Build iOS app for the simulator"
+  ],
+  "rules": [
+    "CI evidence is observed, not assumed.",
+    "A declared job is not evidence until the workflow has run successfully.",
+    "CI does not replace human release judgment."
+  ]
+}

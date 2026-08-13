@@ -1,0 +1,42 @@
+{
+  "name": "mdx-pages-publication-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-PUBLICATION-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/pages/publications.json",
+  "projection_route": "/pages/publications/projection.json",
+  "required_receipt_kind": "pages.document.published",
+  "auth_session_route": "/local/auth-session.json",
+  "source_contracts": [
+    "generated/world-model/pages-approval-decision-contract.json",
+    "generated/world-model/pages-approval-request-contract.json",
+    "generated/world-model/pages-edit-draft-contract.json",
+    "generated/world-model/pages-message-contract.json",
+    "generated/world-model/pages-projection-contract.json",
+    "generated/world-model/pages-projection-fixtures.json"
+  ],
+  "required_fields": ["tenant_id", "actor_id", "document_id", "approval_decision_receipt_id"],
+  "derived_from_approved_draft": ["title", "body_ref", "source_receipt_id", "revision_id"],
+  "optional_fields": ["page_type"],
+  "page_types": ["knowledge", "spec", "decision", "standard", "signal", "changelog"],
+  "page_type_default": "knowledge",
+  "authority_boundary": {
+    "approval_binding": "approved_draft_content_bound",
+    "human_approval_granted": true,
+    "approval_replay_allowed": false,
+    "edited_after_approval_allowed": false,
+    "standalone_store_allowed": false,
+    "rich_editor_allowed": false,
+    "live_substrate_required": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "pagesPublicationUrl",
+    "projection_url_var": "pagesPublicationProjectionUrl",
+    "handler": "publishGovernedPage",
+    "button_class": "pages-publish",
+    "aria_label": "Publish governed Page",
+    "fetch_count": 3
+  },
+  "checks": ["make pages-publication-check", "cargo test -p mdx-core pages_publication", "cargo test -p mdx-server pages_publication"]
+}

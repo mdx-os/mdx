@@ -1,0 +1,52 @@
+use crate::*;
+
+impl TwinSessionDraftReport {
+    pub fn render_json(&self) -> String {
+        format!(
+            r#"{{"name":"mdx-twin-session-draft-local-command","status":{},"session_id":{},"draft_text":{},"draft_receipt_id":{},"memory_gate_receipt_id":{},"memory_retrieval_receipt_id":{},"memory_scoring_receipt_id":{},"brain_recall_receipt_id":{},"recall_packet_id":{},"brain_recall_scope":{},"brain_recall_policy":{},"brain_recall_source_count":{},"brain_recall_token_budget":{},"memory_record_id":{},"answer_receipt_id":{},"persona_drift_receipt_id":{},"conversation_summary_receipt_id":{},"created_at":{},"grounded_answer":{},"conversation_summary":{},"memory_relevance_score":{},"memory_decay_state":{},"memory_decay_policy":{},"persona_contract_status":{},"voice_drift_status":{},"voice_drift_score":{},"world_model_source":{},"compaction_policy":{},"compaction_state":{},"model_gateway_driver":{},"model_gateway_provider":{},"model_gateway_model_id":{},"model_gateway_routing":{},"model_gateway_inference_id":{},"trusted_context_used":{},"trusted_context_source_count":{},"trusted_context_source_ids":{},"trusted_context_receipt_ids":{},"trusted_context_projection_route":{},"memory_driver":{},"memory_provider":{},"provider_call_allowed":{},"worker_spawn_allowed":{},"live_substrate_required":false,"production_write_allowed":false}}"#,
+            json_string_literal(self.status),
+            json_string_literal(&self.session_id),
+            json_string_literal(&self.draft_text),
+            json_string_literal(&self.draft_receipt_id),
+            json_string_literal(&self.memory_gate_receipt_id),
+            json_string_literal(&self.memory_retrieval_receipt_id),
+            json_string_literal(&self.memory_scoring_receipt_id),
+            json_string_literal(&self.brain_recall_receipt_id),
+            json_string_literal(&self.recall_packet_id),
+            json_string_literal(self.brain_recall_scope),
+            json_string_literal(self.brain_recall_policy),
+            self.brain_recall_source_count,
+            self.brain_recall_token_budget,
+            json_string_literal(&self.memory_record_id),
+            json_string_literal(&self.answer_receipt_id),
+            json_string_literal(&self.persona_drift_receipt_id),
+            json_string_literal(&self.conversation_summary_receipt_id),
+            json_string_literal(&self.created_at),
+            json_string_literal(&self.grounded_answer),
+            json_string_literal(&self.conversation_summary),
+            self.memory_relevance_score,
+            json_string_literal(self.memory_decay_state),
+            json_string_literal(self.memory_decay_policy),
+            json_string_literal(self.persona_contract_status),
+            json_string_literal(self.voice_drift_status),
+            self.voice_drift_score,
+            json_string_literal(self.world_model_source),
+            json_string_literal(self.compaction_policy),
+            json_string_literal(self.compaction_state),
+            json_string_literal(&self.model_gateway_driver),
+            json_string_literal(&self.model_gateway_provider),
+            json_string_literal(&self.model_gateway_model_id),
+            json_string_literal(&self.model_gateway_routing),
+            json_string_literal(&self.model_gateway_inference_id),
+            self.trusted_context_used,
+            self.trusted_context_source_count,
+            json_string_literal(&self.trusted_context_source_ids),
+            json_string_literal(&self.trusted_context_receipt_ids),
+            json_string_literal(self.trusted_context_projection_route),
+            json_string_literal(self.memory_driver),
+            json_string_literal(self.memory_provider),
+            self.provider_call_allowed,
+            self.worker_spawn_allowed
+        )
+    }
+}

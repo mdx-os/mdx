@@ -1,0 +1,7 @@
+{
+  "loop": "aegis_scanner_agent",
+  "agent": "aegis_scanner_agent",
+  "topics": [
+    { "name": "observatory.aegis_finding_ready", "source_receipt_kind": "aegis.finding.classified", "delivery": "local_only" }
+  ]
+}

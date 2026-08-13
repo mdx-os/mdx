@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeFleetEvalResultFromRunLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "generated_from", "auth_session_required", "writes_route", "result_ingestion_route", "projection_route", "scoreboard_route", "review_packet_route", "pr_handoff_route", "output_quarantined", "external_output_consumable", "mdx_quality_gates_required", "accepted_for_scoreboard", "live_substrate_required", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-forge-fleet-eval-result-from-run-local-post" },
+    "status": { "enum": ["FLEET_EVAL_RESULT_QUARANTINED_PENDING_MDX_GATES", "REFUSED"] },
+    "reason": { "type": "string", "minLength": 1 },
+    "source_run_id": { "type": "string" },
+    "generated_from": { "const": "forge_review_packet+language_task_alignment" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "type": "string", "minLength": 1 },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/forge/fleet-eval-results/from-run.json" },
+    "result_ingestion_route": { "const": "/forge/fleet-eval-results.json" },
+    "projection_route": { "const": "/forge/fleet-eval-results/projection.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "review_packet_route": { "const": "/forge/review-packet.json" },
+    "pr_handoff_route": { "const": "/forge/pr-handoffs.json" },
+    "submission_id": { "type": "string", "minLength": 1 },
+    "benchmark_task_id": { "type": "string", "minLength": 1 },
+    "language_task_corpus_id": { "type": "string", "minLength": 1 },
+    "language_pack_id": { "type": "string", "minLength": 1 },
+    "repo_family": { "type": "string", "minLength": 1 },
+    "language_engineering_facets": { "type": "string", "minLength": 1 },
+    "language_evaluation_oracle": { "type": "string", "minLength": 1 },
+    "language_human_timebox_minutes": { "type": "integer", "minimum": 30 },
+    "language_contamination_policy": { "type": "string", "minLength": 1 },
+    "hidden_check_slot": { "type": "string", "minLength": 1 },
+    "artifact_noise_expected": { "type": "string", "minLength": 1 },
+    "principal_review_gate_results": { "type": "string", "minLength": 1 },
+    "standards_source_fingerprints": { "type": "string", "minLength": 1 },
+    "artifact_filter_summary": { "type": "string", "minLength": 1 },
+    "diff_language_pack_impact": { "type": "string", "minLength": 1 },
+    "principal_engineer_verdict": { "const": "pending_principal_engineer_review" },
+    "pr_handoff_ref": { "type": "string", "minLength": 1 },
+    "runner_id": { "type": "string", "minLength": 1 },
+    "model_profile_id": { "type": "string", "minLength": 1 },
+    "result_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "output_artifact_ref": { "type": "string", "pattern": "^quarantine://forge/fleet-eval/" },
+    "output_artifact_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "transcript_ref": { "type": "string", "pattern": "^quarantine://forge/fleet-eval/" },
+    "claimed_check": { "type": "string", "minLength": 1 },
+    "output_quarantined": { "type": "boolean" },
+    "external_output_consumable": { "const": false },
+    "mdx_quality_gates_required": { "const": true },
+    "mdx_quality_gates_passed": { "const": false },
+    "accepted_for_scoreboard": { "const": false },
+    "blocked_reason": { "const": "pending_mdx_quality_gates" },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "FLEET_EVAL_RESULT_QUARANTINED_PENDING_MDX_GATES" } } },
+      "then": {
+        "required": ["source_run_id", "auth_session_status", "auth_session_route", "submission_id", "benchmark_task_id", "language_task_corpus_id", "language_pack_id", "repo_family", "language_engineering_facets", "language_evaluation_oracle", "language_human_timebox_minutes", "language_contamination_policy", "hidden_check_slot", "artifact_noise_expected", "principal_review_gate_results", "standards_source_fingerprints", "artifact_filter_summary", "diff_language_pack_impact", "principal_engineer_verdict", "pr_handoff_ref", "runner_id", "model_profile_id", "result_receipt_id", "policy_decision_id", "output_artifact_ref", "output_artifact_sha256", "transcript_ref", "claimed_check", "mdx_quality_gates_passed", "blocked_reason"],
+        "properties": { "output_quarantined": { "const": true } }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "REFUSED" } } },
+      "then": {
+        "required": ["reason"],
+        "properties": { "output_quarantined": { "const": false } }
+      }
+    }
+  ]
+}

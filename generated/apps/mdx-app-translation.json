@@ -1,0 +1,28 @@
+{
+  "name": "mdx-app-translation",
+  "mode": "deterministic-local",
+  "source": "docs/APP-TRANSLATION.md",
+  "apps": [
+    { "legacy_app": "Evals", "v2_shape": "loop_runner_and_credentialing_substrate", "anchor": "evals_runner_agent", "status": "LIVE-LOCAL", "do_not": "Do not treat evals as only test runs." },
+    { "legacy_app": "Aegis", "v2_shape": "loop_runner", "anchor": "aegis_scanner_agent", "status": "LIVE-LOCAL", "do_not": "Do not create a second security scan runtime." },
+    { "legacy_app": "Charter", "v2_shape": "loop_runner_and_governance_domain", "anchor": "charter_attestation_agent", "status": "LIVE-LOCAL", "do_not": "Do not bypass Ledger receipts for attestations." },
+    { "legacy_app": "Twin", "v2_shape": "companion_population", "anchor": "companions/twin/*.yaml", "status": "DECLARED-LOCAL", "do_not": "Do not model companions as loop-runners." },
+    { "legacy_app": "Concierge", "v2_shape": "read_surface", "anchor": "local_read_surfaces", "status": "LIVE-LOCAL", "do_not": "Do not let Concierge read private internals." },
+    { "legacy_app": "Observatory", "v2_shape": "read_surface", "anchor": "local_read_surfaces", "status": "LIVE-LOCAL", "do_not": "Do not split Observatory from Concierge evidence." },
+    { "legacy_app": "Pages", "v2_shape": "world_model_evidence_corpus", "anchor": "generated/routes/pages-readonly-route-contract.json", "status": "LIVE-LOCAL-READ-SURFACE", "do_not": "Do not rebuild Pages as a standalone source of truth." },
+    { "legacy_app": "Message", "v2_shape": "communication_surface", "anchor": "generated/routes/message-readonly-route-contract.json", "status": "LIVE-LOCAL-READ-SURFACE", "do_not": "Do not create message state outside receipts and outbox." },
+    { "legacy_app": "Start", "v2_shape": "first_run_install_surface", "anchor": "apps/start", "status": "LIVE-LOCAL-READ-SURFACE", "do_not": "Do not make fresh install readiness depend on v1 migration or cloud deployment." },
+    { "legacy_app": "MDx", "v2_shape": "unified_product_shell", "anchor": "apps/mdx", "status": "LIVE-LOCAL-PRODUCT-SHELL", "do_not": "Do not replace Start as the first-run install proof until the dev-stack contract changes." },
+    { "legacy_app": "Product", "v2_shape": "human_ratified_product_shaping_loop", "anchor": "product_shaping_agent", "status": "LOCAL-BLOCKED-AT-HUMAN-RATIFICATION", "do_not": "Do not let Product set direction without human ratification." },
+    { "legacy_app": "Strategy", "v2_shape": "guided_synthesis_loop", "anchor": "future_strategy_loop", "status": "PLANNED", "do_not": "Do not make strategic direction fully autonomous." },
+    { "legacy_app": "Forge", "v2_shape": "loop_runner_with_workers", "anchor": "forge_orchestrator_agent", "status": "LOCAL-BLOCKED-AT-DELEGATION", "do_not": "Do not spawn workers outside Talent." },
+    { "legacy_app": "Talent", "v2_shape": "loop_runner_and_worker_authority_boundary", "anchor": "talent_autonomy_agent", "status": "LOCAL-RECEIPT-RUNTIME-BOUNDARY", "do_not": "Do not turn on live workers without provider turn-on evidence." },
+    { "legacy_app": "Pulse", "v2_shape": "observability_evidence_surface", "anchor": "generated/status/mdx-local-status.json", "status": "PLANNED", "do_not": "Do not create a second observability truth path." }
+  ],
+  "rules": [
+    "legacy app work must name its v2 shape before implementation",
+    "read surfaces are not loop-runners",
+    "companions are not loop-runners",
+    "new app runtime requires an ADR and make app-translation-check"
+  ]
+}

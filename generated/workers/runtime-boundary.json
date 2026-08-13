@@ -1,0 +1,16 @@
+{
+  "name": "mdx-worker-runtime-boundary",
+  "mode": "deterministic-local",
+  "runtime_status": "LOCAL-STUB-RECEIPT-ONLY",
+  "source": "docs/WORKER-RUNTIME-BOUNDARY.md",
+  "depends_on": ["generated/workers/spawn-request-contract.json", "generated/workers/credential-check-contract.json", "generated/workers/handoff-evidence-contract.json", "generated/workers/retirement-receipt-contract.json"],
+  "core_entrypoint": "mdx_core::MdxKernel::run_local_worker_runtime",
+  "allowed_receipt_order": ["worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_admission_functions": ["mdx_core::admit_worker_handoff", "mdx_core::admit_worker_retirement"],
+  "forbidden_paths": ["execute_without_spawn_receipt", "handoff_without_credential_receipt", "retire_without_handoff_receipt", "production_deploy", "live_spend"],
+  "rules": [
+    "local worker runtime is receipt-only until live worker execution is turned on",
+    "worker outputs are queryable only after worker.handoff.recorded",
+    "worker retirement must cite handoff evidence"
+  ]
+}

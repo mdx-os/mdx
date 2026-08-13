@@ -1,0 +1,30 @@
+{
+  "name": "mdx-pages-approval-request-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-APPROVAL-REQUEST-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/pages/approval-requests.json",
+  "projection_route": "/pages/approval-requests/projection.json",
+  "required_receipt_kind": "pages.approval.requested",
+  "source_receipt_kind": "pages.edit.draft.saved",
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "approval_request_id", "source_edit_draft_receipt_id", "document_id", "draft_id", "requested_visibility"],
+  "authority_boundary": {
+    "public_visibility_allowed": false,
+    "search_indexing_allowed": false,
+    "embedding_provider_allowed": false,
+    "rich_editor_allowed": false,
+    "standalone_store_allowed": false,
+    "production_publish_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "pagesApprovalRequestUrl",
+    "projection_url_var": "pagesApprovalRequestProjectionUrl",
+    "handler": "requestGovernedPagesApproval",
+    "button_class": "pages-request-approval",
+    "aria_label": "Request governed Pages approval",
+    "fetch_count": 7
+  },
+  "checks": ["make pages-approval-request-check", "cargo test -p mdx-core pages_approval_request", "cargo test -p mdx-server pages_approval_request"]
+}

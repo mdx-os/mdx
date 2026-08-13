@@ -1,0 +1,11 @@
+{
+  "name": "mdx-worker-retirement-receipt-contract",
+  "mode": "deterministic-local",
+  "source_manifest": "generated/agents/mdx-agent-populations.json",
+  "retirement_admission_required": true,
+  "retirement_admission_fn": "mdx_core::admit_worker_retirement",
+  "required_fields": ["parent_loop_id", "worker_template_id", "worker_run_id", "spawn_receipt_id", "handoff_receipt_id", "requested_receipt_kind"],
+  "workers": [
+    { "id": "worker_bounded_task_template", "path": "workers/templates/bounded-task.yaml", "runtime_status": "PENDING-LIVE-RUN", "receipt_evidence_required": true, "retirement_required": true, "retirement_receipt_required": true, "retirement_receipt_kind": "worker.retired", "parent_required": true, "human_sponsor_chain_required": true, "forbidden_actions": ["run_unscoped_work", "exceed_budget", "ignore_expiry", "bypass_talent", "production_deploy_without_approval"] }
+  ]
+}

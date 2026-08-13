@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesKnowledgeSearchResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "tenant_id", "query", "normalized_query", "search_mode", "result_count", "max_results", "results", "read_only", "writes_allowed", "receipt_backed", "body_ref_allowlisted", "standalone_store_allowed", "search_indexing_allowed", "embedding_provider_turn_on_observed", "embedding_provider_call_allowed", "vector_store_adapter_allowed", "public_visibility_allowed", "live_substrate_required", "production_write_allowed", "source_routes", "source_contracts", "blocked_until_turn_on", "ui_handoff"],
+  "properties": {
+    "name": { "const": "mdx-pages-knowledge-search" },
+    "status": { "const": "LOCAL_KNOWLEDGE_SEARCH_READY" },
+    "route": { "const": "/pages/search.json" },
+    "tenant_id": { "const": "tenant_local" },
+    "query": { "type": "string" },
+    "normalized_query": { "type": "string", "minLength": 1 },
+    "search_mode": { "const": "local_lexical_allowlisted_pages_corpus" },
+    "result_count": { "type": "integer", "minimum": 0 },
+    "max_results": { "const": 8 },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tenant_id", "document_id", "title", "body_ref", "body_route", "summary", "category", "author_actor_id", "source_receipt_ids", "charter_evidence_ids", "revision_id", "snippet", "score", "visibility", "receipt_backed", "body_ref_allowlisted", "world_model_source"],
+        "properties": {
+          "tenant_id": { "const": "tenant_local" },
+          "document_id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "body_ref": { "type": "string", "minLength": 1 },
+          "body_route": { "type": "string", "pattern": "^/pages/.+/body$" },
+          "summary": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "author_actor_id": { "type": "string", "minLength": 1 },
+          "source_receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "charter_evidence_ids": { "type": "array", "items": { "type": "string" } },
+          "revision_id": { "type": "string", "minLength": 1 },
+          "snippet": { "type": "string", "minLength": 1 },
+          "score": { "type": "integer", "minimum": 1 },
+          "visibility": { "const": "tenant_only" },
+          "receipt_backed": { "const": true },
+          "body_ref_allowlisted": { "const": true },
+          "world_model_source": { "const": "generated/world-model/pages-projection-fixtures.json" }
+        }
+      }
+    },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "receipt_backed": { "const": true },
+    "body_ref_allowlisted": { "const": true },
+    "standalone_store_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "embedding_provider_turn_on_observed": { "const": false },
+    "embedding_provider_call_allowed": { "const": false },
+    "vector_store_adapter_allowed": { "const": false },
+    "public_visibility_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "source_routes": { "type": "array", "items": { "type": "string" }, "minItems": 5 },
+    "source_contracts": { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+    "blocked_until_turn_on": { "type": "array", "items": { "type": "string" }, "minItems": 5 },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_show_search_results", "must_show_local_lexical_mode", "must_show_receipt_citations", "must_not_claim_vector_search", "must_not_claim_embedding_provider"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Pages module" },
+        "safe_to_show_search_results": { "const": true },
+        "must_show_local_lexical_mode": { "const": true },
+        "must_show_receipt_citations": { "const": true },
+        "must_not_claim_vector_search": { "const": true },
+        "must_not_claim_embedding_provider": { "const": true }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Resolve the theme before first paint: a stored choice (mdx-theme)
+         wins; otherwise honor the system preference and keep following it
+         live. The hash of this exact script is allowed in the CSP
+         script-src (svelte.config.js) - recompute it if this changes. -->
+    <script>var mdxLight=matchMedia("(prefers-color-scheme: light)");function mdxApplyTheme(){var s=null;try{s=localStorage.getItem("mdx-theme")}catch(e){}document.documentElement.dataset.theme=s==="light"||s==="dark"?s:mdxLight.matches?"light":"dark"}mdxApplyTheme();mdxLight.addEventListener("change",mdxApplyTheme);</script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0e0f14" />
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>

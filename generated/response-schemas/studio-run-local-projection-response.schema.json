@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StudioRunLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "pages_projection_route", "run_count", "standalone_document_store_allowed", "live_co_edit_allowed", "production_write_allowed", "runs"],
+  "properties": {
+    "name": { "const": "mdx-studio-run-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/studio/runs.json" },
+    "pages_projection_route": { "const": "/pages/publications/projection.json" },
+    "run_count": { "type": "integer", "minimum": 0 },
+    "standalone_document_store_allowed": { "const": false },
+    "live_co_edit_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["run_id", "state", "goal", "artifact_kind", "source_kind", "source_title", "allowed_controls", "document_id", "title", "publication_receipt_id", "steering_receipt_ids", "present", "origin"],
+        "properties": {
+          "run_id": { "type": "string" },
+          "state": { "enum": ["drafting", "paused", "landed", "unknown"] },
+          "goal": { "type": "string" },
+          "artifact_kind": { "type": "string" },
+          "source_kind": { "type": "string" },
+          "source_title": { "type": "string" },
+          "allowed_controls": { "type": "array", "items": { "enum": ["pause", "land", "steering", "resume"] } },
+          "document_id": { "type": "string" },
+          "title": { "type": "string" },
+          "publication_receipt_id": { "type": "string" },
+          "steering_receipt_ids": { "type": "array", "items": { "type": "string" } },
+          "present": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["actor_id", "active"], "properties": { "actor_id": { "type": "string" }, "active": { "type": "boolean" } } } },
+          "origin": { "const": "studio" }
+        }
+      }
+    }
+  }
+}

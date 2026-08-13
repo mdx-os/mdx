@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinIntelligenceReadinessResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "read_only", "receipt_backed", "local_ready", "conversation_ready", "provider_connected_local_allowed", "local_model_gateway", "provider_runtime", "memory_runtime", "conversation_runtime", "boundary_refusals", "blocked_authority", "source_routes", "ui_handoff", "checks"],
+  "properties": {
+    "name": { "const": "mdx-twin-intelligence-readiness" },
+    "status": { "enum": ["LOCAL-TWIN-INTELLIGENCE-MISSING-GOVERNED-EVIDENCE", "LIVE-LOCAL-TWIN-INTELLIGENCE-READY-PROVIDER-CONTROLLED"] },
+    "route": { "const": "/twin/intelligence-readiness.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "local_ready": { "type": "boolean" },
+    "conversation_ready": { "type": "boolean" },
+    "provider_connected_local_allowed": { "type": "boolean" },
+    "local_model_gateway": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["driver", "provider", "model_id", "stream_contract", "routing", "provider_call_allowed", "network_allowed", "output_text_recorded"],
+      "properties": {
+        "driver": { "const": "local_model_gateway" },
+        "provider": { "const": "DeterministicModelGateway" },
+        "model_id": { "const": "deterministic_local_v1" },
+        "stream_contract": { "const": "normalized_model_stream_v1" },
+        "routing": { "const": "local_first_fail_closed" },
+        "provider_call_allowed": { "const": false },
+        "network_allowed": { "const": false },
+        "output_text_recorded": { "const": false }
+      }
+    },
+    "provider_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observation_route", "projection_route", "provider_slot_count", "provider_observation_count", "accepted_provider_observation_count", "provider_connected_local_allowed", "provider_call_allowed_now", "live_network_allowed_now", "credential_presence_only", "credential_values_recorded", "provider_secret_values_recorded", "requested_secret_values_recorded", "output_text_recorded", "production_write_allowed", "provider_slots"],
+      "properties": {
+        "observation_route": { "const": "/twin/model-gateway-provider-observations.json" },
+        "projection_route": { "const": "/twin/model-gateway-provider-observations/projection.json" },
+        "provider_slot_count": { "const": 7 },
+        "provider_observation_count": { "type": "integer", "minimum": 0 },
+        "accepted_provider_observation_count": { "type": "integer", "minimum": 0 },
+        "provider_connected_local_allowed": { "type": "boolean" },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_network_allowed_now": { "type": "boolean" },
+        "credential_presence_only": { "const": true },
+        "credential_values_recorded": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "requested_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "production_write_allowed": { "const": false },
+        "provider_slots": { "type": "array", "minItems": 6, "items": { "type": "object" } }
+      }
+    },
+    "memory_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["driver", "provider", "durable_driver", "memory_record_count", "memory_gate_count", "memory_retrieval_count", "memory_scoring_count", "world_model_source", "vendor_memory_driver", "vendor_status", "production_memory_write_allowed"],
+      "properties": {
+        "driver": { "const": "local_memory_store" },
+        "provider": { "const": "InMemoryProvider" },
+        "durable_driver": { "const": "postgres_memory_records" },
+        "memory_record_count": { "type": "integer", "minimum": 0 },
+        "memory_gate_count": { "type": "integer", "minimum": 0 },
+        "memory_retrieval_count": { "type": "integer", "minimum": 0 },
+        "memory_scoring_count": { "type": "integer", "minimum": 0 },
+        "world_model_source": { "const": "generated/world-model/pages-projection-fixtures.json" },
+        "vendor_memory_driver": { "const": "mem0_memory_store" },
+        "vendor_status": { "const": "PENDING-LIVE-RUN" },
+        "production_memory_write_allowed": { "const": false }
+      }
+    },
+    "conversation_runtime": { "type": "object" },
+    "boundary_refusals": { "type": "object" },
+    "blocked_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["live_provider_call_without_observation_allowed", "provider_secret_values_recorded", "requested_secret_values_recorded", "output_text_recorded", "production_memory_write_allowed", "tool_execution_allowed", "worker_spawn_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "live_provider_call_without_observation_allowed": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "requested_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "production_memory_write_allowed": { "const": false },
+        "tool_execution_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "source_routes": { "type": "array", "minItems": 7, "items": { "type": "string" } },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_show_local_intelligence_ready", "must_render_provider_slots", "must_not_show_secret_values", "must_not_render_output_text_from_provider_observation", "must_not_claim_production_provider_cutover", "must_keep_local_deterministic_fallback_visible", "must_keep_tool_execution_blocked"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Twin module" },
+        "safe_to_show_local_intelligence_ready": { "type": "boolean" },
+        "must_render_provider_slots": { "const": true },
+        "must_not_show_secret_values": { "const": true },
+        "must_not_render_output_text_from_provider_observation": { "const": true },
+        "must_not_claim_production_provider_cutover": { "const": true },
+        "must_keep_local_deterministic_fallback_visible": { "const": true },
+        "must_keep_tool_execution_blocked": { "const": true }
+      }
+    },
+    "checks": { "type": "array", "minItems": 4, "items": { "type": "string" } }
+  }
+}

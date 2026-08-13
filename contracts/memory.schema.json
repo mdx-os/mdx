@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/memory.schema.json",
+  "title": "MDx Memory Record",
+  "type": "object",
+  "required": ["memory_id", "tenant_id", "source_receipt_id", "consolidation_decision", "content"],
+  "properties": {
+    "memory_id": { "type": "string" },
+    "tenant_id": { "type": "string" },
+    "source_receipt_id": { "type": "string" },
+    "consolidation_decision": { "enum": ["RETAIN", "SKIP"] },
+    "content": { "type": "string" }
+  }
+}
+

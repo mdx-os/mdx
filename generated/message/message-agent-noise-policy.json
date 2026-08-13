@@ -1,0 +1,23 @@
+{
+  "name": "mdx-message-agent-noise-policy",
+  "contract_version": 1,
+  "human_line": "Agents are useful in the room, never the room itself. Their posts fold by default past a threshold, expand in place, and always say what kind of actor wrote them.",
+  "lanes": ["human", "agent", "pipeline", "system", "worker"],
+  "lane_source": "actor_id prefix (agent:, pipeline:, system:, worker:) - the write records it, the surface derives it, nothing is guessed",
+  "folding": {
+    "threshold_consecutive_non_human": 3,
+    "behavior": "three or more consecutive non-human posts fold into one run row with actor names and a count; expand and fold in place",
+    "human_posts": "never folded"
+  },
+  "rich_bodies": {
+    "markdown": "escape-first renderer shared with Twin (XSS structurally impossible)",
+    "decision_card": "bodies shaped 'Decision: ...' (the governed record_decision output) render as a decision card with title, detail, and why"
+  },
+  "declared_slots_for_admin": {
+    "workspace_agent_posting_toggle": "SHIPPED - enforced at the write path, flipped from /admin/message with a recorded change",
+    "per_channel_agent_posting_policy": "not built - the workspace-level toggle ships first",
+    "agent_rate_limits_separate_from_humans": "not built - the relay's per-connection limits stand in locally",
+    "digest_mode": "not built - show-what-changed summarization is a later slice",
+    "mute_agent_follow_thread_pin_run": "not built - operator controls cluster"
+  }
+}

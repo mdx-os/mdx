@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2ProviderActivationRequestResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "provider_call_allowed_now",
+    "live_provider_call_allowed_now",
+    "live_network_allowed_now",
+    "provider_secret_values_recorded",
+    "human_approval_required",
+    "turn_on_receipt_required",
+    "production_write_allowed",
+    "deployment_authority_allowed",
+    "proof_check",
+    "route_check",
+    "provider_turn_on_check",
+    "matrix_route",
+    "activation_request_count",
+    "env_ready_request_count",
+    "ready_for_live_call_count",
+    "human_approval_required_count",
+    "activation_requests",
+    "remaining_blockers",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-provider-activation-request" },
+    "mode": { "const": "local-first-provider-activation" },
+    "status": { "enum": ["PROVIDER_ACTIVATION_REQUESTS_READY", "NOT_READY"] },
+    "route": { "const": "/v2/provider-activation-request.json" },
+    "read_only": { "const": true },
+    "provider_call_allowed_now": { "const": false },
+    "live_provider_call_allowed_now": { "const": false },
+    "live_network_allowed_now": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "human_approval_required": { "const": true },
+    "turn_on_receipt_required": { "const": true },
+    "production_write_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "proof_check": { "const": "make v2-provider-activation-request" },
+    "route_check": { "const": "make v2-provider-activation-request-route-check" },
+    "provider_turn_on_check": { "const": "make live-turn-on-check" },
+    "matrix_route": { "const": "/v2/provider-turn-on-matrix.json" },
+    "activation_request_count": { "const": 6 },
+    "env_ready_request_count": { "type": "integer", "minimum": 0 },
+    "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "human_approval_required_count": { "const": 6 },
+    "activation_requests": {
+      "type": "array",
+      "minItems": 6,
+      "contains": {
+        "type": "object",
+        "required": ["id", "substrate", "profile_kind", "status", "env_ready", "credential_presence_only", "credential_values_recorded", "required_receipt_kind", "human_approval_required", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "proof_command"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "substrate": { "type": "string", "minLength": 1 },
+          "profile_kind": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["READY_FOR_HUMAN_APPROVAL_RECEIPT", "WAITING_FOR_CREDENTIALS"] },
+          "env_ready": { "type": "boolean" },
+          "credential_presence_only": { "const": true },
+          "credential_values_recorded": { "const": false },
+          "required_receipt_kind": { "type": "string", "minLength": 1 },
+          "human_approval_required": { "const": true },
+          "provider_call_allowed_now": { "const": false },
+          "live_provider_call_allowed_now": { "const": false },
+          "live_network_allowed_now": { "const": false },
+          "proof_command": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "remaining_blockers": {
+      "type": "array",
+      "minItems": 3,
+      "allOf": [
+        { "contains": { "type": "object", "required": ["id", "allowed_now"], "properties": { "id": { "const": "human_approval_receipt" }, "allowed_now": { "const": false } } } },
+        { "contains": { "type": "object", "required": ["id", "allowed_now"], "properties": { "id": { "const": "provider_turn_on_receipt" }, "allowed_now": { "const": false } } } },
+        { "contains": { "type": "object", "required": ["id", "allowed_now"], "properties": { "id": { "const": "live_provider_call" }, "allowed_now": { "const": false } } } }
+      ]
+    },
+    "evidence_file": { "const": ".mdx-local/v2-provider-activation-request.json" }
+  }
+}

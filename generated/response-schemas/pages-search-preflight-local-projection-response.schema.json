@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesSearchPreflightLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "preflight_count", "revision_citation_comparison_proven", "attachment_access_policy_proven", "search_indexing_admission_recorded", "embedding_provider_turn_on_observed", "vector_store_adapter_allowed", "search_indexing_allowed", "public_visibility_allowed", "rich_editor_allowed", "unsafe_document_access_allowed", "live_substrate_required", "production_write_allowed", "preflights"],
+  "properties": {
+    "name": { "const": "mdx-pages-search-preflight-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/search-preflights.json" },
+    "preflight_count": { "type": "integer", "minimum": 0 },
+    "revision_citation_comparison_proven": { "const": true },
+    "attachment_access_policy_proven": { "const": true },
+    "search_indexing_admission_recorded": { "const": true },
+    "embedding_provider_turn_on_observed": { "const": false },
+    "vector_store_adapter_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "public_visibility_allowed": { "const": false },
+    "rich_editor_allowed": { "const": false },
+    "unsafe_document_access_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "preflights": { "type": "array" }
+  }
+}

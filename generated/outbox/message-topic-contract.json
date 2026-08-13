@@ -1,0 +1,30 @@
+{
+  "name": "mdx-message-outbox-topic-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-OUTBOX-TOPIC-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "depends_on": [
+    "generated/world-model/message-event-plane-contract.json",
+    "generated/routes/message-readonly-route-contract.json",
+    "generated/quality/message-hot-path-budget.json"
+  ],
+  "topics": [
+    { "topic": "message.thread.created", "required_receipt_kind": "message.thread.created", "projection": "thread_summary" },
+    { "topic": "message.agent.posted", "required_receipt_kind": "message.agent.posted", "projection": "thread_summary" },
+    { "topic": "message.receipt.linked", "required_receipt_kind": "message.receipt.linked", "projection": "channel_timeline" }
+  ],
+  "required_fields": ["tenant_id", "thread_id", "message_id", "actor_id", "actor_type", "receipt_id", "outbox_topic", "sequence"],
+  "forbidden_paths": [
+    "agent_message_without_outbox_topic",
+    "outbox_topic_without_receipt",
+    "message_topic_without_projection",
+    "cross_tenant_message_topic"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Agent-visible Message communication is published through declared outbox topics",
+    "Every Message outbox topic maps to a receipt kind and projection",
+    "Outbox publication happens after event append and before read-surface projection",
+    "Agents cannot post uncited messages directly into UI state"
+  ]
+}

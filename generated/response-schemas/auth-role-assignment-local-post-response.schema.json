@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthRoleAssignmentLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "role_assignment_id", "role_assignment_receipt_id", "policy_decision_id", "source_invite_request_receipt_id", "invite_id", "target_actor_id", "assigned_role", "assignment_note", "membership_state", "role_mapping_recorded", "tenant_membership_recorded", "session_cookie_write_allowed", "role_escalation_allowed", "production_auth_provider_allowed", "production_role_write_allowed", "live_substrate_required", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-auth-role-assignment-local-post" },
+    "status": { "const": "AUTH_ROLE_ASSIGNMENT_RECORDED_SESSION_BLOCKED" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/auth/role-assignments.json" },
+    "projection_route": { "const": "/auth/role-assignments/projection.json" },
+    "role_assignment_id": { "type": "string", "minLength": 1 },
+    "role_assignment_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "source_invite_request_receipt_id": { "type": "string", "minLength": 1 },
+    "invite_id": { "type": "string", "minLength": 1 },
+    "target_actor_id": { "type": "string", "minLength": 1 },
+    "assigned_role": { "type": "string", "minLength": 1 },
+    "assignment_note": { "type": "string", "minLength": 1 },
+    "membership_state": { "const": "local_role_recorded_session_blocked" },
+    "role_mapping_recorded": { "const": true },
+    "tenant_membership_recorded": { "const": true },
+    "session_cookie_write_allowed": { "const": false },
+    "role_escalation_allowed": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "production_role_write_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

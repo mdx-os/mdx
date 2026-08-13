@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2SeededTenantDemoResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "fresh_install_default",
+    "local_only",
+    "tenant",
+    "demo_flow_count",
+    "receipt_backed_demo_flow_count",
+    "demo_flows",
+    "counts",
+    "proof_check",
+    "route_check",
+    "source_routes",
+    "evidence_files",
+    "blocked_authority",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-seeded-tenant-demo" },
+    "mode": { "const": "local-first-seeded-demo" },
+    "status": { "enum": ["SEEDED_TENANT_DEMO_READY", "NOT_READY"] },
+    "route": { "const": "/v2/seeded-tenant-demo.json" },
+    "read_only": { "const": true },
+    "fresh_install_default": { "const": true },
+    "local_only": { "const": true },
+    "tenant": {
+      "type": "object",
+      "required": ["tenant_id", "role", "status", "auth_session_route"],
+      "properties": {
+        "tenant_id": { "const": "local_tenant" },
+        "role": { "const": "owner" },
+        "status": { "const": "OK" },
+        "auth_session_route": { "const": "/local/auth-session.json" }
+      }
+    },
+    "demo_flow_count": { "const": 6 },
+    "receipt_backed_demo_flow_count": { "const": 6 },
+    "demo_flows": {
+      "type": "array",
+      "minItems": 6,
+      "contains": {
+        "type": "object",
+        "required": ["id", "status", "receipt_count", "receipt_backed"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "const": "OK" },
+          "receipt_count": { "type": "integer", "minimum": 1 },
+          "receipt_backed": { "const": true }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["runtime_loops", "http_routes", "expected_http_routes", "receipt_backed_routes", "expected_receipt_backed_routes"],
+      "properties": {
+        "runtime_loops": { "type": "integer", "minimum": 1 },
+        "http_routes": { "type": "integer", "minimum": 1 },
+        "expected_http_routes": { "type": "integer", "minimum": 1 },
+        "receipt_backed_routes": { "type": "integer", "minimum": 1 },
+        "expected_receipt_backed_routes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "proof_check": { "const": "make v2-seeded-tenant-demo" },
+    "route_check": { "const": "make v2-seeded-tenant-demo-route-check" },
+    "source_routes": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "/local/auth-session.json" } },
+        { "contains": { "const": "/local/evidence-index.json" } }
+      ]
+    },
+    "evidence_files": {
+      "type": "object",
+      "required": ["evidence_index", "activation_summary", "dogfood_proof", "operational_handoff", "output"],
+      "properties": {
+        "evidence_index": { "const": ".mdx-local/evidence-index.json" },
+        "activation_summary": { "const": ".mdx-local/activation-summary.json" },
+        "dogfood_proof": { "const": ".mdx-local/dogfood/local-dogfood-proof.json" },
+        "operational_handoff": { "const": ".mdx-local/handoff/local-operational-handoff.json" },
+        "output": { "const": ".mdx-local/v2-seeded-tenant-demo.json" }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["production_write_allowed", "production_cutover_allowed", "service_role_runtime_allowed", "provider_call_allowed", "live_provider_call_allowed", "live_network_allowed", "worker_spawn_allowed", "live_worker_execution_allowed", "deployment_authority_allowed"],
+      "properties": {
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "live_provider_call_allowed": { "const": false },
+        "live_network_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "live_worker_execution_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false }
+      }
+    },
+    "evidence_file": { "const": ".mdx-local/v2-seeded-tenant-demo.json" }
+  }
+}

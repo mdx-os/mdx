@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LocalActivationReportResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "mode", "status", "observed_at", "git", "readiness", "counts", "surfaces", "pending_live_substrates", "evidence_files", "next_commands"],
+  "properties": {
+    "name": { "const": "mdx-local-activation-report" },
+    "mode": { "const": "local-only-ignored" },
+    "status": { "enum": ["LOCAL-READY", "LOCAL-ACTIVATED", "PARTIAL"] },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "git": {
+      "type": "object",
+      "required": ["revision", "branch", "dirty"],
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string", "minLength": 1 },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["activation_complete", "dogfood_readiness", "dogfood_full", "handoff_status", "auth_session", "api_index", "local_driver_ports"],
+      "properties": {
+        "activation_complete": { "type": "boolean" },
+        "dogfood_readiness": { "type": "string", "minLength": 1 },
+        "dogfood_full": { "type": "boolean" },
+        "handoff_status": { "type": "string", "minLength": 1 },
+        "auth_session": {
+          "type": "object",
+          "required": ["route", "status", "tenant_id"],
+          "properties": {
+            "route": { "const": "/local/auth-session.json" },
+            "status": { "type": "string", "minLength": 1 },
+            "tenant_id": { "type": "string", "minLength": 1 }
+          }
+        },
+        "api_index": {
+          "type": "object",
+          "required": ["route", "status", "route_count"],
+          "properties": {
+            "route": { "const": "/local/index.json" },
+            "status": { "type": "string", "minLength": 1 },
+            "route_count": { "type": "integer", "minimum": 6 }
+          }
+        },
+        "local_driver_ports": {
+          "type": "object",
+            "required": ["status", "conformance_count", "model_gateway", "memory_store", "workflow_runner", "observability_trace_exporter", "proof_command"],
+            "properties": {
+              "status": { "const": "READY-LOCAL-DECISION" },
+            "conformance_count": { "const": 4 },
+            "model_gateway": { "const": "LIVE-LOCAL-CONFORMANCE" },
+            "memory_store": { "const": "LIVE-LOCAL-CONFORMANCE" },
+            "workflow_runner": { "const": "LIVE-LOCAL-CONFORMANCE" },
+            "observability_trace_exporter": { "const": "LIVE-LOCAL-CONFORMANCE" },
+            "proof_command": { "const": "make harness-runway-check" }
+          }
+        },
+        "forge_operator": { "type": "object" }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["runtime_loops", "ledger_entries", "http_routes", "json_routes", "receipt_backed_routes", "served_ui_apps", "dev_stack_apps", "live_local_conformance_ports", "live_local_substrates", "pending_live_substrates"],
+      "properties": {
+        "runtime_loops": { "type": "integer", "minimum": 0 },
+        "ledger_entries": { "type": "integer", "minimum": 0 },
+        "http_routes": { "type": "integer", "minimum": 0 },
+        "json_routes": { "type": "integer", "minimum": 0 },
+        "receipt_backed_routes": { "type": "integer", "minimum": 0 },
+        "served_ui_apps": { "type": "integer", "minimum": 0 },
+        "dev_stack_apps": { "type": "integer", "minimum": 0 },
+        "live_local_conformance_ports": { "const": 4 },
+        "live_local_substrates": { "type": "integer", "minimum": 1 },
+        "pending_live_substrates": { "type": "integer", "minimum": 5 }
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "required": ["activation", "runtime", "http_smoke", "dev_stack", "dogfood", "forge_operator_projection_route", "forge_operator_workspace_route", "forge_operator_briefing_route", "operational_handoff"],
+      "properties": {
+        "activation": { "type": "string", "minLength": 1 },
+        "runtime": { "type": "string", "minLength": 1 },
+        "http_smoke": { "type": "string", "minLength": 1 },
+        "dev_stack": { "type": "string", "minLength": 1 },
+        "dogfood": { "type": "string", "minLength": 1 },
+        "forge_operator_projection_route": { "type": "string", "minLength": 1 },
+        "forge_operator_workspace_route": { "type": "string", "minLength": 1 },
+        "forge_operator_briefing_route": { "type": "string", "minLength": 1 },
+        "operational_handoff": { "type": "string", "minLength": 1 }
+      }
+    },
+    "pending_live_substrates": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["substrate", "next", "blockers"],
+        "properties": {
+          "substrate": { "type": "string", "minLength": 1 },
+          "next": { "const": "make live-turn-on-check" },
+          "blockers": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "evidence_files": {
+      "type": "object",
+      "required": ["index", "activation_summary", "operational_handoff", "report"],
+      "properties": {
+        "index": { "const": ".mdx-local/evidence-index.json" },
+        "activation_summary": { "const": ".mdx-local/activation-summary.json" },
+        "operational_handoff": { "const": ".mdx-local/handoff/local-operational-handoff.json" },
+        "report": { "const": ".mdx-local/activation-report.json" }
+      }
+    },
+    "next_commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "contains": { "const": "make live-turn-on-check" }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "surface": "observatory",
+  "role_modes": ["Leader", "Regulator", "Risk", "Advisor", "Member", "Engineer", "Operator", "Product"],
+  "declared_sources": ["ledger_entries", "loop_runs", "policy_decisions", "eval_verdicts", "agent_credentials", "charter_records", "memory_records"]
+}

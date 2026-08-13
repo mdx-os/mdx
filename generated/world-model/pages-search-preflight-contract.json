@@ -1,0 +1,66 @@
+{
+  "name": "mdx-pages-search-preflight-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-SEARCH-PREFLIGHT-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/pages/search-preflights.json",
+  "projection_route": "/pages/search-preflights/projection.json",
+  "runtime_readiness_route": "/pages/runtime-readiness.json",
+  "required_receipt_kind": "pages.search.preflighted",
+  "source_receipt_kind": "pages.approval.requested",
+  "evidence_ladder": [
+    {
+      "name": "revision_citation_comparison",
+      "write_route": "/pages/revision-citation-comparisons.json",
+      "projection_route": "/pages/revision-citation-comparisons/projection.json",
+      "required_receipt_kind": "pages.revision_citation.compared",
+      "terminal_state": "PAGES_REVISION_CITATION_COMPARISON_RECORDED_SEARCH_BLOCKED"
+    },
+    {
+      "name": "publication_visibility",
+      "write_route": "/pages/publication-visibility-checks.json",
+      "projection_route": "/pages/publication-visibility-checks/projection.json",
+      "required_receipt_kind": "pages.publication.visibility.checked",
+      "terminal_state": "PAGES_PUBLICATION_VISIBILITY_CHECKED_PUBLIC_BLOCKED"
+    },
+    {
+      "name": "embedding_provider_refusal",
+      "write_route": "/pages/embedding-provider-refusals.json",
+      "projection_route": "/pages/embedding-provider-refusals/projection.json",
+      "required_receipt_kind": "pages.embedding_provider.refused",
+      "terminal_state": "PAGES_EMBEDDING_PROVIDER_REFUSED_LOCAL_ONLY"
+    }
+  ],
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "preflight_id", "source_approval_request_receipt_id", "document_id", "revision_id", "citation_handle", "attachment_policy_id", "requested_index_scope"],
+  "authority_boundary": {
+    "revision_citation_comparison_proven": true,
+    "attachment_access_policy_proven": true,
+    "search_indexing_admission_recorded": true,
+    "embedding_provider_turn_on_observed": false,
+    "vector_store_adapter_allowed": false,
+    "search_indexing_allowed": false,
+    "public_visibility_allowed": false,
+    "rich_editor_allowed": false,
+    "unsafe_document_access_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "pagesSearchPreflightUrl",
+    "projection_url_var": "pagesSearchPreflightProjectionUrl",
+    "handler": "requestGovernedPagesSearchPreflight",
+    "revision_citation_url_var": "pagesRevisionCitationComparisonUrl",
+    "revision_citation_projection_url_var": "pagesRevisionCitationComparisonProjectionUrl",
+    "visibility_check_url_var": "pagesPublicationVisibilityCheckUrl",
+    "visibility_check_projection_url_var": "pagesPublicationVisibilityCheckProjectionUrl",
+    "embedding_refusal_url_var": "pagesEmbeddingProviderRefusalUrl",
+    "embedding_refusal_projection_url_var": "pagesEmbeddingProviderRefusalProjectionUrl",
+    "revision_citation_handler": "compareGovernedPagesRevisionCitation",
+    "visibility_check_handler": "checkGovernedPagesPublicationVisibility",
+    "embedding_refusal_handler": "refuseGovernedPagesEmbeddingProvider",
+    "button_class": "pages-search-preflight",
+    "aria_label": "Check governed Pages search readiness",
+    "fetch_count": 9
+  },
+  "checks": ["make pages-search-preflight-check", "make pages-runtime-readiness-check", "cargo test -p mdx-core pages_search_preflight", "cargo test -p mdx-server pages_search_preflight"]
+}

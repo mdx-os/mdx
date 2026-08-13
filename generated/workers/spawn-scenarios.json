@@ -1,0 +1,29 @@
+{
+  "name": "mdx-worker-spawn-scenarios",
+  "mode": "deterministic-local",
+  "runtime_status": "PENDING-LIVE-RUN",
+  "source": "docs/WORKER-SPAWN-SCENARIOS.md",
+  "spawn_request_contract": "generated/workers/spawn-request-contract.json",
+  "spawn_request_schema": "contracts/worker-spawn-request.schema.json",
+  "authority_receipt_fields": ["sponsor_chain_authority_receipt_id", "worker_lease_authority_receipt_id", "budget_authority_receipt_id", "tool_allowlist_authority_receipt_id", "credential_check_receipt_id"],
+  "hard_stop_fields": ["scope", "credential_scope", "expires_at", "budget.max_runtime_ms", "budget.max_tool_calls", "tool_allowlist", "credential_requested_receipt_kind", "issuer_loop_id", "requested_receipt_kind"],
+  "scenarios": [
+    { "id": "all_authority_receipts_allows_spawn", "kind": "allowed", "must_include": ["sponsor_chain_authority_receipt_id", "worker_lease_authority_receipt_id", "budget_authority_receipt_id", "tool_allowlist_authority_receipt_id", "credential_check_receipt_id", "worker.spawn_requested"] },
+    { "id": "missing_sponsor_chain_blocks_spawn", "kind": "blocked", "missing": "sponsor_chain_authority_receipt_id", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "missing_worker_lease_blocks_spawn", "kind": "blocked", "missing": "worker_lease_authority_receipt_id", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "missing_budget_authority_blocks_spawn", "kind": "blocked", "missing": "budget_authority_receipt_id", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "missing_tool_allowlist_authority_blocks_spawn", "kind": "blocked", "missing": "tool_allowlist_authority_receipt_id", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "missing_credential_check_blocks_spawn", "kind": "blocked", "missing": "credential_check_receipt_id", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "expired_credential_blocks_spawn", "kind": "blocked", "hard_stop": "expires_at", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "scope_mismatch_blocks_spawn", "kind": "blocked", "hard_stop": "credential_scope", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "empty_budget_blocks_spawn", "kind": "blocked", "hard_stop": "budget", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "empty_tool_allowlist_blocks_spawn", "kind": "blocked", "hard_stop": "tool_allowlist", "must_forbid": ["worker.spawn_requested"] },
+    { "id": "invalid_receipt_kind_blocks_spawn", "kind": "blocked", "hard_stop": "requested_receipt_kind", "must_forbid": ["worker.spawn_requested"] }
+  ],
+  "rules": [
+    "Worker spawn is allowed only when every authority receipt field is present",
+    "Inline sponsor, expiry, budget, tool, or credential fields never substitute for authority receipts",
+    "Core worker spawn admission blocks expired credentials, scope mismatch, empty budget, empty tools, invalid issuer, and invalid receipt kinds",
+    "Blocked scenarios forbid worker.spawn_requested"
+  ]
+}

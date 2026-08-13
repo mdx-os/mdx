@@ -1,0 +1,27 @@
+{
+  "name": "mdx-model-turn-on",
+  "purpose": "Connect a model from the GUI: paste a provider key, the server makes one live call, the kernel records the observation that flips the model to connected.",
+  "connect_route": "/install/model-connect.json",
+  "mechanism": "server-side single live call via the kernel's provider gateway",
+  "no_shell_bridge": true,
+  "action_surface": "provider, key, model, approval -> observation receipt; nothing arbitrary is runnable through it",
+  "key_lifecycle": {
+    "submitted_once": true,
+    "used_for": "a single live provider turn-on call, then held in memory for the process so the model can answer",
+    "persisted": false,
+    "in_memory_only": true,
+    "recorded": ["provider", "model_id", "token_counts_presence_only"]
+  },
+  "model_selection": {
+    "live_list_source": "provider GET /v1/models",
+    "rule": "explicit request -> env preference -> a suggested top model the provider lists -> the first model the provider lists; every choice is validated against the provider's live model list, so nothing stale can connect.",
+    "selected_model_drives_replies": "Twin's live replies use the model recorded on the latest accepted observation receipt - the GUI choice takes effect, never a baked default.",
+    "suggested_models": {"ollama":["qwen3.5:27b","qwen3.5:9b","qwen3:14b"],"openai":["gpt-5","gpt-5-mini"],"anthropic":["claude-opus-4-8","claude-sonnet-4-6"],"xai":["grok-4.5","grok-4"],"gemini":["gemini-2.5-pro","gemini-2.5-flash"],"mistral":["mistral-large-latest"]}
+  },
+  "connected_requires_usable_credential": true,
+  "connected_rule": "Connected is true only when an accepted observation receipt AND a usable credential (in-memory or env) both exist - never a green from an accepted observation alone.",
+  "converges_with_terminal_turn_on": true,
+  "observation_restore": "the kernel restores the same observation on boot",
+  "production_write_allowed": false,
+  "check": "make model-turn-on-contract-check"
+}

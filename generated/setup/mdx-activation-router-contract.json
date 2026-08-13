@@ -1,0 +1,24 @@
+{
+  "name": "mdx-activation-router",
+  "purpose": "After an install is claimed and a model is connected, ask the operator the one thing MDx cannot detect - what they came to do - and route them there. A one-time chooser, not a home screen.",
+  "writes_route": "/install/track-choices.json",
+  "projection_route": "/install/setup-router.json",
+  "receipt_kind": "setup.track_chosen",
+  "is_router_not_dashboard": true,
+  "composes_full_readiness_report": false,
+  "one_time_trigger": {
+    "receipt_derived": true,
+    "show_when": "owner_claimed == true AND model_connected == true AND no setup.track_chosen receipt exists",
+    "after_choice": "the front door routes to Twin by default; the router stays revisitable but is not the home surface"
+  },
+  "home_after_choice": "/twin",
+  "intent_question": "What brings you here?",
+  "tracks": [
+    { "id": "try", "label": "Try MDx", "status": "ready", "destination": "/welcome/try" },
+    { "id": "build", "label": "Build with MDx", "status": "ready", "destination": "/welcome/forge" },
+    { "id": "prepare", "label": "Prepare for Production", "status": "needs_action", "destination": "/welcome/production" }
+  ],
+  "track_choice_is_not_auth": true,
+  "production_write_allowed": false,
+  "check": "make activation-router-contract-check"
+}

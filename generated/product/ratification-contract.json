@@ -1,0 +1,18 @@
+{
+  "name": "mdx-product-ratification-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-RATIFICATION-CONTRACT.md",
+  "loop_id": "product_shaping_agent",
+  "status": "LOCAL-BLOCKED-AT-HUMAN-RATIFICATION",
+  "human_edge_job": "product_ratification",
+  "required_inputs": ["product.signal.ingested", "product.bet.shaped", "policy.decision.recorded"],
+  "required_receipts": ["product.ratification.requested", "product.ratification.recorded"],
+  "allowed_after_ratification": ["stage_strategy_option", "request_treasury_reserve", "request_talent_worker_handoff", "request_forge_build_handoff"],
+  "forbidden_without_ratification": ["set_direction", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "ship_product_change"],
+  "record_fields": ["human_sponsor", "decision", "rationale", "scope", "expires_at", "source_receipt_ids"],
+  "rules": [
+    "human ratification receipt is required before direction, budget, worker spawn, or build handoff",
+    "rejection is terminal unless a new product signal creates a new shaped bet",
+    "ratification cites the shaped bet and policy decision receipts"
+  ]
+}

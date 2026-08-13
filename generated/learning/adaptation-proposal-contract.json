@@ -1,0 +1,105 @@
+{
+  "name": "mdx-adaptation-proposal-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V1",
+  "purpose": "Define the first governed adaptation gate: a human-ratified lesson may open ONE behavior change - fleet casting - as a receipted, reversible grant. Model routing, budgets, check policy, review depth, prompt shape, and guardrails stay reserved and blocked.",
+  "derived_from": [
+    "generated/learning/memory-promotion-target-contract.json",
+    "generated/learning/judgment-record-contract.json",
+    "generated/learning/lesson-promotion-lane-contract.json",
+    "generated/learning/memory-activation-contract.json"
+  ],
+  "writes_route": "/learning/adaptation-grants.json",
+  "supersede_route": "/learning/adaptation-supersedes.json",
+  "projection_route": "/learning/adaptation-grants/projection.json",
+  "receipt_kinds": {
+    "granted": "learning.adaptation.granted",
+    "applied": "learning.adaptation.applied",
+    "reverted": "learning.adaptation.superseded"
+  },
+  "opened_adaptation_type": "fleet_casting",
+  "opened_target_types": ["model_scorecard", "worker_scorecard"],
+  "consumer_surfaces": [
+    "crates/mdx-server/src/fleet_plan_route.rs ratified-lessons planner context",
+    "crates/mdx-server/src/forge_model_scorecard_route.rs builder_casting_evidence precedence tier"
+  ],
+  "precedence_rule": "explicit per-run human builder slot > ratified adaptation grant > automatic eval and run evidence",
+  "valid_adaptation_types": [
+    "model_routing",
+    "fleet_casting",
+    "check_policy",
+    "budget_defaults",
+    "review_depth",
+    "prompt_shape",
+    "work_slicing",
+    "guardrail_selection"
+  ],
+  "required_fields": [
+    "adaptation_proposal_id",
+    "memory_target_id",
+    "judgment_id",
+    "surface",
+    "title",
+    "adaptation_type",
+    "proposed_change",
+    "consumer_surface",
+    "required_memory_state",
+    "required_judgment_state",
+    "required_checks",
+    "risk_boundary",
+    "rollback_path",
+    "execution_state",
+    "blocked_reason"
+  ],
+  "grant_required_fields": [
+    "adaptation_grant_id",
+    "activation_receipt_id",
+    "active_memory_id",
+    "adaptation_type",
+    "target_type",
+    "preferred_builder_slot",
+    "reason",
+    "review_owner",
+    "grant_state",
+    "adaptation_grant_receipt_id",
+    "policy_decision_id"
+  ],
+  "execution_states": [
+    {
+      "id": "blocked",
+      "meaning": "No grant exists yet, so no runtime behavior changes for this lesson."
+    },
+    {
+      "id": "ready_for_approval",
+      "meaning": "The lesson is activated memory and a person can open a fleet casting grant over it."
+    },
+    {
+      "id": "applied",
+      "meaning": "A learning.adaptation.granted receipt opened fleet casting, and learning.adaptation.applied receipts name each plan or builder slot it steered."
+    },
+    {
+      "id": "reverted",
+      "meaning": "A learning.adaptation.superseded receipt withdrew the grant, and the consuming seams stopped honoring it immediately."
+    }
+  ],
+  "governed_boundaries": {
+    "opens_fleet_casting": true,
+    "single_adaptation_type": true,
+    "requires_activation_receipt_in_ledger": true,
+    "refuses_superseded_activation": true,
+    "refuses_second_open_grant": true,
+    "reversible_by_supersede": true,
+    "changes_model_routing": false,
+    "changes_budget": false,
+    "changes_check_policy": false,
+    "changes_review_depth": false,
+    "changes_prompt_shape": false,
+    "changes_guardrails": false,
+    "allows_hidden_adaptation": false,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make ui-product-surface-check"]
+}

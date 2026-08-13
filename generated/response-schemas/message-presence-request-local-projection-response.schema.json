@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessagePresenceRequestLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "presence_request_count", "realtime_presence_allowed", "websocket_fanout_allowed", "typing_indicator_allowed", "provider_call_allowed", "production_delivery_allowed", "live_substrate_required", "production_write_allowed", "requests"],
+  "properties": {
+    "name": { "const": "mdx-message-presence-request-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/messages/presence-requests.json" },
+    "presence_request_count": { "type": "integer", "minimum": 0 },
+    "realtime_presence_allowed": { "const": false },
+    "websocket_fanout_allowed": { "const": false },
+    "typing_indicator_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "production_delivery_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "requests": { "type": "array" }
+  }
+}

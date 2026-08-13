@@ -1,0 +1,13 @@
+{
+  "name": "mdx-marketplace-forge-recommendations",
+  "registry_version": 1,
+  "human_line": "Forge reads the ask and suggests the stack - honest about what is installed, what needs review, and what stays closed.",
+  "classifier_note": "keyword match on the build intent - a best guess, said as one, never a silent decision",
+  "build_types": [
+    { "type": "ui", "keywords": ["ui", "svelte", "component", "screen", "page.svelte", "css", "design", "viewport", "frontend"], "line": "This looks like UI work.", "pack_id": "svelte_ui_pack", "capabilities": ["svelte_ui_skill", "screenshot_proof_hook"], "note": "Screenshot proof is recommended for every UI build." },
+    { "type": "backend", "keywords": ["rust", "kernel", "route", "endpoint", "api", "module", "projection", "backend", "server"], "line": "This looks like backend work.", "pack_id": "forge_builder_pack", "capabilities": ["rust_backend_skill", "security_review_eval_pack", "ci_debug_skill"], "note": "The security checks run before review." },
+    { "type": "data", "keywords": ["migration", "schema", "database", "supabase", "table", "sql", "postgres"], "line": "This looks like data work.", "pack_id": "supabase_data_pack", "capabilities": ["supabase_migration_skill", "security_review_eval_pack"], "note": "Supabase migration review needs team approval." },
+    { "type": "deploy", "keywords": ["deploy", "render", "ship", "release", "production", "hosting"], "line": "This looks like deployment work.", "pack_id": "render_deployment_pack", "capabilities": ["render_deploy_plugin", "ci_debug_skill"], "note": "Render deployment support is available, but deploy approval is closed." },
+    { "type": "review", "keywords": ["pr", "pull request", "review", "issue", "github"], "line": "This looks like review work.", "pack_id": "github_pr_pack", "capabilities": ["github_connector", "pr_review_template"], "note": "The GitHub connector reads issues and reviews - it never writes to GitHub." }
+  ]
+}

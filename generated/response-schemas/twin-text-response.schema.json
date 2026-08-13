@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinTextResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "companion_id",
+    "role",
+    "runtime_status",
+    "answer",
+    "receipt_ids",
+    "world_model_sources"
+  ],
+  "properties": {
+    "companion_id": { "type": "string" },
+    "role": { "enum": ["advisor", "coach", "architect", "problem_solver", "compliance"] },
+    "runtime_status": { "const": "PENDING-LIVE-RUN" },
+    "answer": { "type": "string" },
+    "receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "world_model_sources": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  }
+}

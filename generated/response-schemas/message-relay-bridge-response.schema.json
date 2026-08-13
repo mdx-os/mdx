@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageRelayBridgeResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "read_only", "writes_allowed", "execution_allowed", "relay_runtime", "relay_transport", "relay_contract_route", "relay_health_route", "client_ws_env_key", "server_relay_url_env_key", "ws_url_source", "bridge_metadata_source", "descriptor_count", "message_sequence_high_watermark", "cursor_policy", "authority", "descriptors", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-message-relay-bridge-metadata" },
+    "status": { "const": "LIVE-LOCAL-BRIDGE-METADATA-READY" },
+    "route": { "const": "/messages/relay-bridge.json" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "relay_runtime": { "const": "mdx-message-relay" },
+    "relay_transport": { "const": "websocket_valkey_pubsub" },
+    "relay_contract_route": { "const": "/messages/relay-bridge.json" },
+    "relay_health_route": { "const": "/health" },
+    "client_ws_env_key": { "const": "VITE_MDX_MESSAGE_RELAY_WS" },
+    "server_relay_url_env_key": { "const": "MDX_MESSAGE_RELAY_URL" },
+    "ws_url_source": { "const": "client_env" },
+    "bridge_metadata_source": { "const": "kernel_route" },
+    "descriptor_count": { "const": 3 },
+    "message_sequence_high_watermark": { "type": "integer", "minimum": 0 },
+    "cursor_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cursor_kind", "metadata_cursor_use", "client_owned_cursor_on_reconnect", "server_watermark_on_reconnect_allowed", "dedupe_required", "reason"],
+      "properties": {
+        "cursor_kind": { "const": "message_sequence" },
+        "metadata_cursor_use": { "const": "first_subscribe_seed_only" },
+        "client_owned_cursor_on_reconnect": { "const": true },
+        "server_watermark_on_reconnect_allowed": { "const": false },
+        "dedupe_required": { "const": true },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_websocket_relay_metadata_allowed", "typing_signal_metadata_allowed", "production_delivery_allowed", "service_role_fanout_allowed", "presence_mutation_allowed", "provider_call_allowed", "production_write_allowed"],
+      "properties": {
+        "local_websocket_relay_metadata_allowed": { "const": true },
+        "typing_signal_metadata_allowed": { "const": true },
+        "production_delivery_allowed": { "const": false },
+        "service_role_fanout_allowed": { "const": false },
+        "presence_mutation_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "descriptors": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stream_id", "domain", "relay_driver", "topic", "cursor_kind", "initial_after_cursor", "subscribe_payload", "sequence_field", "envelope_shape", "reconnect_policy", "metadata_cursor_use", "server_watermark_on_reconnect_allowed", "dedupe_key", "projection_route", "typing_signal_allowed", "local_websocket_fanout_allowed", "production_delivery_allowed"],
+        "properties": {
+          "stream_id": { "type": "string", "minLength": 1 },
+          "domain": { "enum": ["message", "ctx", "dxr"] },
+          "relay_driver": { "const": "mdx-message-relay" },
+          "topic": { "type": "string", "minLength": 1 },
+          "cursor_kind": { "type": "string", "minLength": 1 },
+          "initial_after_cursor": { "type": "integer", "minimum": 0 },
+          "subscribe_payload": { "type": "object" },
+          "sequence_field": { "const": "sequence" },
+          "envelope_shape": { "const": "relay_envelope_v1" },
+          "reconnect_policy": { "const": "client_owned_cursor" },
+          "metadata_cursor_use": { "const": "first_subscribe_seed_only" },
+          "server_watermark_on_reconnect_allowed": { "const": false },
+          "dedupe_key": { "type": "string", "minLength": 1 },
+          "projection_route": { "type": "string", "minLength": 1 },
+          "typing_signal_allowed": { "type": "boolean" },
+          "local_websocket_fanout_allowed": { "const": true },
+          "production_delivery_allowed": { "const": false }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["stream_id"], "properties": { "stream_id": { "const": "message_local_ops" } } } },
+        { "contains": { "type": "object", "required": ["stream_id"], "properties": { "stream_id": { "const": "ctx_event_stream" } } } },
+        { "contains": { "type": "object", "required": ["stream_id"], "properties": { "stream_id": { "const": "dxr_event_stream" } } } }
+      ]
+    },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_replace_local_descriptor", "must_not_construct_tenant_or_topic_in_ui", "must_not_fetch_fresh_watermark_on_reconnect", "must_not_claim_production_realtime_cutover"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Message module" },
+        "safe_to_replace_local_descriptor": { "const": true },
+        "must_not_construct_tenant_or_topic_in_ui": { "const": true },
+        "must_not_fetch_fresh_watermark_on_reconnect": { "const": true },
+        "must_not_claim_production_realtime_cutover": { "const": true }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_contract", "source_routes", "source_receipt_ids", "check"],
+      "properties": {
+        "source_contract": { "const": "docs/MESSAGE-RELAY-BRIDGE-CONTRACT.md" },
+        "source_routes": { "type": "array", "minItems": 5, "items": { "type": "string" } },
+        "source_receipt_ids": { "type": "array", "items": { "type": "string" } },
+        "check": { "const": "make message-relay-bridge-check" }
+      }
+    }
+  }
+}

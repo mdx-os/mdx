@@ -1,0 +1,18 @@
+{
+  "name": "mdx-pages-world-model-projection",
+  "contract_version": 1,
+  "human_line": "What a page rests on, what rests on it, and where the company is talking about it - every relationship derived from recorded bodies and receipts, never asserted.",
+  "projection_route": "/pages/world-model/projection.json",
+  "relationships": {
+    "cites_receipts": "receipt-id shaped tokens found in the page's recorded body",
+    "cites_pages": "another page's title or id named in the body",
+    "cited_by_pages": "the reverse of cites_pages, computed over the whole corpus",
+    "decision_mentions": "recorded Decision: messages naming the page's title, with channel and receipt",
+    "thread_mentions": "recorded conversation messages naming the page's title"
+  },
+  "declared_not_built": {
+    "forge_run_links": "lands when Forge runs carry page references in their contracts",
+    "contradiction_detection": "needs CTX - never guessed lexically"
+  },
+  "surface": "the reader's How-this-page-connects panel, with cited pages one click away and an honest empty state"
+}

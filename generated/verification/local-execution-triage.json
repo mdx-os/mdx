@@ -1,0 +1,62 @@
+{
+  "name": "mdx-local-execution-triage",
+  "mode": "deterministic-local",
+  "source": "docs/LOCAL-EXECUTION-TRIAGE.md",
+  "status": "RECOVERED-MONITORED",
+  "applies_to": "Codex desktop native-binary execution",
+  "observed_signature": {
+    "stage": "before binary main",
+    "sample_top_frame": "_dyld_start",
+    "reproduced_with": ["Cargo build script", "one-line Rust binary", "one-line C binary", "copied system binary under /tmp"],
+    "not_mdx_specific": true
+  },
+  "recovery_evidence": [
+    "cargo run -p mdx-server -- status",
+    "make run-local-loops",
+    "DATABASE_URL=postgres://mdx:mdx@localhost:5432/mdx make local-full-check",
+    "make verify-budget"
+  ],
+  "preferred_local_runtime_checks": [
+    "make verify-budget",
+    "make run-local-loops",
+    "DATABASE_URL=postgres://mdx:mdx@localhost:5432/mdx make local-full-check"
+  ],
+  "fallback_compile_checks": [
+    "cargo fmt --all",
+    "cargo check --workspace",
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets -- -D warnings",
+    "cargo test --workspace --no-run",
+    "jq empty on changed generated JSON",
+    "git diff --check"
+  ],
+  "ci_runtime_authority_when_hang_returns": [
+    "cargo run -p mdx-codegen",
+    "make generate",
+    "make verify-budget",
+    "make run-local-loops",
+    "targeted xtask runtime commands"
+  ],
+  "stop_conditions": [
+    "direct local native-binary command produces no output after successful compile",
+    "sample shows the process parked at _dyld_start",
+    "kill -9 does not clear a process in uninterruptible state",
+    "same command is covered by CI verify",
+    "compile/no-run checks are clean locally"
+  ],
+  "forbidden_paths": [
+    "mark_local_hang_as_mdx_runtime_failure",
+    "skip_compile_checks_after_local_hang",
+    "leave_hung_process_running",
+    "repeatedly_reproduce_host_hang_after_dyld_start",
+    "claim_runtime_green_without_ci"
+  ],
+  "first_local_proof": "make verify-budget",
+  "rules": [
+    "Local native runtime is authoritative while recovered evidence remains current",
+    "If the host hang returns, local binary hangs are host-execution caveats until reproduced in CI",
+    "Agents must stop hung local runtime processes before handoff",
+    "Agents must stop reproducing the hang after _dyld_start is observed",
+    "Agents must cite compile/no-run checks and PR CI only when runtime commands are not locally executable"
+  ]
+}

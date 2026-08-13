@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2ProviderConnectedLocalResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "mode", "status", "route", "read_only", "local_setup_ready", "provider_connected_local_ready", "provider_evidence_observed", "runtime_bridge_observed", "runtime_bridge_route_check", "selected_provider", "selected_adapter", "selected_receipt_kind", "selected_model_id", "selected_response_id", "selected_response_status", "selected_total_tokens", "approval_receipt_id", "credential_presence_only", "credential_values_recorded", "provider_secret_values_recorded", "requested_secret_values_recorded", "output_text_recorded", "prompt_text_recorded", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "production_write_allowed", "production_cutover_allowed", "deployment_authority_allowed", "service_role_runtime_allowed", "auth_profile_route", "provider_matrix_route", "provider_drill_route", "twin_observation_route", "twin_observation_projection_route", "twin_runtime_route", "twin_intelligence_route", "proof_check", "route_check", "upstream_turn_on_check", "upstream_turn_on_evidence_file", "provider_family", "local_fallback", "runtime_bridge_request", "blocked_authority", "evidence_files", "source_routes", "next_commands", "ui_handoff", "git", "evidence_file"],
+  "properties": {
+    "name": { "const": "mdx-v2-provider-connected-local" },
+    "mode": { "const": "provider-connected-local-runtime" },
+    "status": { "enum": ["PROVIDER_CONNECTED_LOCAL_WAITING_FOR_TURN_ON", "PROVIDER_CONNECTED_LOCAL_READY_FOR_RUNTIME_BRIDGE", "NOT_READY"] },
+    "route": { "const": "/v2/provider-connected-local.json" },
+    "read_only": { "const": true },
+    "local_setup_ready": { "type": "boolean" },
+    "provider_connected_local_ready": { "type": "boolean" },
+    "provider_evidence_observed": { "type": "boolean" },
+    "runtime_bridge_observed": { "const": false },
+    "runtime_bridge_route_check": { "const": "make v2-provider-connected-local-route-check" },
+    "selected_provider": { "enum": ["none", "openai"] },
+    "selected_adapter": { "enum": ["none", "OpenAIResponsesModelGateway"] },
+    "selected_receipt_kind": { "enum": ["none", "openai.response.observed"] },
+    "selected_model_id": { "type": "string" },
+    "selected_response_id": { "type": "string" },
+    "selected_response_status": { "type": "string" },
+    "selected_total_tokens": { "type": "number", "minimum": 0 },
+    "approval_receipt_id": { "type": "string" },
+    "credential_presence_only": { "const": true },
+    "credential_values_recorded": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "requested_secret_values_recorded": { "const": false },
+    "output_text_recorded": { "const": false },
+    "prompt_text_recorded": { "const": false },
+    "provider_call_allowed_now": { "type": "boolean" },
+    "live_provider_call_allowed_now": { "type": "boolean" },
+    "live_network_allowed_now": { "type": "boolean" },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "auth_profile_route": { "const": "/auth/provider-profiles.json" },
+    "provider_matrix_route": { "const": "/v2/provider-turn-on-matrix.json" },
+    "provider_drill_route": { "const": "/v2/provider-turn-on-drill.json" },
+    "twin_observation_route": { "const": "/twin/model-gateway-provider-observations.json" },
+    "twin_observation_projection_route": { "const": "/twin/model-gateway-provider-observations/projection.json" },
+    "twin_runtime_route": { "const": "/twin/model-gateway-runtime.json" },
+    "twin_intelligence_route": { "const": "/twin/intelligence-readiness.json" },
+    "proof_check": { "const": "make v2-provider-connected-local" },
+    "route_check": { "const": "make v2-provider-connected-local-route-check" },
+    "upstream_turn_on_check": { "const": "make v2-openai-provider-turn-on" },
+    "upstream_turn_on_evidence_file": { "const": ".mdx-local/provider-turn-on/openai-response-observed.json" },
+    "provider_family": { "type": "array", "minItems": 6, "items": { "type": "string" } },
+    "local_fallback": {
+      "type": "object",
+      "required": ["status", "model_gateway_driver", "model_gateway_provider", "proof"],
+      "properties": {
+        "status": { "const": "LOCAL_DETERMINISTIC_READY" },
+        "model_gateway_driver": { "const": "local_model_gateway" },
+        "model_gateway_provider": { "const": "DeterministicModelGateway" },
+        "proof": { "const": "make v2-fresh-install-proof" }
+      }
+    },
+    "runtime_bridge_request": {
+      "type": "object",
+      "required": ["enabled_when_provider_evidence_observed", "provider_id", "adapter", "receipt_kind", "evidence_file", "output_text_recorded", "secret_values_recorded"],
+      "properties": {
+        "enabled_when_provider_evidence_observed": { "const": true },
+        "provider_id": { "const": "openai" },
+        "adapter": { "const": "OpenAIResponsesModelGateway" },
+        "receipt_kind": { "const": "openai.response.observed" },
+        "evidence_file": { "const": ".mdx-local/provider-turn-on/openai-response-observed.json" },
+        "output_text_recorded": { "const": false },
+        "secret_values_recorded": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["env_presence_as_provider_readiness_allowed", "provider_call_without_turn_on_receipt_allowed", "live_network_without_approval_allowed", "secret_value_recording_allowed", "output_text_recording_allowed", "production_write_allowed", "deployment_authority_allowed"],
+      "properties": {
+        "env_presence_as_provider_readiness_allowed": { "const": false },
+        "provider_call_without_turn_on_receipt_allowed": { "const": false },
+        "live_network_without_approval_allowed": { "const": false },
+        "secret_value_recording_allowed": { "const": false },
+        "output_text_recording_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false }
+      }
+    },
+    "evidence_files": {
+      "type": "object",
+      "required": ["provider_turn_on_matrix", "provider_activation_request", "provider_turn_on_decision", "provider_turn_on_drill", "auth_provider_profiles", "openai_provider_turn_on", "output"],
+      "properties": {
+        "provider_turn_on_matrix": { "const": ".mdx-local/v2-provider-turn-on-matrix.json" },
+        "provider_activation_request": { "const": ".mdx-local/v2-provider-activation-request.json" },
+        "provider_turn_on_decision": { "const": ".mdx-local/v2-provider-turn-on-decision.json" },
+        "provider_turn_on_drill": { "const": ".mdx-local/v2-provider-turn-on-drill.json" },
+        "auth_provider_profiles": { "const": ".mdx-local/auth/auth-provider-profiles.json" },
+        "openai_provider_turn_on": { "const": ".mdx-local/provider-turn-on/openai-response-observed.json" },
+        "output": { "const": ".mdx-local/v2-provider-connected-local.json" }
+      }
+    },
+    "source_routes": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "/auth/provider-profiles.json" } },
+        { "contains": { "const": "/v2/provider-turn-on-matrix.json" } },
+        { "contains": { "const": "/v2/provider-turn-on-drill.json" } },
+        { "contains": { "const": "/v2/provider-connected-local.json" } },
+        { "contains": { "const": "/twin/model-gateway-provider-observations.json" } },
+        { "contains": { "const": "/twin/model-gateway-runtime.json" } }
+      ]
+    },
+    "next_commands": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "make v2-openai-provider-turn-on" } },
+        { "contains": { "const": "make v2-provider-connected-local-route-check" } }
+      ]
+    },
+    "ui_handoff": {
+      "type": "object",
+      "required": ["target_owner", "target_surface", "safe_to_show_provider_connected_ready", "must_keep_local_fallback_visible", "must_not_show_secret_values", "must_not_show_provider_output_text"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Console Provider Settings and Start first-run setup" },
+        "safe_to_show_provider_connected_ready": { "type": "boolean" },
+        "must_keep_local_fallback_visible": { "const": true },
+        "must_not_show_secret_values": { "const": true },
+        "must_not_show_provider_output_text": { "const": true }
+      }
+    },
+    "git": { "type": "object", "required": ["revision", "branch", "dirty"] },
+    "evidence_file": { "const": ".mdx-local/v2-provider-connected-local.json" }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinArtifactRuntimeResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "status", "route", "context_route", "projection_route", "pages_draft_route", "download_route", "delete_route", "parser_sandbox_route", "liteparse_route", "read_only", "receipt_backed", "track_b_slices", "artifact_count", "context_packet_count", "grounding_packet_count", "deleted_artifact_count", "pages_draft_count", "privacy_default", "supported_mime_types", "artifact_card_contract", "latency_budget_ms", "sovereign_provider_required", "sovereign_provider_connected", "sovereign_provider_id", "sovereign_model_id", "provider_not_connected_reason", "provider_call_allowed", "frontier_raw_content_allowed", "frontier_refusal_reason", "memory_write_performed", "storage_contract_state", "storage_bucket_required", "parser_sandbox_required", "local_pages_draft_write_allowed", "production_write_allowed", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-twin-artifact-runtime" },
+    "status": { "const": "LIVE-LOCAL-TWIN-ARTIFACT-CONTEXT-FLOOR" },
+    "route": { "const": "/twin/artifact-runtime.json" },
+    "context_route": { "const": "/twin/artifact-contexts.json" },
+    "projection_route": { "const": "/twin/artifact-contexts/projection.json" },
+    "pages_draft_route": { "const": "/twin/artifacts/pages-drafts.json" },
+    "download_route": { "const": "/twin/artifacts/downloads.json" },
+    "delete_route": { "const": "/twin/artifacts/deletions.json" },
+    "parser_sandbox_route": { "const": "/twin/parser-sandbox-runtime.json" },
+    "liteparse_route": { "const": "/twin/artifacts/liteparse-parses.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "track_b_slices": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "B1_artifact_intake" } },
+        { "contains": { "const": "B2_parser_context_packet" } },
+        { "contains": { "const": "B2A_company_context_grounding" } },
+        { "contains": { "const": "B3_sovereign_adapter" } },
+        { "contains": { "const": "B5_pages_draft_from_artifact" } }
+      ]
+    },
+    "artifact_count": { "type": "integer", "minimum": 0 },
+    "context_packet_count": { "type": "integer", "minimum": 0 },
+    "grounding_packet_count": { "type": "integer", "minimum": 0 },
+    "deleted_artifact_count": { "type": "integer", "minimum": 0 },
+    "pages_draft_count": { "type": "integer", "minimum": 0 },
+    "privacy_default": { "const": "user_private_sensitive" },
+    "supported_mime_types": { "type": "array", "minItems": 5, "items": { "type": "string" } },
+    "artifact_card_contract": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["visible_fields", "quiet_disclosure"],
+      "properties": {
+        "visible_fields": {
+          "type": "array",
+          "allOf": [
+            { "contains": { "const": "artifact_name" } },
+            { "contains": { "const": "parse_state" } },
+            { "contains": { "const": "next_move" } }
+          ]
+        },
+        "quiet_disclosure": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "latency_budget_ms": { "const": 250 },
+    "sovereign_provider_required": { "const": true },
+    "sovereign_provider_connected": { "type": "boolean" },
+    "sovereign_provider_id": { "const": "ollama" },
+    "sovereign_model_id": { "type": "string" },
+    "provider_not_connected_reason": { "type": "string" },
+    "provider_call_allowed": { "type": "boolean" },
+    "frontier_raw_content_allowed": { "const": false },
+    "frontier_refusal_reason": { "const": "frontier_refused_for_raw_sensitive_artifact" },
+    "memory_write_performed": { "const": false },
+    "storage_contract_state": { "const": "LOCAL_BLOB_STORED_BY_REFERENCE" },
+    "storage_bucket_required": { "const": true },
+    "parser_sandbox_required": { "const": true },
+    "local_pages_draft_write_allowed": { "const": true },
+    "production_write_allowed": { "const": false },
+    "ui_handoff": {
+      "type": "object",
+      "required": ["target_owner", "target_surface", "safe_to_render", "copy_boundary"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx-host Twin module" },
+        "safe_to_render": { "const": true },
+        "copy_boundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["source_contract", "proof_check", "source_routes"],
+      "properties": {
+        "source_contract": { "const": "docs/TWIN-FRONTIER-PRODUCT-RUNTIME-PLAN.md" },
+        "proof_check": { "const": "make twin-artifact-context-check" },
+        "source_routes": {
+          "type": "array",
+          "allOf": [
+            { "contains": { "const": "/twin/artifact-contexts.json" } },
+            { "contains": { "const": "/twin/artifacts/liteparse-parses.json" } }
+          ]
+        }
+      }
+    }
+  }
+}

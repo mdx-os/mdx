@@ -1,0 +1,21 @@
+[package]
+name = "mdx-observability"
+version = "0.1.0"
+description = "Local trace export proof boundary for governed MDx observability."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+mdx-core = { path = "../mdx-core" }
+serde_json = "1"
+ureq = { version = "2", features = ["json"] }
+url = "2"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "mdx-observability"
+path = "src/main.rs"

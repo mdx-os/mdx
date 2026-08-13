@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinModelGatewayRuntimeResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "mode", "status", "route", "read_only", "writes_allowed", "execution_allowed", "provider_call_allowed", "network_allowed", "secrets_available", "live_substrate_required", "production_write_allowed", "selected_driver", "provider_connected_runtime", "provider_profile", "vendor_slots", "turn_on_boundary", "authority_boundaries", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-twin-model-gateway-runtime" },
+    "mode": { "const": "deterministic-local-read-only" },
+    "status": { "const": "OK" },
+    "route": { "const": "/twin/model-gateway-runtime.json" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "provider_call_allowed": { "type": "boolean" },
+    "network_allowed": { "type": "boolean" },
+    "secrets_available": { "const": false },
+    "live_substrate_required": { "type": "boolean" },
+    "production_write_allowed": { "const": false },
+    "selected_driver": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["model_gateway_driver", "model_gateway_provider", "model_gateway_model_id", "model_gateway_routing", "model_gateway_inference_id", "model_gateway_stream_contract", "model_gateway_stream_event_count", "model_gateway_terminal_event", "model_gateway_fallback_strategy", "model_gateway_fallback_provider", "model_gateway_first_byte_latency_ms", "model_gateway_failover_slo_ms", "provider_call_allowed"],
+      "properties": {
+        "model_gateway_driver": { "const": "local_model_gateway" },
+        "model_gateway_provider": { "const": "DeterministicModelGateway" },
+        "model_gateway_model_id": { "const": "deterministic_local_v1" },
+        "model_gateway_routing": { "const": "single_deterministic_stub" },
+        "model_gateway_inference_id": { "type": "string", "minLength": 1 },
+        "model_gateway_stream_contract": { "const": "normalized_model_stream_v1" },
+        "model_gateway_stream_event_count": { "const": 3 },
+        "model_gateway_terminal_event": { "const": "model_stream_completed" },
+        "model_gateway_fallback_strategy": { "const": "local_first_fail_closed" },
+        "model_gateway_fallback_provider": { "const": "none_local_single_provider" },
+        "model_gateway_first_byte_latency_ms": { "const": 1 },
+        "model_gateway_failover_slo_ms": { "const": 3000 },
+        "provider_call_allowed": { "const": false }
+      }
+    },
+    "provider_connected_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "provider_connected_local_allowed", "provider_call_allowed_now", "live_network_allowed_now", "credential_presence_only", "credential_values_recorded", "provider_secret_values_recorded", "output_text_recorded", "accepted_observation_count", "selected_live_driver", "selected_live_model_id", "observation_route", "projection_route", "turn_on_check", "provider_turn_on_drill_route"],
+      "properties": {
+        "status": { "enum": ["LOCAL_DETERMINISTIC_PROVIDER_TURN_ON_REQUIRED", "PROVIDER_CONNECTED_LOCAL_READY"] },
+        "provider_connected_local_allowed": { "type": "boolean" },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_network_allowed_now": { "type": "boolean" },
+        "credential_presence_only": { "const": true },
+        "credential_values_recorded": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "accepted_observation_count": { "type": "integer", "minimum": 0 },
+        "selected_live_driver": { "type": "string" },
+        "selected_live_model_id": { "type": "string" },
+        "observation_route": { "const": "/twin/model-gateway-provider-observations.json" },
+        "projection_route": { "const": "/twin/model-gateway-provider-observations/projection.json" },
+        "turn_on_check": { "const": "make v2-openai-provider-turn-on" },
+        "provider_turn_on_drill_route": { "const": "/v2/provider-turn-on-drill.json" }
+      }
+    },
+    "provider_profile": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status", "requested_profile_id", "requested_mode", "selected_profile_id", "provider_kind", "policy_profile", "enterprise_pack", "receipt_id", "policy_decision_id", "live_provider_call_allowed"],
+      "properties": {
+        "status": { "const": "PROFILE_SELECTED" },
+        "requested_profile_id": { "const": "deterministic_stub" },
+        "requested_mode": { "const": "plan_only" },
+        "selected_profile_id": { "const": "deterministic_stub" },
+        "provider_kind": { "const": "deterministic_stub" },
+        "policy_profile": { "const": "core" },
+        "enterprise_pack": { "const": "none" },
+        "receipt_id": { "type": "string", "minLength": 1 },
+        "policy_decision_id": { "type": "string", "minLength": 1 },
+        "live_provider_call_allowed": { "const": false }
+      }
+    },
+    "vendor_slots": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["driver_id", "provider", "status", "stream_contract", "vendor_swappable", "live_substrate_required", "provider_call_allowed", "network_allowed", "secrets_available", "secret_env_key", "env_present", "required_turn_on_receipt_kind", "turn_on_signal", "blocked_by"],
+        "properties": {
+          "driver_id": { "type": "string", "minLength": 1 },
+          "provider": { "type": "string", "minLength": 1 },
+          "status": { "const": "PENDING-LIVE-RUN" },
+          "stream_contract": { "const": "normalized_model_stream_v1" },
+          "vendor_swappable": { "const": true },
+          "live_substrate_required": { "const": true },
+          "provider_call_allowed": { "const": false },
+          "network_allowed": { "const": false },
+          "secrets_available": { "const": false },
+          "secret_env_key": { "type": "string", "minLength": 1 },
+          "env_present": { "type": "boolean" },
+          "required_turn_on_receipt_kind": { "type": "string", "minLength": 1 },
+          "turn_on_signal": { "type": "string", "minLength": 1 },
+          "blocked_by": { "const": "provider_turn_on_evidence_missing" }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "openai" }, "provider": { "const": "OpenAIResponsesModelGateway" } } } },
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "anthropic" }, "provider": { "const": "AnthropicMessagesModelGateway" } } } },
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "xai" }, "provider": { "const": "XaiChatModelGateway" } } } },
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "gemini" }, "provider": { "const": "GeminiModelGateway" } } } },
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "mistral" }, "provider": { "const": "MistralChatModelGateway" } } } },
+        { "contains": { "type": "object", "required": ["driver_id", "provider"], "properties": { "driver_id": { "const": "tensorzero" }, "provider": { "const": "TensorZeroModelGateway" } } } }
+      ]
+    },
+    "turn_on_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "provider_call_allowed", "network_allowed", "secrets_available", "live_provider_call_allowed", "required_receipt_kinds", "proof_command"],
+      "properties": {
+        "status": { "const": "PROVIDER_TURN_ON_REQUIRED" },
+        "provider_call_allowed": { "const": false },
+        "network_allowed": { "const": false },
+        "secrets_available": { "const": false },
+        "live_provider_call_allowed": { "const": false },
+        "required_receipt_kinds": {
+          "type": "array",
+          "minItems": 6,
+          "contains": { "const": "openai.response.observed" },
+          "items": { "type": "string" }
+        },
+        "proof_command": { "const": "make live-turn-on-check" }
+      }
+    },
+    "authority_boundaries": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status", "blocked_authorities", "action_authority"],
+      "properties": {
+        "status": { "const": "FAIL_CLOSED" },
+        "blocked_authorities": { "type": "array", "contains": { "const": "provider_secrets" }, "items": { "type": "string" } },
+        "action_authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["call_provider_allowed", "open_network_allowed", "read_provider_secret_allowed", "spawn_worker_allowed", "write_production_memory_allowed"],
+          "properties": {
+            "call_provider_allowed": { "type": "boolean" },
+            "open_network_allowed": { "type": "boolean" },
+            "read_provider_secret_allowed": { "const": false },
+            "spawn_worker_allowed": { "const": false },
+            "write_production_memory_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_render", "should_render_vendor_slots", "must_not_claim_live_provider", "copy_boundary"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Twin module" },
+        "safe_to_render": { "const": true },
+        "should_render_vendor_slots": { "const": true },
+        "must_not_claim_live_provider": { "type": "boolean" },
+        "copy_boundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "receipt_ids", "policy_decision_ids", "source_paths"],
+      "properties": {
+        "status": { "const": "AVAILABLE_READ_ONLY" },
+        "receipt_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "policy_decision_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "source_paths": {
+          "type": "array",
+          "minItems": 9,
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "const": "docs/HARNESS-MODEL-GATEWAY.md" } },
+            { "contains": { "const": "docs/HARNESS-PROVIDER-GATEWAY.md" } },
+            { "contains": { "const": "generated/architecture/harness-model-gateway-driver.json" } },
+            { "contains": { "const": "generated/response-schemas/twin-model-gateway-runtime-response.schema.json" } },
+            { "contains": { "const": "/harness/provider-gateway.json" } },
+            { "contains": { "const": "/twin/session-drafts.json" } },
+            { "contains": { "const": "/twin/model-gateway-provider-observations.json" } },
+            { "contains": { "const": "/v2/provider-turn-on-drill.json" } }
+          ]
+        }
+      }
+    }
+  }
+}

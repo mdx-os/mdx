@@ -1,0 +1,26 @@
+{
+  "name": "mdx-pages-readonly-route-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-READONLY-ROUTE-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "depends_on": [
+    "generated/world-model/pages-projection-contract.json",
+    "generated/world-model/pages-projection-fixtures.json",
+    "generated/world-model/mdx-local-world-model.json"
+  ],
+  "routes": [
+    { "method": "GET", "local_path": "/pages.json", "operation_id": "pagesProjectionList", "surface": "pages", "response_content_type": "application/json; charset=utf-8", "response_schema_path": "generated/response-schemas/pages-projection-list-response.schema.json", "read_model": "generated/world-model/pages-projection-fixtures.json", "writes_allowed": false, "receipt_backed": true },
+    { "method": "GET", "local_path": "/pages/search.json", "operation_id": "pagesKnowledgeSearch", "surface": "pages", "response_content_type": "application/json; charset=utf-8", "response_schema_path": "generated/response-schemas/pages-knowledge-search-response.schema.json", "read_model": "allowlisted repo docs referenced by generated Pages onboarding documents", "writes_allowed": false, "receipt_backed": true },
+    { "method": "GET", "local_path": "/pages/runtime-readiness.json", "operation_id": "pagesRuntimeReadinessJson", "surface": "pages", "response_content_type": "application/json; charset=utf-8", "response_schema_path": "generated/response-schemas/pages-runtime-readiness-response.schema.json", "read_model": "kernel Pages lifecycle and knowledge evidence receipts", "writes_allowed": false, "receipt_backed": true },
+    { "method": "GET", "local_path": "/pages/{document_id}", "operation_id": "pagesProjectionLookup", "surface": "pages", "response_content_type": "application/json; charset=utf-8", "response_schema_path": "generated/response-schemas/pages-projection-response.schema.json", "read_model": "generated/world-model/pages-projection-fixtures.json", "writes_allowed": false, "receipt_backed": true },
+    { "method": "GET", "local_path": "/pages/{document_id}/body", "operation_id": "pagesDocumentBodyLookup", "surface": "pages", "response_content_type": "application/json; charset=utf-8", "response_schema_path": "generated/response-schemas/pages-body-response.schema.json", "read_model": "allowlisted repo docs referenced by generated Pages onboarding documents", "writes_allowed": false, "receipt_backed": true }
+  ],
+  "required_response_fields": ["tenant_id", "document_id", "title", "body_ref", "source_receipt_ids", "charter_evidence_ids", "revision_id", "visibility"],
+  "forbidden_paths": ["pages_write_route", "pages_route_without_receipts", "pages_route_cross_tenant_visibility", "pages_route_shadow_store"],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Pages routes are read-only until write policy, auth session, and receipt contracts exist",
+    "Pages routes read World Model projections instead of a standalone document store",
+    "Pages route responses must expose receipt provenance for Concierge, Observatory, and Twin"
+  ]
+}

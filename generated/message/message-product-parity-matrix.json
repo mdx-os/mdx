@@ -1,0 +1,39 @@
+{
+  "name": "mdx-message-product-parity-matrix",
+  "contract_version": 1,
+  "human_line": "Every v1 Message capability, accounted for: shipped, shipped differently on the governed rails, or deferred out loud with the reason.",
+  "statuses": ["shipped", "shipped_differently", "deferred"],
+  "entries": [
+    { "id": "optimistic_sends", "v1": "optimistic insert with temp ids and ACK correlation", "status": "shipped", "where": "M1", "note": "one outbox path online or offline; the projection's message_id echo replaces ACK correlation" },
+    { "id": "offline_queue", "v1": "IndexedDB offline queue with idempotency keys", "status": "shipped", "where": "M1", "note": "IndexedDB, probe-before-resend exactly-once, terminal policy refusals" },
+    { "id": "rest_fallback", "v1": "REST send fallback when the socket was down", "status": "shipped_differently", "where": "M1", "note": "v2 sends are HTTP-first through the governed write; the socket is delivery-only - stronger than a fallback" },
+    { "id": "reconnect_gap_fill", "v1": "gap_fill envelopes on reconnect", "status": "shipped", "where": "M2", "note": "named verdicts (caught_up, gap_detected, snapshot_required) and a catching-up state that never fakes live" },
+    { "id": "virtualized_lists", "v1": "virtualized message list", "status": "shipped_differently", "where": "M3", "note": "windowed rendering bounds the DOM (120/room); pixel virtualization deferred until profiling demands it" },
+    { "id": "scroll_memory", "v1": "per-channel scroll memory", "status": "shipped", "where": "M3", "note": "" },
+    { "id": "rich_content", "v1": "markdown and rich text", "status": "shipped", "where": "M4", "note": "escape-first renderer shared with Twin; XSS structurally impossible" },
+    { "id": "agent_bridges", "v1": "agent posts in rooms", "status": "shipped_differently", "where": "M4+M6", "note": "lanes from recorded actor ids, run folding, and a kernel-enforced workspace posting control with recorded changes" },
+    { "id": "action_cards", "v1": "action and rich cards", "status": "shipped_differently", "where": "M4", "note": "decision cards shipped; build, approval, and incident cards land when those events post to rooms" },
+    { "id": "threads", "v1": "threaded replies", "status": "shipped", "where": "pre-arc S13", "note": "thread_id reply:<parent receipt id>" },
+    { "id": "reactions", "v1": "reactions with toggle semantics", "status": "shipped", "where": "M5", "note": "append-only +/- events folded at render; receipt-backed by construction; ride the offline outbox" },
+    { "id": "mentions", "v1": "@person, @here mentions", "status": "shipped", "where": "M5", "note": "row marks and separate mention badges; role and team mentions deferred until a real roster exists" },
+    { "id": "search", "v1": "message search", "status": "shipped", "where": "M5", "note": "projection q= with cursor pagination; hits jump and anchor with a flash; semantic search arrives with CTX" },
+    { "id": "slash_commands", "v1": "slash commands", "status": "shipped", "where": "M5", "note": "/decision /handoff /search /mute; /forge /incident /summarize land when their rails exist" },
+    { "id": "channel_switcher", "v1": "channel switcher", "status": "shipped", "where": "S11+M5", "note": "rail with unread and mention badges, create-on-plus, mute" },
+    { "id": "mobile_bad_network", "v1": "mobile and dead-spot behavior", "status": "shipped", "where": "M1+M2+M7", "note": "offline banner, queued sends, backoff with jitter, visibility flushes, drain fast-reconnect" },
+    { "id": "presence_status", "v1": "presence and status", "status": "shipped_differently", "where": "S11", "note": "typing indicators with honest expiry; a presence roster waits for real identity" },
+    { "id": "context_menus", "v1": "message context menus", "status": "shipped_differently", "where": "M5+M8", "note": "hover actions: reply, react, copy receipt, record as decision" },
+    { "id": "message_grouping", "v1": "grouping by actor and time", "status": "shipped", "where": "M8", "note": "consecutive same-actor messages group under one name" },
+    { "id": "toasts", "v1": "toast notifications", "status": "deferred", "where": "", "note": "the refusal banner, saved flashes, and pending bar cover today's needs; a toast rail is polish for later" },
+    { "id": "participants_panel", "v1": "participants and member panel", "status": "deferred", "where": "", "note": "needs the real roster and identity work; Talent renders who works here meanwhile" },
+    { "id": "message_edit_delete", "v1": "edit and delete", "status": "deferred", "where": "", "note": "append-only record wants edit-as-amendment receipts - a deliberate kernel contract, queued" },
+    { "id": "attachments", "v1": "file attachments", "status": "deferred", "where": "", "note": "metadata-first slice queued; storage policy belongs to the deployment lane" }
+  ],
+  "v2_surpluses": [
+    "every message receipt-backed with provenance one tap away",
+    "exactly-once offline sends by design (probe before resend)",
+    "named replay verdicts instead of silent gaps",
+    "kernel-enforced workspace controls with recorded changes",
+    "relay metrics, readiness, graceful drain, and a checked-in 10k-delivery scale proof",
+    "agent run folding so chatter never drowns humans"
+  ]
+}

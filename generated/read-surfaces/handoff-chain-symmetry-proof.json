@@ -1,0 +1,27 @@
+{
+  "name": "mdx-handoff-chain-symmetry-proof",
+  "mode": "deterministic-local",
+  "source": "docs/HANDOFF-CHAIN-SYMMETRY.md",
+  "status": "PROOF-NEXT",
+  "chain": ["product_ratification", "product_strategy_handoff", "strategy_treasury_reserve_request", "strategy_talent_request", "product_forge_admission"],
+  "shared_evidence": {
+    "product_contract": "generated/product/ratification-contract.json",
+    "product_strategy_handoff": "generated/product/strategy-handoff-contract.json",
+    "strategy_reserve": "generated/strategy/treasury-reserve-contract.json",
+    "strategy_talent": "generated/strategy/talent-request-contract.json",
+    "product_forge_admission": "generated/product/forge-admission-contract.json",
+    "strategy_surface": "generated/strategy/strategy-ratification-surface.json",
+    "blocked_actions": ["allocate_live_budget", "spawn_worker", "ship_product_change", "production_deploy"]
+  },
+  "surfaces": [
+    { "id": "observatory", "source": "apps/observatory/src/lib/localTruth.js", "shared_truth": ["productEvidence.handoff", "productEvidence.forge", "strategyEvidence.reserve", "strategyEvidence.talent"] },
+    { "id": "concierge", "source": "apps/concierge/src/lib/localTruth.js", "shared_truth": ["productAnswer.handoff", "productAnswer.forge", "strategyAnswer.reserve", "strategyAnswer.talent"] }
+  ],
+  "forbidden_paths": ["observatory_concierge_chain_mismatch", "forge_admission_without_strategy", "forge_admission_without_treasury", "forge_admission_without_talent", "ui_only_handoff_truth"],
+  "first_local_proof": "make product-ratification-check",
+  "rules": [
+    "Observatory and Concierge must cite the same handoff-chain evidence",
+    "Product to Forge admission depends on Product, Strategy, Treasury, Talent, Forge, and CI evidence",
+    "No read surface may turn handoff-chain evidence into spend, worker spawn, ship, or deploy authority"
+  ]
+}

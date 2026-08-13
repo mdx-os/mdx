@@ -1,0 +1,83 @@
+{
+  "name": "mdx-judgment-record-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "READ_ONLY_V0",
+  "purpose": "Define the accountable decision shape for a lesson promotion item before MDx can promote memory or adapt behavior.",
+  "derived_from": [
+    "generated/learning/lesson-promotion-lane-contract.json",
+    "generated/learning/mdx-learning-ledger-v0.json"
+  ],
+  "required_fields": [
+    "judgment_id",
+    "promotion_id",
+    "source_type",
+    "surface",
+    "title",
+    "state",
+    "decision_options",
+    "accountable_actor_required",
+    "rationale_required",
+    "receipt_required",
+    "memory_target",
+    "adaptation_scope",
+    "missing_evidence",
+    "blocked_changes"
+  ],
+  "states": [
+    {
+      "id": "not_ready",
+      "meaning": "The promotion item is visible, but evidence is missing before accountable judgment."
+    },
+    {
+      "id": "ready_for_judgment",
+      "meaning": "The promotion item can be judged once a governed write route and receipt exist."
+    },
+    {
+      "id": "waiting_for_more_evidence",
+      "meaning": "Reserved for a later write-governed decision that asks for more evidence."
+    },
+    {
+      "id": "promoted",
+      "meaning": "Reserved for a later write-governed decision that records approved memory."
+    },
+    {
+      "id": "rejected",
+      "meaning": "Reserved for a later write-governed decision that records a rejection."
+    },
+    {
+      "id": "superseded",
+      "meaning": "Reserved for a later write-governed decision that links to a newer lesson."
+    }
+  ],
+  "decision_options": [
+    "promote",
+    "reject",
+    "supersede",
+    "ask_for_more_evidence"
+  ],
+  "receipt_requirements": [
+    "promotion item id",
+    "accountable actor",
+    "decision",
+    "rationale",
+    "evidence snapshot",
+    "memory target",
+    "blocked behavior changes",
+    "local check result"
+  ],
+  "v0_boundaries": {
+    "opens_write_authority": false,
+    "records_judgment": false,
+    "promotes_memory": false,
+    "rejects_lessons": false,
+    "supersedes_lessons": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "allows_hidden_adaptation": false
+  },
+  "checks": ["make learning-loop-check", "make ui-product-surface-check"]
+}

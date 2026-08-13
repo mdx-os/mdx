@@ -1,0 +1,32 @@
+{
+  "name": "mdx-message-event-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-EVENT-SCENARIOS.md",
+  "contract": "generated/world-model/message-event-plane-contract.json",
+  "status": "SCENARIO-PROOF",
+  "allowed": [
+    {
+      "id": "agent_posts_receipt_backed_message",
+      "event_type": "message.agent.posted",
+      "actor_type": "agent",
+      "required_receipts": ["ledger.receipt.observed", "outbox.message.agent.posted"],
+      "max_p99_ms": 20,
+      "llm_allowed": false
+    }
+  ],
+  "blocked": [
+    { "id": "missing_receipt_blocks_message", "missing": "receipt_id", "blocked_by": "message_without_receipt" },
+    { "id": "missing_actor_blocks_message", "missing": "actor_id", "blocked_by": "message_without_actor" },
+    { "id": "cross_tenant_thread_blocks_message", "missing": "tenant_match", "blocked_by": "cross_tenant_thread_visibility" },
+    { "id": "sync_llm_blocks_hot_path", "missing": "async_reasoning_boundary", "blocked_by": "synchronous_llm_on_hot_path" }
+  ],
+  "required_projection": "generated/world-model/message-thread-projection-contract.json",
+  "required_outbox": "generated/outbox/message-topic-contract.json",
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "an agent message is admissible only when it cites receipts and an outbox topic",
+    "Message event append stays under the declared hot-path budget",
+    "model inference stays outside the synchronous Message path",
+    "blocked scenarios enumerate the minimum fail-closed rails before any Message UI work expands"
+  ]
+}

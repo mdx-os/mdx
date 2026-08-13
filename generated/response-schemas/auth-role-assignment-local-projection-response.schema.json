@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthRoleAssignmentLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "assignment_count", "role_mapping_recorded", "tenant_membership_recorded", "session_cookie_write_allowed", "role_escalation_allowed", "production_auth_provider_allowed", "production_role_write_allowed", "live_substrate_required", "production_write_allowed", "assignments"],
+  "properties": {
+    "name": { "const": "mdx-auth-role-assignment-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/auth/role-assignments.json" },
+    "assignment_count": { "type": "integer", "minimum": 0 },
+    "role_mapping_recorded": { "const": true },
+    "tenant_membership_recorded": { "const": true },
+    "session_cookie_write_allowed": { "const": false },
+    "role_escalation_allowed": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "production_role_write_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "assignments": { "type": "array" }
+  }
+}

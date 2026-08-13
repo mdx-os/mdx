@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesPublicationLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "publication_count", "standalone_store_allowed", "rich_editor_allowed", "live_substrate_required", "production_write_allowed", "publications"],
+  "properties": {
+    "name": { "const": "mdx-pages-publication-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/publications.json" },
+    "publication_count": { "type": "integer", "minimum": 0 },
+    "standalone_store_allowed": { "const": false },
+    "rich_editor_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "publications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document_id", "title", "page_type", "body_ref", "publication_receipt_id", "policy_decision_id", "author_actor_id", "source_receipt_id", "source_edit_draft_receipt_id", "origin_receipt_id", "origin_surface", "origin_grants_authority", "approval_decision_receipt_id", "approval_binding", "reviewer_independence", "human_approval_granted", "revision_id", "visibility", "world_model_source", "standalone_store_allowed", "rich_editor_allowed", "production_write_allowed"],
+        "properties": {
+          "document_id": { "type": "string" },
+          "title": { "type": "string" },
+          "page_type": { "enum": ["knowledge", "spec", "decision", "standard", "signal", "changelog"] },
+          "body_ref": { "type": "string" },
+          "publication_receipt_id": { "type": "string" },
+          "policy_decision_id": { "type": "string" },
+          "author_actor_id": { "type": "string" },
+          "source_receipt_id": { "type": "string" },
+          "source_edit_draft_receipt_id": { "type": "string" },
+          "origin_receipt_id": { "type": "string" },
+          "origin_surface": { "type": "string" },
+          "origin_grants_authority": { "const": false },
+          "approval_decision_receipt_id": { "type": "string" },
+          "approval_binding": { "type": "string" },
+          "reviewer_independence": { "type": "string" },
+          "human_approval_granted": { "type": "boolean" },
+          "revision_id": { "type": "string" },
+          "visibility": { "const": "tenant_only" },
+          "world_model_source": { "type": "string" },
+          "standalone_store_allowed": { "const": false },
+          "rich_editor_allowed": { "const": false },
+          "production_write_allowed": { "const": false }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "loop": "forge_orchestrator_agent",
+  "agent": "forge_orchestrator_agent",
+  "tests": ["policy_decision_before_forge_spec_acceptance", "receipt_for_each_forge_loop_transition", "stage_transition_links_spec_receipt", "delegation_request_blocks_without_talent_authority", "forge_never_spawns_worker_directly", "forge_stays_within_local_budget"]
+}

@@ -1,0 +1,105 @@
+{
+  "name": "mdx-memory-brain-map-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-MEMORY-BRAIN-RUNWAY.md",
+  "status": "READ_PHASE_1",
+  "route": "/memory/brain-map.json",
+  "response_schema": "generated/response-schemas/memory-brain-map-response.schema.json",
+  "owners": {
+    "recall_runtime": "CTX",
+    "write_port": "MemoryStore",
+    "promotion_activation": "Learn",
+    "first_consumer": "Twin"
+  },
+  "projection_sources": [
+    "kernel_memory_records",
+    "learning_active_memory_contracts",
+    "ctx_runtime_contract",
+    "twin_session_memory",
+    "pages_world_model",
+    "message_events",
+    "forge_outcomes"
+  ],
+  "memory_primitives": [
+    "MemoryEpisode",
+    "MemoryAtom",
+    "MemoryScope",
+    "MemoryTier",
+    "MemoryGraph",
+    "RecallPacket",
+    "ConsolidationProposal",
+    "ConsolidationRatification",
+    "MemoryActivation",
+    "AdaptationProposal"
+  ],
+  "consolidation_decisions": ["RETAIN", "SKIP", "ADD", "UPDATE", "SUPERSEDE", "NOOP"],
+  "consolidation_states": ["active", "pending_ratification", "ratification_declined"],
+  "shared_scope_ratification": {
+    "pending_state": "pending_ratification",
+    "ratification_route": "/memory/consolidation-ratifications.json",
+    "receipt_kind": "memory.consolidation.ratified",
+    "distinct_actor_required": true,
+    "self_ratification_allowed": false
+  },
+  "phase_1_read_boundaries": {
+    "read_only": true,
+    "writes_memory": false,
+    "writes_provider_memory": false,
+    "production_memory_write_allowed": false,
+    "runtime_influence_allowed": true,
+    "runtime_influence_scope": "prompt_context_only",
+    "applies_adaptation": false,
+    "calls_provider": false,
+    "network_allowed": false,
+    "exports_private_memory": false
+  },
+  "scope_model": [
+    "private_user_memory",
+    "shared_project_memory",
+    "team_department_memory",
+    "company_memory",
+    "agent_operational_memory"
+  ],
+  "score_components": [
+    "lexical",
+    "content_checksum",
+    "graph",
+    "recency",
+    "importance",
+    "access_success",
+    "source_authority",
+    "user_pin",
+    "stale_penalty",
+    "contradiction_penalty",
+    "scope_risk_penalty"
+  ],
+  "scale_fixture_targets": [1, 10, 50, 100, 500, 1000, 5000],
+  "external_scorecards": [
+    "LoCoMo",
+    "LongMemEval",
+    "LongMemEval-V2",
+    "Memora",
+    "MemoryAgentBench",
+    "BEAM"
+  ],
+  "first_work_items": [
+    "memory_brain_map_contract",
+    "twin_brain_recall_preflight",
+    "twin_memory_episode_local",
+    "trusted_time_arc",
+    "world_model_origin_reconciliation",
+    "memory_durable_restart_proof",
+    "memory_consolidation_lane",
+    "memory_graph_local",
+    "memory_eval_harness",
+    "vendor_memory_comparator",
+    "memory_scale_latency_harness",
+    "brain_service_topology_contract"
+  ],
+  "checks": [
+    "make memory-brain-map-check",
+    "make source-map-check",
+    "make verification-manifest-check",
+    "make local-smoke"
+  ]
+}

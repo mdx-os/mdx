@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ForgeReplacementCockpitResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "production_write_allowed", "production_cutover_allowed", "worker_spawn_allowed", "live_worker_execution_allowed", "workflow_execution_allowed", "shell_execution_allowed", "patch_application_allowed", "ci_success_claim_allowed", "human_ratification_allowed", "deployment_authority_granted", "deployment_allowed", "governed_route_count", "served_route_count", "receipt_count", "required_receipt_kind_count", "projection_match_count", "required_evidence_version", "proof_check", "route_check", "cockpit", "forge_authority_control", "forge_shadow_compare", "provider_turn_on_rehearsal", "cutover_blockers", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-forge-replacement-cockpit" },
+    "route": { "const": "/v1/forge-replacement-cockpit.json" },
+    "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_WORKFLOW_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "live_worker_execution_allowed": { "const": false },
+    "workflow_execution_allowed": { "const": false },
+    "shell_execution_allowed": { "const": false },
+    "patch_application_allowed": { "const": false },
+    "ci_success_claim_allowed": { "const": false },
+    "human_ratification_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "deployment_allowed": { "const": false },
+    "governed_route_count": { "const": 11 },
+    "served_route_count": { "const": 24 },
+    "receipt_count": { "const": 11 },
+    "required_receipt_kind_count": { "const": 15 },
+    "projection_match_count": { "const": 11 },
+    "required_evidence_version": { "const": 2 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-forge-replacement-cockpit-route-check" },
+    "cockpit": {
+      "type": "object",
+      "required": ["name", "status", "route", "governed_route_count", "served_route_count", "receipt_count", "required_receipt_kind_count", "projection_match_count", "ui_handoff", "forge_capabilities", "served_routes", "replacement_readiness", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_forge_replacement_cockpit" },
+        "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_WORKFLOW_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/forge-replacement-cockpit.json" },
+        "governed_route_count": { "const": 11 },
+        "served_route_count": { "const": 24 },
+        "receipt_count": { "const": 11 },
+        "required_receipt_kind_count": { "const": 15 },
+        "projection_match_count": { "const": 11 },
+        "ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_governed_local_writes", "safe_to_wire_worker_spawn_actions", "safe_to_wire_shell_execution_actions", "safe_to_wire_patch_application_actions", "safe_to_wire_ci_success_actions", "safe_to_wire_human_ratification_actions", "safe_to_wire_deployment_actions", "production_authority_allowed"],
+          "properties": {
+            "status": { "const": "FORGE_REPLACEMENT_COCKPIT_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_governed_local_writes": { "const": true },
+            "safe_to_wire_worker_spawn_actions": { "const": false },
+            "safe_to_wire_shell_execution_actions": { "const": false },
+            "safe_to_wire_patch_application_actions": { "const": false },
+            "safe_to_wire_ci_success_actions": { "const": false },
+            "safe_to_wire_human_ratification_actions": { "const": false },
+            "safe_to_wire_deployment_actions": { "const": false },
+            "production_authority_allowed": { "const": false }
+          }
+        },
+        "forge_capabilities": {
+          "type": "array",
+          "minItems": 11,
+          "allOf": [
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "intake_plan" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "build_request" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "build_approval" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "workflow_plan_proof" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "worker_authority" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "talent_authorization" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "worker_credential" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "worker_spawn_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "ci_evidence_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "human_ratification_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "deployment_preflight" } } } }
+          ]
+        },
+        "served_routes": {
+          "type": "array",
+          "minItems": 24,
+          "allOf": [
+            { "contains": { "const": "POST /forge/intake-plan-requests.json" } },
+            { "contains": { "const": "POST /forge/build-requests.json" } },
+            { "contains": { "const": "POST /forge/build-approvals.json" } },
+            { "contains": { "const": "POST /forge/workflow-plan-proofs.json" } },
+            { "contains": { "const": "POST /forge/worker-authority-requests.json" } },
+            { "contains": { "const": "POST /forge/talent-authorizations.json" } },
+            { "contains": { "const": "POST /forge/worker-credential-checks.json" } },
+            { "contains": { "const": "POST /forge/worker-spawn-preflights.json" } },
+            { "contains": { "const": "POST /forge/ci-evidence-preflights.json" } },
+            { "contains": { "const": "POST /forge/human-ratification-preflights.json" } },
+            { "contains": { "const": "POST /forge/deployment-preflights.json" } }
+          ]
+        },
+        "replacement_readiness": {
+          "type": "object",
+          "required": ["locally_replayable", "v1_user_job_preserved", "full_governed_chain_recorded", "local_workflow_runner_first_class", "v1_field_linkage_preserved", "execution_boundary_proven", "worker_credential_checked", "spawn_preflight_recorded", "ci_evidence_preflight_recorded", "human_ratification_preflight_recorded", "deployment_preflight_recorded", "production_read_shadow_required", "worker_spawn_admission_required", "patch_application_admission_required", "ci_observation_required", "human_ratification_required", "deployment_authority_required", "rollback_safe_build_replay_required", "human_acceptance_required", "cutover_green_allowed"],
+          "properties": {
+            "locally_replayable": { "const": true },
+            "v1_user_job_preserved": { "const": true },
+            "full_governed_chain_recorded": { "const": true },
+            "local_workflow_runner_first_class": { "const": true },
+            "v1_field_linkage_preserved": { "const": true },
+            "execution_boundary_proven": { "const": true },
+            "worker_credential_checked": { "const": true },
+            "spawn_preflight_recorded": { "const": true },
+            "ci_evidence_preflight_recorded": { "const": true },
+            "human_ratification_preflight_recorded": { "const": true },
+            "deployment_preflight_recorded": { "const": true },
+            "production_read_shadow_required": { "const": true },
+            "worker_spawn_admission_required": { "const": true },
+            "patch_application_admission_required": { "const": true },
+            "ci_observation_required": { "const": true },
+            "human_ratification_required": { "const": true },
+            "deployment_authority_required": { "const": true },
+            "rollback_safe_build_replay_required": { "const": true },
+            "human_acceptance_required": { "const": true },
+            "cutover_green_allowed": { "const": false }
+          }
+        },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "forge_authority_control": {
+      "type": "object",
+      "required": ["name", "status", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_forge_authority_cutover_control" },
+        "status": { "const": "CHECK_BOUND_LOCAL_WORKFLOW_NOT_EXECUTION_OR_DEPLOYMENT" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "forge_shadow_compare": {
+      "type": "object",
+      "required": ["name", "status", "expected_route_count", "expected_receipt_count", "required_evidence_summary", "replacement_readiness", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_forge_shadow_compare" },
+        "status": { "const": "LOCAL_HTTP_SHADOW_COMPARE" },
+        "expected_route_count": { "const": 24 },
+        "expected_receipt_count": { "const": 11 },
+        "required_evidence_summary": { "type": "object" },
+        "replacement_readiness": { "type": "object" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "provider_turn_on_rehearsal": {
+      "type": "object",
+      "required": ["name", "external_provider_call_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "v1_provider_turn_on_rehearsal_control" },
+        "external_provider_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "cutover_green_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "cutover_green_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "proof_index_route": {
+      "type": "object",
+      "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "route": { "const": "/v1/replacement-proof-index.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["worker_spawn_requested", "worker_spawn_allowed", "live_worker_execution_allowed", "workflow_execution_allowed", "shell_execution_allowed", "patch_application_allowed", "ci_success_claim_allowed", "human_ratification_allowed", "deployment_authority_granted", "deployment_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "worker_spawn_requested": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "live_worker_execution_allowed": { "const": false },
+        "workflow_execution_allowed": { "const": false },
+        "shell_execution_allowed": { "const": false },
+        "patch_application_allowed": { "const": false },
+        "ci_success_claim_allowed": { "const": false },
+        "human_ratification_allowed": { "const": false },
+        "deployment_authority_granted": { "const": false },
+        "deployment_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

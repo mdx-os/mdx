@@ -1,0 +1,28 @@
+/target/
+/.mdx-local/
+/audit/runs/
+node_modules/
+dist/
+.build/
+.svelte-kit/
+build/
+.DS_Store
+._*
+* 2
+* 2.*
+*.bak
+*.log
+*.orig
+*.rej
+*.tmp
+
+# Local env files (keys live in the shell or a secret manager - never in git)
+.env
+.env.*
+*.env.local
+# Deployment reference templates are tracked (placeholders only, no secret values).
+!deploy/docker-compose/.env.example
+.mdx-local/
+# Agent harness runtime litter; tracked wiring lives in .claude/settings.json and .claude/commands/
+.claude/scheduled_tasks.lock
+.claude/worktrees/

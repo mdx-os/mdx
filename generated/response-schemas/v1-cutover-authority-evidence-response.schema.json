@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1CutoverAuthorityEvidenceResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed", "gate_count", "blocker_count", "local_evidence_gate_count", "human_or_live_authority_gate_count", "authority_request_count", "proof_check", "route_check", "authority_evidence", "production_gates", "cutover_blockers", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-cutover-authority-evidence" },
+    "route": { "const": "/v1/cutover-authority-evidence.json" },
+    "status": { "const": "LOCAL_EVIDENCE_READY_CUTOVER_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "dual_write_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "patch_application_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "gate_count": { "const": 12 },
+    "blocker_count": { "const": 12 },
+    "local_evidence_gate_count": { "const": 10 },
+    "human_or_live_authority_gate_count": { "const": 12 },
+    "authority_request_count": { "const": 6 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-cutover-authority-evidence-route-check" },
+    "authority_evidence": {
+      "type": "object",
+      "required": ["name", "status", "route", "proof_check", "route_check", "read_only", "writes_allowed", "production_write_allowed", "production_cutover_allowed", "gate_count", "blocker_count", "local_evidence_gate_count", "human_or_live_authority_gate_count", "authority_request_count", "claude_ui_handoff", "gate_authority_rollup", "authority_requests", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_cutover_authority_evidence" },
+        "status": { "const": "LOCAL_EVIDENCE_READY_CUTOVER_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/cutover-authority-evidence.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "route_check": { "const": "make v1-cutover-authority-evidence-route-check" },
+        "read_only": { "const": true },
+        "writes_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "gate_count": { "const": 12 },
+        "blocker_count": { "const": 12 },
+        "local_evidence_gate_count": { "const": 10 },
+        "human_or_live_authority_gate_count": { "const": 12 },
+        "authority_request_count": { "const": 6 },
+        "claude_ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_authority_requests", "production_authority_allowed", "recommended_surfaces", "operator_copy_rule"],
+          "properties": {
+            "status": { "const": "CUTOVER_AUTHORITY_COCKPIT_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_authority_requests": { "const": false },
+            "production_authority_allowed": { "const": false },
+            "recommended_surfaces": { "type": "array", "minItems": 3 },
+            "operator_copy_rule": { "type": "string", "minLength": 1 }
+          }
+        },
+        "gate_authority_rollup": {
+          "type": "array",
+          "minItems": 12,
+          "contains": { "type": "object", "required": ["gate_id"], "properties": { "gate_id": { "const": "rollback_and_dual_run" } } }
+        },
+        "authority_requests": {
+          "type": "array",
+          "minItems": 6,
+          "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "cutover_acceptance" } } }
+        },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "production_gates": {
+      "type": "object",
+      "required": ["name", "status", "gates"],
+      "properties": {
+        "name": { "const": "v1_production_replacement_gates" },
+        "status": { "const": "NOT_READY_FOR_CUTOVER" },
+        "gates": { "type": "array", "minItems": 12 }
+      }
+    },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "status", "blocker_count", "production_cutover_allowed", "blockers"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "status": { "const": "CUTOVER_BLOCKED_BY_DECLARED_CONTROLS" },
+        "blocker_count": { "const": 12 },
+        "production_cutover_allowed": { "const": false },
+        "blockers": { "type": "array", "minItems": 12 }
+      }
+    },
+    "proof_index_route": {
+      "type": "object",
+      "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "route": { "const": "/v1/replacement-proof-index.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "write_mirror_allowed": { "const": false },
+        "dual_write_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "patch_application_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

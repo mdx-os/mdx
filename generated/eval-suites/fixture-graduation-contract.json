@@ -1,0 +1,52 @@
+{
+  "name": "mdx-fixture-graduation-contract",
+  "mode": "deterministic-local",
+  "source": "docs/FIXTURE-GRADUATION-SEAM.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define the draft step that turns a triaged finding into a proposed golden fixture for the Machine League regression floor, and reserve the human-curated graduation write that makes it binding.",
+  "draft_write_route": "/learning/fixture-graduations.json",
+  "draft_projection_route": "/learning/fixture-graduations/projection.json",
+  "draft_receipt_kind": "fixture.graduation.drafted",
+  "reserved_graduated_receipt_kind": "fixture.graduation.graduated",
+  "valid_source_receipt_kinds": ["beta.feedback.captured"],
+  "required_fields": [
+    "fixture_graduation_id",
+    "source_receipt_id",
+    "source_receipt_kind",
+    "fixture_id",
+    "scenario_description",
+    "expected_behavior",
+    "proposed_fixture_family",
+    "proposed_origin",
+    "lane_state",
+    "reserved_graduated_kind"
+  ],
+  "states": [
+    {
+      "id": "drafted",
+      "meaning": "A governed draft names a source finding receipt, a proposed fixture id, a scenario, the expected behavior, and a proposed family. It writes no registry entry and opens no allowlist."
+    },
+    {
+      "id": "graduated",
+      "meaning": "Reserved for the sim program owner's human-curated graduation write that appends the fixture to the versioned registry, cites the source finding, and makes it a regression floor. Not implemented in this crate."
+    }
+  ],
+  "v0_boundaries": {
+    "records_draft": true,
+    "requires_source_receipt_in_ledger": true,
+    "refuses_duplicate_fixture_draft": true,
+    "writes_registry_entry": false,
+    "changes_fixture_allowlist": false,
+    "writes_memory": false,
+    "applies_adaptation": false,
+    "changes_runtime_behavior": false,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "codex_owns": [
+    "the graduation write (fixture.graduation.graduated) with human curation per docs/MDX-BETA-SIMULATION-PROGRAM.md",
+    "the Machine League Tier 3b re-measure trigger against graduated fixtures"
+  ],
+  "checks": ["make fixture-registry-check", "make learning-loop-check"]
+}

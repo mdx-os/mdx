@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2ProviderTurnOnMatrixResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "provider_calls_allowed_without_receipts",
+    "provider_secret_material_allowed",
+    "provider_secret_values_recorded",
+    "live_external_provider_call_allowed",
+    "production_write_allowed",
+    "service_role_runtime_allowed",
+    "deployment_authority_allowed",
+    "proof_check",
+    "route_check",
+    "provider_turn_on_check",
+    "provider_count",
+    "pending_live_count",
+    "live_local_count",
+    "live_external_provider_count",
+    "provider_connected_profile_count",
+    "provider_connected_profiles_env_ready_count",
+    "provider_connected_profiles_ready_for_live_call_count",
+    "model_gateway_profile_count",
+    "model_gateway_profiles_env_ready_count",
+    "model_gateway_profiles_ready_for_live_call_count",
+    "model_gateway_hot_swap",
+    "local_conformance",
+    "local_observability_trace_proof",
+    "substrates",
+    "provider_connected_profiles",
+    "model_gateway_profiles",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-provider-turn-on-matrix" },
+    "mode": { "const": "local-first-provider-controls" },
+    "status": { "enum": ["LOCAL_PROVIDER_MATRIX_READY", "NOT_READY"] },
+    "route": { "const": "/v2/provider-turn-on-matrix.json" },
+    "read_only": { "const": true },
+    "provider_calls_allowed_without_receipts": { "const": false },
+    "provider_secret_material_allowed": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "live_external_provider_call_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "proof_check": { "const": "make v2-provider-turn-on-matrix" },
+    "route_check": { "const": "make v2-provider-turn-on-matrix-route-check" },
+    "provider_turn_on_check": { "const": "make live-turn-on-check" },
+    "provider_count": { "const": 6 },
+    "pending_live_count": { "const": 5 },
+    "live_local_count": { "const": 1 },
+    "live_external_provider_count": { "const": 0 },
+    "provider_connected_profile_count": { "const": 6 },
+    "provider_connected_profiles_env_ready_count": { "type": "integer", "minimum": 0 },
+    "provider_connected_profiles_ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "model_gateway_profile_count": { "const": 6 },
+    "model_gateway_profiles_env_ready_count": { "type": "integer", "minimum": 0 },
+    "model_gateway_profiles_ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "model_gateway_hot_swap": {
+      "type": "object",
+      "required": ["status", "local_default_driver", "local_default_model_id", "stream_contract", "fallback_strategy", "failover_slo_ms", "provider_family", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "credential_values_recorded", "provider_secret_values_recorded", "output_text_recorded", "policy_selected_driver_required", "turn_on_receipt_required"],
+      "properties": {
+        "status": { "const": "MODEL_GATEWAY_HOT_SWAP_CONTRACT_READY" },
+        "local_default_driver": { "const": "DeterministicModelGateway" },
+        "local_default_model_id": { "const": "deterministic_local_v1" },
+        "stream_contract": { "const": "normalized_model_stream_v1" },
+        "fallback_strategy": { "const": "local_first_fail_closed" },
+        "failover_slo_ms": { "const": 3000 },
+        "provider_family": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "openai" },
+            { "const": "anthropic" },
+            { "const": "xai" },
+            { "const": "gemini" },
+            { "const": "mistral" },
+            { "const": "tensorzero" }
+          ],
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "provider_call_allowed_now": { "const": false },
+        "live_provider_call_allowed_now": { "const": false },
+        "live_network_allowed_now": { "const": false },
+        "credential_values_recorded": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "policy_selected_driver_required": { "const": true },
+        "turn_on_receipt_required": { "const": true }
+      }
+    },
+    "first_provider_turn_on": {
+      "type": "object",
+      "required": ["status", "provider", "adapter", "receipt_kind", "observed", "provider_connected_local_allowed", "evidence_file", "proof_command"],
+      "properties": {
+        "status": { "enum": ["OPENAI_PROVIDER_TURN_ON_OBSERVED", "NOT_OBSERVED"] },
+        "provider": { "const": "openai" },
+        "adapter": { "const": "OpenAIResponsesModelGateway" },
+        "receipt_kind": { "const": "openai.response.observed" },
+        "observed": { "type": "boolean" },
+        "provider_connected_local_allowed": { "type": "boolean" },
+        "evidence_file": { "const": ".mdx-local/provider-turn-on/openai-response-observed.json" },
+        "proof_command": { "const": "make v2-openai-provider-turn-on" }
+      }
+    },
+    "local_conformance": {
+      "type": "object",
+      "required": ["model_gateway", "memory_store", "workflow_runner", "observability_trace_exporter"],
+      "properties": {
+        "model_gateway": { "const": "LIVE-LOCAL-CONFORMANCE" },
+        "memory_store": { "const": "LIVE-LOCAL-CONFORMANCE" },
+        "workflow_runner": { "const": "LIVE-LOCAL-CONFORMANCE" },
+        "observability_trace_exporter": { "const": "LIVE-LOCAL-CONFORMANCE" }
+      }
+    },
+    "local_observability_trace_proof": {
+      "type": "object",
+      "required": ["status", "evidence_file", "local_exporter", "local_event_count", "live_adapter", "required_receipt_kind", "live_trace_export_allowed", "network_allowed", "endpoint_value_recorded", "secret_values_recorded", "proof_check"],
+      "properties": {
+        "status": { "const": "LOCAL_TRACE_EXPORTER_READY_OTEL_BLOCKED" },
+        "evidence_file": { "const": ".mdx-local/observability/local-observability-trace-proof.json" },
+        "local_exporter": { "const": "LocalTraceExporter" },
+        "local_event_count": { "const": 3 },
+        "live_adapter": { "const": "OpenTelemetryExporter" },
+        "required_receipt_kind": { "const": "opentelemetry.trace.exported" },
+        "live_trace_export_allowed": { "const": false },
+        "network_allowed": { "const": false },
+        "endpoint_value_recorded": { "const": false },
+        "secret_values_recorded": { "const": false },
+        "proof_check": { "const": "make local-observability-trace-proof" }
+      }
+    },
+    "substrates": {
+      "type": "array",
+      "minItems": 6,
+      "contains": {
+        "type": "object",
+        "required": ["substrate", "required_receipt_kind", "provider_call_allowed", "turn_on_allowed_now", "secret_material_allowed"],
+        "properties": {
+          "substrate": { "type": "string" },
+          "required_receipt_kind": { "type": "string" },
+          "provider_call_allowed": { "const": false },
+          "turn_on_allowed_now": { "const": false },
+          "secret_material_allowed": { "const": false }
+        }
+      }
+    },
+    "provider_connected_profiles": {
+      "type": "array",
+      "minItems": 6,
+      "contains": {
+        "type": "object",
+        "required": ["id", "substrate", "status", "env_ready", "credential_presence_only", "credential_values_recorded", "required_receipt_kind", "provider_call_allowed_now", "live_provider_call_allowed_now", "turn_on_allowed_now", "live_network_allowed_now", "requires_turn_on_receipt"],
+        "properties": {
+          "id": { "type": "string" },
+          "substrate": { "type": "string" },
+          "status": { "enum": ["ENV_READY_RECEIPT_REQUIRED", "ENV_MISSING_RECEIPT_REQUIRED"] },
+          "env_ready": { "type": "boolean" },
+          "credential_presence_only": { "const": true },
+          "credential_values_recorded": { "const": false },
+          "required_receipt_kind": { "type": "string", "minLength": 1 },
+          "provider_call_allowed_now": { "const": false },
+          "live_provider_call_allowed_now": { "const": false },
+          "turn_on_allowed_now": { "const": false },
+          "live_network_allowed_now": { "const": false },
+          "requires_turn_on_receipt": { "const": true }
+        }
+      }
+    },
+    "model_gateway_profiles": {
+      "type": "array",
+      "minItems": 6,
+      "contains": {
+        "type": "object",
+        "required": ["id", "provider", "substrate", "live_adapter", "profile_kind", "status", "env_ready", "env_requirements", "credential_presence_only", "credential_values_recorded", "provider_secret_values_recorded", "requested_secret_values_recorded", "output_text_recorded", "required_receipt_kind", "stream_contract", "fallback_strategy", "failover_slo_ms", "provider_call_allowed_now", "live_provider_call_allowed_now", "turn_on_allowed_now", "live_network_allowed_now", "production_authority_allowed", "requires_turn_on_receipt", "requires_human_approval"],
+        "properties": {
+          "id": { "enum": ["openai_model_gateway", "anthropic_model_gateway", "xai_model_gateway", "gemini_model_gateway", "mistral_model_gateway", "tensorzero_model_gateway"] },
+          "provider": { "enum": ["openai", "anthropic", "xai", "gemini", "mistral", "tensorzero"] },
+          "profile_kind": { "const": "model_gateway" },
+          "status": { "enum": ["ENV_READY_RECEIPT_REQUIRED", "ENV_MISSING_RECEIPT_REQUIRED"] },
+          "env_ready": { "type": "boolean" },
+          "credential_presence_only": { "const": true },
+          "credential_values_recorded": { "const": false },
+          "provider_secret_values_recorded": { "const": false },
+          "requested_secret_values_recorded": { "const": false },
+          "output_text_recorded": { "const": false },
+          "required_receipt_kind": { "type": "string", "minLength": 1 },
+          "stream_contract": { "const": "normalized_model_stream_v1" },
+          "fallback_strategy": { "const": "local_first_fail_closed" },
+          "failover_slo_ms": { "const": 3000 },
+          "provider_call_allowed_now": { "const": false },
+          "live_provider_call_allowed_now": { "const": false },
+          "turn_on_allowed_now": { "const": false },
+          "live_network_allowed_now": { "const": false },
+          "production_authority_allowed": { "const": false },
+          "requires_turn_on_receipt": { "const": true },
+          "requires_human_approval": { "const": true }
+        }
+      }
+    },
+    "evidence_file": { "const": ".mdx-local/v2-provider-turn-on-matrix.json" }
+  }
+}

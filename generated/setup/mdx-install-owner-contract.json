@@ -1,0 +1,18 @@
+{
+  "name": "mdx-install-owner",
+  "purpose": "Who owns this install of MDx, recorded once on the record. The first claim establishes the owner; there is no password and no pretend auth here.",
+  "claim_route": "/install/owner-claims.json",
+  "projection_route": "/install/owner.json",
+  "receipt_kind": "install.owner.claimed",
+  "auth_method": "claim_no_password",
+  "rules": {
+    "first_claim_wins": true,
+    "reclaim_refused": true,
+    "password_required": false,
+    "pretend_auth": false,
+    "records": ["owner_name", "owner_actor_id"]
+  },
+  "real_per_user_auth": "later slice - external IdP; this does not stand in for it",
+  "production_write_allowed": false,
+  "check": "make install-owner-contract-check"
+}

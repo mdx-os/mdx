@@ -1,0 +1,7 @@
+{
+  "agent": "charter_attestation_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["check_declared_obligation", "attest_evidence", "write_charter_evidence", "review_exception_status"],
+  "forbidden_actions": ["alter_charter_without_human_approval", "live_regulatory_filing", "production_deploy", "live_spend", "bypass_policy"]
+}

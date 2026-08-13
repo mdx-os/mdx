@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinParserSandboxRuntimeResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "artifact_runtime_route", "artifact_context_route", "liteparse_route", "read_only", "receipt_backed", "parser_sandbox_required", "out_of_process_required", "binary_parsing_live", "pdf_parsing_live", "office_parsing_live", "image_parsing_live", "ocr_parsing_live", "text_bearing_parsing_live", "safe_reader_refusal_state", "supported_now", "blocked_until_sandbox", "caps", "sandbox_boundary", "frontier_raw_content_allowed", "production_write_allowed", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-twin-parser-sandbox-runtime" },
+    "status": { "const": "LITEPARSE_PDF_READY_LOCAL" },
+    "route": { "const": "/twin/parser-sandbox-runtime.json" },
+    "artifact_runtime_route": { "const": "/twin/artifact-runtime.json" },
+    "artifact_context_route": { "const": "/twin/artifact-contexts.json" },
+    "liteparse_route": { "const": "/twin/artifacts/liteparse-parses.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "parser_sandbox_required": { "const": true },
+    "out_of_process_required": { "const": true },
+    "binary_parsing_live": { "const": true },
+    "pdf_parsing_live": { "const": true },
+    "office_parsing_live": { "const": false },
+    "image_parsing_live": { "const": false },
+    "ocr_parsing_live": { "const": false },
+    "text_bearing_parsing_live": { "const": true },
+    "safe_reader_refusal_state": { "const": "PDF_LOCAL_READY_OFFICE_IMAGE_OCR_NOT_READY" },
+    "supported_now": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "text/plain" } },
+        { "contains": { "const": "text/markdown" } },
+        { "contains": { "const": "text/csv" } },
+        { "contains": { "const": "application/pdf" } }
+      ]
+    },
+    "blocked_until_sandbox": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "application/vnd.openxmlformats-officedocument.wordprocessingml.document" } },
+        { "contains": { "const": "image/png" } },
+        { "contains": { "const": "scanned_pdf_ocr" } }
+      ]
+    },
+    "caps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_size_limit_bytes", "max_extracted_text_chars", "raw_text_receipts_allowed", "frontier_raw_content_allowed"],
+      "properties": {
+        "file_size_limit_bytes": { "const": 26214400 },
+        "max_extracted_text_chars": { "const": 16000 },
+        "raw_text_receipts_allowed": { "const": false },
+        "frontier_raw_content_allowed": { "const": false }
+      }
+    },
+    "sandbox_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["process_boundary", "network_access", "filesystem_access", "malware_scan", "redaction", "delete_propagation"],
+      "properties": {
+        "process_boundary": { "const": "required_out_of_process" },
+        "network_access": { "const": "denied_by_default" },
+        "filesystem_access": { "const": "artifact_temp_dir_only" },
+        "malware_scan": { "const": "required_before_office_image_parser_live" },
+        "redaction": { "const": "required_before_frontier_routing_considered" },
+        "delete_propagation": { "const": "source_and_extracted_text_refs_must_delete_together" }
+      }
+    },
+    "frontier_raw_content_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "ui_handoff": {
+      "type": "object",
+      "required": ["target_owner", "safe_to_render", "copy_boundary"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "safe_to_render": { "const": true },
+        "copy_boundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["source_contract", "proof_check", "source_routes"],
+      "properties": {
+        "source_contract": { "const": "docs/TWIN-ARTIFACT-CONTEXT-BACKEND-HANDOFF.md" },
+        "proof_check": { "const": "make twin-artifact-context-check" },
+        "source_routes": {
+          "type": "array",
+          "allOf": [
+            { "contains": { "const": "/twin/parser-sandbox-runtime.json" } },
+            { "contains": { "const": "/twin/artifacts/liteparse-parses.json" } }
+          ]
+        }
+      }
+    }
+  }
+}

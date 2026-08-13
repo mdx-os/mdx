@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ProviderTurnOnRehearsalResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "substrate_count", "live_local_substrate_count", "pending_external_substrate_count", "provider_receipt_kind_count", "v1_surface_dependency_count", "human_approval_required", "external_provider_call_allowed", "live_workflow_execution_allowed", "live_model_call_allowed", "live_memory_write_allowed", "live_trace_export_allowed", "render_deployment_allowed", "production_database_allowed", "production_write_allowed", "production_cutover_allowed", "proof_check", "control", "local_status", "provider_turn_on_evidence", "runtime_turn_on_blockers", "cutover_blockers", "cutover_plan", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-provider-turn-on-rehearsal" },
+    "route": { "const": "/v1/provider-turn-on-rehearsal.json" },
+    "status": { "const": "REHEARSAL_READY_EXTERNAL_PROVIDERS_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "substrate_count": { "const": 6 },
+    "live_local_substrate_count": { "const": 1 },
+    "pending_external_substrate_count": { "const": 5 },
+    "provider_receipt_kind_count": { "const": 6 },
+    "v1_surface_dependency_count": { "const": 5 },
+    "human_approval_required": { "const": true },
+    "external_provider_call_allowed": { "const": false },
+    "live_workflow_execution_allowed": { "const": false },
+    "live_model_call_allowed": { "const": false },
+    "live_memory_write_allowed": { "const": false },
+    "live_trace_export_allowed": { "const": false },
+    "render_deployment_allowed": { "const": false },
+    "production_database_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "proof_check": { "const": "make v1-provider-turn-on-rehearsal-check" },
+    "control": {
+      "type": "object",
+      "required": ["name", "status", "route", "proof_check", "substrate_count", "live_local_substrate_count", "pending_external_substrate_count", "provider_receipt_kind_count", "v1_surface_dependency_count", "surface_dependencies", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_provider_turn_on_rehearsal_control" },
+        "status": { "const": "REHEARSAL_DECLARED_NOT_EXECUTED" },
+        "route": { "const": "/v1/provider-turn-on-rehearsal.json" },
+        "proof_check": { "const": "make v1-provider-turn-on-rehearsal-check" },
+        "substrate_count": { "const": 6 },
+        "live_local_substrate_count": { "const": 1 },
+        "pending_external_substrate_count": { "const": 5 },
+        "provider_receipt_kind_count": { "const": 6 },
+        "v1_surface_dependency_count": { "const": 5 },
+        "surface_dependencies": { "type": "array", "minItems": 5 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["external_provider_call_allowed", "live_workflow_execution_allowed", "live_model_call_allowed", "live_memory_write_allowed", "live_trace_export_allowed", "render_deployment_allowed", "production_database_allowed", "production_write_allowed", "production_cutover_allowed"],
+          "properties": {
+            "external_provider_call_allowed": { "const": false },
+            "live_workflow_execution_allowed": { "const": false },
+            "live_model_call_allowed": { "const": false },
+            "live_memory_write_allowed": { "const": false },
+            "live_trace_export_allowed": { "const": false },
+            "render_deployment_allowed": { "const": false },
+            "production_database_allowed": { "const": false },
+            "production_write_allowed": { "const": false },
+            "production_cutover_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "local_status": {
+      "type": "object",
+      "required": ["name", "live_substrate"],
+      "properties": {
+        "name": { "const": "mdx-native local" },
+        "live_substrate": { "type": "array", "minItems": 6 }
+      }
+    },
+    "provider_turn_on_evidence": {
+      "type": "object",
+      "required": ["name", "receipts"],
+      "properties": {
+        "name": { "const": "mdx-provider-turn-on-evidence" },
+        "receipts": { "type": "array", "minItems": 6 }
+      }
+    },
+    "runtime_turn_on_blockers": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "const": "mdx-runtime-turn-on-blockers" }
+      }
+    },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "production_cutover_allowed", "provider_call_allowed"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "production_cutover_allowed": { "const": false },
+        "provider_call_allowed": { "const": false }
+      }
+    },
+    "cutover_plan": {
+      "type": "object",
+      "required": ["name", "status"],
+      "properties": {
+        "name": { "const": "v1_cutover_readiness_plan" },
+        "status": { "const": "NOT_READY_FOR_CUTOVER" }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "external_provider_call_allowed", "live_workflow_execution_allowed", "live_model_call_allowed", "live_memory_write_allowed", "live_trace_export_allowed", "render_deployment_allowed", "production_database_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "external_provider_call_allowed": { "const": false },
+        "live_workflow_execution_allowed": { "const": false },
+        "live_model_call_allowed": { "const": false },
+        "live_memory_write_allowed": { "const": false },
+        "live_trace_export_allowed": { "const": false },
+        "render_deployment_allowed": { "const": false },
+        "production_database_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

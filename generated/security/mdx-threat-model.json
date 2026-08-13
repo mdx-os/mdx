@@ -1,0 +1,21 @@
+{
+  "name": "mdx-threat-model",
+  "mode": "deterministic-local",
+  "source": "docs/THREAT-MODEL.md",
+  "threats": [
+    { "id": "policy_bypass", "description": "Consequential action runs without PDP decision.", "impact": "high", "mitigation_check": "make security-check", "evidence_artifact": "generated/security/mdx-security-posture.json" },
+    { "id": "receipt_forgery", "description": "Receipt is written outside StorageProvider or Ledger chain semantics.", "impact": "high", "mitigation_check": "make security-check", "evidence_artifact": "generated/loops/postgres-loop-export-evidence.json" },
+    { "id": "tenant_boundary_break", "description": "Tenant data crosses RLS or typed tenant boundaries.", "impact": "high", "mitigation_check": "make migrate-check", "evidence_artifact": "generated/db/mdx-local-schema.json" },
+    { "id": "live_substrate_fake_green", "description": "Provider marked live before observed evidence.", "impact": "high", "mitigation_check": "make live-turn-on-check", "evidence_artifact": "generated/live-substrates/provider-turn-on-evidence.json" },
+    { "id": "companion_action_drift", "description": "Twin companion drifts from grounded advice into ungoverned tool execution.", "impact": "high", "mitigation_check": "make twin-grounding-check", "evidence_artifact": "generated/companions/twin-text-grounding-contract.json" },
+    { "id": "worker_scope_creep", "description": "Ephemeral worker exceeds scope, budget, tool allowlist, or retirement bounds.", "impact": "high", "mitigation_check": "make local-talent-worker-proof-check", "evidence_artifact": "generated/workers/spawn-request-contract.json" },
+    { "id": "legacy_topology_shadow_state", "description": "Legacy app runtime creates a parallel source of truth.", "impact": "medium", "mitigation_check": "make app-translation-check", "evidence_artifact": "generated/apps/mdx-app-translation.json" },
+    { "id": "secret_exposure", "description": "Live credential leaks through status, generated artifact, nested generated artifact, receipt payload, or logs.", "impact": "high", "mitigation_check": "make threat-model-check", "evidence_artifact": "generated/security/mdx-threat-model.json" },
+    { "id": "generated_security_secret_payload", "description": "Credential-looking payload, private key material, symlink, or nested non-JSON payload lands under generated security artifacts.", "impact": "high", "mitigation_check": "make security-check", "evidence_artifact": "generated/security/mdx-security-posture.json" }
+  ],
+  "rules": [
+    "every threat maps to a mitigation check",
+    "high impact threats map to generated evidence",
+    "new live substrate app runtime or worker behavior updates this model"
+  ]
+}

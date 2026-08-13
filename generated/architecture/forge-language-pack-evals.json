@@ -1,0 +1,30 @@
+{
+  "name": "mdx-forge-language-pack-evals",
+  "mode": "deterministic-local",
+  "source": "docs/FORGE-LANGUAGE-PACK-EVALS.md",
+  "status": "LIVE-LOCAL-LANGUAGE-PACK-EVAL-MATRIX",
+  "runtime": "mdx_server::forge_repo_profile",
+  "repo_intelligence_contract": "generated/architecture/forge-repo-intelligence.json",
+  "fleet_eval_contract": "generated/architecture/forge-fleet-eval-harness.json",
+  "covered_language_packs": ["ios-xcode", "swift-spm", "java-maven", "gradle-jvm", "android-gradle", "dotnet", "node", "rust-cargo", "python", "go", "generic"],
+  "canary_assertions": ["repo_family_detected", "suggested_check_matches_pack", "artifact_filter_matches_pack", "non_rust_repos_do_not_fall_back_to_rust", "unknown_repo_does_not_invent_check"],
+  "future_live_score_dimensions": ["model_profile", "provider_family", "task_class", "complexity_tier", "visible_checks", "hidden_checks", "patch_quality_score", "principal_engineer_verdict", "principal_review_gate_coverage", "standards_source_fingerprint_coverage", "toolchain_readiness_coverage", "artifact_noise_filtered", "diff_language_pack_impact", "pr_handoff_quality", "cost_cents", "latency_ms", "tokens", "retry_count"],
+  "live_provider_calls_allowed": false,
+  "adapter_execution_allowed": false,
+  "patch_application_allowed": false,
+  "production_write_allowed": false,
+  "scoreboard_acceptance_allowed": false,
+  "evidence_rules": [
+    "local canaries prove repo adaptation shape, not model quality",
+    "live model quality must be measured through the fleet eval harness",
+    "every model result should be sliceable by language pack, task class, complexity tier, provider family, and runner profile",
+    "principal review gates must join eval results to the same evidence vocabulary emitted by run receipts and review packets",
+    "standards source fingerprints prove which repo conventions were visible without copying standards text into eval records",
+    "toolchain readiness coverage proves whether the local proof command prerequisites were visible before judging a live result",
+    "diff language-pack impact proves which stack surfaces a result actually touched before slicing model quality by language",
+    "artifact filtering is review hygiene and does not delete backend evidence"
+  ],
+  "depends_on": ["generated/architecture/forge-repo-intelligence.json", "generated/architecture/forge-fleet-eval-harness.json"],
+  "forbidden_capabilities": ["no live provider calls from canaries", "no external adapter execution", "no provider secret export", "no patch application from canaries", "no production write", "no scoreboard acceptance from canaries", "no human ratification bypass", "no deployment authority"],
+  "checks": ["make forge-language-pack-evals-check", "cargo test -p mdx-server forge_repo_profile", "make forge-repo-intelligence-check", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

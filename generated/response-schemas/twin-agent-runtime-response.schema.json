@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinAgentRuntimeResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "read_only", "receipt_backed", "runtime", "agent_modes", "provider_runtime", "memory_runtime", "hooks", "skills", "connectors", "multi_agent_runtime", "boundary_refusals", "blocked_authority", "source_routes", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-twin-agent-runtime" },
+    "status": { "const": "LIVE-LOCAL-TWIN-AGENT-RUNTIME-FLOOR" },
+    "route": { "const": "/twin/agent-runtime.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "selected_mode", "selected_companion_id", "selected_stance", "model_gateway_driver", "model_gateway_provider", "model_gateway_model_id", "memory_driver", "memory_provider", "world_model_source", "stream_contract", "fallback_strategy", "provider_connected_local_allowed", "live_provider_call_allowed", "tool_execution_allowed", "connector_execution_allowed", "production_memory_write_allowed", "worker_spawn_allowed", "production_write_allowed"],
+      "properties": {
+        "id": { "const": "local_twin_agent_runtime" },
+        "selected_mode": { "const": "companion_copilot" },
+        "selected_companion_id": { "const": "local_twin_companion" },
+        "selected_stance": { "const": "grounded_partner" },
+        "model_gateway_driver": { "const": "local_model_gateway" },
+        "model_gateway_provider": { "const": "DeterministicModelGateway" },
+        "model_gateway_model_id": { "const": "deterministic_local_v1" },
+        "memory_driver": { "const": "local_memory_store" },
+        "memory_provider": { "const": "InMemoryProvider" },
+        "world_model_source": { "const": "pages_world_model" },
+        "stream_contract": { "const": "normalized_model_stream_v1" },
+        "fallback_strategy": { "const": "local_first_fail_closed" },
+        "provider_connected_local_allowed": { "type": "boolean" },
+        "live_provider_call_allowed": { "const": false },
+        "tool_execution_allowed": { "const": false },
+        "connector_execution_allowed": { "const": false },
+        "production_memory_write_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "agent_modes": {
+      "type": "array",
+      "minItems": 5,
+      "contains": { "type": "object", "required": ["id", "kind", "status", "selected", "required_receipt_kind", "allowed_now"], "properties": { "id": { "const": "companion_copilot" }, "selected": { "const": true } } }
+    },
+    "provider_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_family", "provider_slot_count", "provider_observation_count", "accepted_provider_observation_count", "provider_connected_local_allowed", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "credential_presence_only", "credential_values_recorded", "provider_secret_values_recorded", "requested_secret_values_recorded", "output_text_recorded", "provider_slots"],
+      "properties": {
+        "provider_family": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "ollama" },
+            { "const": "openai" },
+            { "const": "anthropic" },
+            { "const": "xai" },
+            { "const": "gemini" },
+            { "const": "mistral" },
+            { "const": "tensorzero" }
+          ],
+          "minItems": 7,
+          "maxItems": 7
+        },
+        "provider_slot_count": { "const": 7 },
+        "provider_observation_count": { "type": "integer", "minimum": 0 },
+        "accepted_provider_observation_count": { "type": "integer", "minimum": 0 },
+        "provider_connected_local_allowed": { "type": "boolean" },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_provider_call_allowed_now": { "type": "boolean" },
+        "live_network_allowed_now": { "type": "boolean" },
+        "credential_presence_only": { "const": true },
+        "credential_values_recorded": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "requested_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "provider_slots": { "type": "array", "minItems": 6, "items": { "type": "object" } }
+      }
+    },
+    "memory_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["driver", "provider", "durable_driver", "memory_record_count", "session_draft_count", "vendor_memory_driver", "vendor_status", "production_memory_write_allowed", "memory_consolidation_allowed_now", "production_memory_turn_on_required"],
+      "properties": {
+        "driver": { "const": "local_memory_store" },
+        "provider": { "const": "InMemoryProvider" },
+        "durable_driver": { "const": "postgres_memory_records" },
+        "memory_record_count": { "type": "integer", "minimum": 0 },
+        "session_draft_count": { "type": "integer", "minimum": 0 },
+        "vendor_memory_driver": { "const": "mem0_memory_store" },
+        "vendor_status": { "const": "PENDING-LIVE-RUN" },
+        "production_memory_write_allowed": { "const": false },
+        "memory_consolidation_allowed_now": { "const": true },
+        "production_memory_turn_on_required": { "const": true }
+      }
+    },
+    "hooks": { "type": "array", "minItems": 5, "items": { "$ref": "#/$defs/runtimeItem" } },
+    "skills": { "type": "array", "minItems": 5, "items": { "$ref": "#/$defs/runtimeItem" } },
+    "connectors": { "type": "array", "minItems": 5, "items": { "$ref": "#/$defs/runtimeItem" } },
+    "multi_agent_runtime": {
+      "type": "object",
+      "required": ["status", "handoff_allowed_now", "swarm_launch_allowed", "worker_spawn_allowed", "external_agent_execution_allowed", "candidate_agents", "required_receipt_kind"],
+      "properties": {
+        "status": { "const": "LOCAL_HANDOFF_CANDIDATES_ONLY" },
+        "handoff_allowed_now": { "const": false },
+        "swarm_launch_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "external_agent_execution_allowed": { "const": false },
+        "candidate_agents": { "type": "array", "minItems": 3 },
+        "required_receipt_kind": { "const": "twin.agent_handoff.approved" }
+      }
+    },
+    "boundary_refusals": { "type": "object" },
+    "blocked_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["live_provider_call_without_observation_allowed", "tool_execution_allowed", "connector_execution_allowed", "network_allowed", "secret_values_recorded", "provider_secret_values_recorded", "output_text_recorded", "production_memory_write_allowed", "worker_spawn_allowed", "agent_swarm_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "live_provider_call_without_observation_allowed": { "const": false },
+        "tool_execution_allowed": { "const": false },
+        "connector_execution_allowed": { "const": false },
+        "network_allowed": { "const": false },
+        "secret_values_recorded": { "const": false },
+        "provider_secret_values_recorded": { "const": false },
+        "output_text_recorded": { "const": false },
+        "production_memory_write_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "agent_swarm_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "source_routes": { "type": "array", "minItems": 9, "items": { "type": "string" } },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_render", "should_render_agent_modes", "should_render_hooks", "should_render_skills", "should_render_connectors", "should_render_provider_slots", "must_not_claim_live_tools", "must_not_claim_live_connectors", "must_not_claim_agent_swarm", "must_not_show_secret_values", "must_keep_local_deterministic_fallback_visible"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Twin module" },
+        "safe_to_render": { "const": true },
+        "should_render_agent_modes": { "const": true },
+        "should_render_hooks": { "const": true },
+        "should_render_skills": { "const": true },
+        "should_render_connectors": { "const": true },
+        "should_render_provider_slots": { "const": true },
+        "must_not_claim_live_tools": { "const": true },
+        "must_not_claim_live_connectors": { "const": true },
+        "must_not_claim_agent_swarm": { "const": true },
+        "must_not_show_secret_values": { "const": true },
+        "must_keep_local_deterministic_fallback_visible": { "const": true }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["source_contract", "response_schema", "proof_check", "source_receipt_ids"],
+      "properties": {
+        "source_contract": { "const": "docs/TWIN-AGENT-RUNTIME-CONTRACT.md" },
+        "response_schema": { "const": "generated/response-schemas/twin-agent-runtime-response.schema.json" },
+        "proof_check": { "const": "make twin-agent-runtime-check" },
+        "source_receipt_ids": { "type": "array" }
+      }
+    }
+  },
+  "$defs": {
+    "runtimeItem": {
+      "type": "object",
+      "required": ["id", "kind", "status", "required_receipt_kind", "authority_required", "allowed_now", "execution_allowed", "provider_call_allowed", "network_allowed", "secret_values_recorded", "production_write_allowed"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["hook", "skill", "connector"] },
+        "status": { "type": "string", "minLength": 1 },
+        "required_receipt_kind": { "type": "string", "minLength": 1 },
+        "authority_required": { "type": "boolean" },
+        "allowed_now": { "type": "boolean" },
+        "execution_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "network_allowed": { "const": false },
+        "secret_values_recorded": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  }
+}

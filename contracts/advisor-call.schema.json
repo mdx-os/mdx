@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/advisor-call.schema.json",
+  "title": "MDx Governed Advisor Consult Receipt Payload",
+  "description": "The payload of an advisor.call.recorded receipt (ADR 0490). A premium judgment consult is receipted so intelligence spend is auditable. Carries a DIGEST of the advice, never the advice text. Locked to crates/mdx-core/src/advisor_call.rs by make advisor-call-contract-check.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trigger",
+    "advisor_model_id",
+    "provider_family",
+    "input_tokens",
+    "output_tokens",
+    "cost_cents",
+    "advice_digest",
+    "input_scope_hash",
+    "outcome",
+    "fallback_model_id",
+    "refusal_reason",
+    "advisor_grants_execution_authority"
+  ],
+  "properties": {
+    "trigger": {
+      "type": "string",
+      "description": "The high-leverage moment the advisor was consulted at.",
+      "enum": [
+        "plan_review",
+        "mission_shaping",
+        "architecture",
+        "stuck_recovery",
+        "sizing_judgment",
+        "operator_requested"
+      ]
+    },
+    "advisor_model_id": {
+      "type": "string",
+      "description": "The model id that played the advisor role."
+    },
+    "provider_family": {
+      "type": "string",
+      "description": "The provider family of the advisor model (retention and routing audit)."
+    },
+    "input_tokens": { "type": "string", "description": "Input token count, stringified." },
+    "output_tokens": { "type": "string", "description": "Output token count, stringified." },
+    "cost_cents": { "type": "string", "description": "Consult cost in cents, stringified." },
+    "advice_digest": {
+      "type": "string",
+      "description": "A bounded, whitespace-free digest of the advice. NEVER the advice text.",
+      "maxLength": 64
+    },
+    "input_scope_hash": {
+      "type": "string",
+      "description": "A bounded, whitespace-free hash of the input scope. NEVER the input.",
+      "maxLength": 64
+    },
+    "outcome": {
+      "type": "string",
+      "description": "What became of the consult.",
+      "enum": ["advised", "fallback", "refused", "skipped"]
+    },
+    "fallback_model_id": {
+      "type": "string",
+      "description": "The compliant model that answered when outcome is fallback; empty otherwise."
+    },
+    "refusal_reason": {
+      "type": "string",
+      "description": "The refusal reason CODE when outcome is refused; empty otherwise."
+    },
+    "advisor_grants_execution_authority": {
+      "type": "string",
+      "description": "Always false. The advisor is a judgment role and never holds execution authority.",
+      "const": "false"
+    }
+  }
+}

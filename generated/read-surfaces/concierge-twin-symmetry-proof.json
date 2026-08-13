@@ -1,0 +1,24 @@
+{
+  "name": "mdx-concierge-twin-symmetry-proof",
+  "mode": "deterministic-local",
+  "source": "docs/CONCIERGE-TWIN-SYMMETRY.md",
+  "surfaces": [
+    { "id": "concierge", "route": "/concierge.json", "source": "generated/read-model-snapshots/concierge.json", "required_evidence": ["receipt_ids"], "forbidden": ["answer_without_receipt_ids", "shadow_status_tracking"] },
+    { "id": "twin", "route": "/twin.json", "source": "generated/companions/twin-text-grounding-contract.json", "required_evidence": ["receipt_ids", "world_model_sources"], "forbidden": ["answer_without_receipt_ids", "world_model_without_source", "unbounded_agent_control"] }
+  ],
+  "shared_evidence_packet": {
+    "receipt_ids_path": "generated/read-model-snapshots/concierge.json#receipt_ids",
+    "world_model_sources_path": "generated/world-model/mdx-local-world-model.json#components",
+    "answer_contracts": ["generated/read-surfaces/pages-concierge-answer-contract.json", "generated/companions/twin-text-grounding-contract.json"]
+  },
+  "proofs": [
+    { "id": "same_receipts_same_packet", "assertion": "Concierge and Twin cite the same receipt ids when answering from the same evidence packet.", "first_proof": "make read-surface-evidence-check" },
+    { "id": "no_shadow_answer_state", "assertion": "Neither surface may answer from UI-only state, app-local memory, or route-local facts.", "first_proof": "make read-surface-evidence-check" },
+    { "id": "twin_governed_action_gate", "assertion": "Twin may advise from evidence now; loops, workers, credentials, spend, deployment, provider, memory, or write hooks require governed action rails.", "first_proof": "make twin-grounding-check" }
+  ],
+  "rules": [
+    "symmetry compares cited evidence, not prose wording",
+    "Twin can add companion framing only after citing the same evidence packet",
+    "Concierge remains the question surface and Twin remains the companion surface"
+  ]
+}

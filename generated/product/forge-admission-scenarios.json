@@ -1,0 +1,26 @@
+{
+  "name": "mdx-product-forge-admission-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-FORGE-ADMISSION-SCENARIOS.md",
+  "contract": "generated/product/forge-admission-contract.json",
+  "allowed": [
+    {
+      "id": "admit_build_with_full_chain",
+      "requires": ["product.ratification.recorded", "strategy.ratification.recorded", "treasury.reserve.requested", "talent.request.prepared", "generated/verification/ci-verification-evidence.json"],
+      "allows": ["request_forge_build"]
+    }
+  ],
+  "blocked": [
+    { "id": "missing_product_ratification_blocks_admission", "missing": "product.ratification.recorded", "blocks": ["request_forge_build", "ship_product_change"] },
+    { "id": "missing_strategy_ratification_blocks_admission", "missing": "strategy.ratification.recorded", "blocks": ["request_forge_build", "allocate_live_budget"] },
+    { "id": "missing_treasury_reserve_blocks_admission", "missing": "treasury.reserve.requested", "blocks": ["request_forge_build", "allocate_live_budget"] },
+    { "id": "missing_talent_request_blocks_admission", "missing": "talent.request.prepared", "blocks": ["request_forge_build", "delegate_worker"] },
+    { "id": "missing_ci_evidence_blocks_admission", "missing": "generated/verification/ci-verification-evidence.json", "blocks": ["request_forge_build", "bypass_ci"] }
+  ],
+  "hard_stops": ["ship_product_change", "production_deploy", "delegate_worker", "bypass_ci", "skip_human_ratification"],
+  "rules": [
+    "one allowed path requires Product, Strategy, Treasury, Talent, Forge, and CI evidence",
+    "each blocked path names the missing evidence and the forbidden downstream action",
+    "Forge admission scenarios remain read-only until runtime emits receipt-backed admission evidence"
+  ]
+}

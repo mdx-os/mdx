@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageRelayObservationLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "observation_id", "relay_observation_receipt_id", "policy_decision_id", "realtime_preflight_receipt_id", "relay_driver", "delivery_count", "p99_post_start_to_delivery_ms", "p99_post_finish_to_delivery_ms", "p99_budget_ms", "hot_cache_replay_status", "durable_replay_status", "typing_signal_status", "relay_health_status", "local_websocket_fanout_allowed", "production_delivery_allowed", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-message-relay-observation-local-post" },
+    "status": { "const": "MESSAGE_RELAY_OBSERVED_LOCAL_PRODUCTION_BLOCKED" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/messages/relay-observations.json" },
+    "projection_route": { "const": "/messages/relay-observations/projection.json" },
+    "observation_id": { "type": "string", "minLength": 1 },
+    "relay_observation_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "realtime_preflight_receipt_id": { "type": "string", "minLength": 1 },
+    "relay_driver": { "const": "valkey" },
+    "delivery_count": { "type": "integer", "minimum": 1 },
+    "p99_post_start_to_delivery_ms": { "type": "integer", "maximum": 20 },
+    "p99_post_finish_to_delivery_ms": { "type": "integer", "maximum": 20 },
+    "p99_budget_ms": { "const": 20 },
+    "hot_cache_replay_status": { "const": "REPLAYED_FROM_RELAY_HOT_CACHE" },
+    "durable_replay_status": { "const": "REPLAYED_FROM_DURABLE_RELAY_LOG_AFTER_RESTART" },
+    "typing_signal_status": { "const": "TYPING_SIGNAL_PROVEN" },
+    "relay_health_status": { "const": "LIVE-LOCAL-RELAY" },
+    "local_websocket_fanout_allowed": { "const": true },
+    "production_delivery_allowed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

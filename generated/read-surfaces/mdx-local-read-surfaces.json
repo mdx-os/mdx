@@ -1,0 +1,10 @@
+{
+  "name": "mdx-local-read-surfaces",
+  "mode": "deterministic-local",
+  "surfaces": [
+    { "surface": "observatory", "route": "/observatory", "read_model": "ObservatoryReadModel", "response_schema_path": "generated/response-schemas/observatory-read-model.schema.json", "declared_sources": ["ledger_entries", "loop_runs", "policy_decisions", "eval_verdicts", "agent_credentials", "charter_records", "memory_records"], "receipt_evidence_required": true },
+    { "surface": "concierge", "route": "/concierge", "read_model": "ConciergeReadModel", "response_schema_path": "generated/response-schemas/concierge-read-model.schema.json", "declared_sources": ["ledger_entries", "eval_verdicts", "agent_credentials"], "receipt_evidence_required": true },
+    { "surface": "pages", "route": "/pages.json", "read_model": "PagesProjectionReadModel", "response_schema_path": "generated/response-schemas/pages-projection-list-response.schema.json", "declared_sources": ["ledger_entries", "pages_projections"], "receipt_evidence_required": true },
+    { "surface": "message", "route": "/messages/threads.json", "read_model": "MessageThreadProjectionReadModel", "response_schema_path": "generated/response-schemas/message-thread-list-response.schema.json", "declared_sources": ["ledger_entries", "message_projections"], "receipt_evidence_required": true }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/device-descriptor.schema.json",
+  "title": "DeviceDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["device_id", "tenant_id", "user_id", "platform", "display_name", "public_key_thumbprint", "attestation_status", "status", "registered_at"],
+  "properties": {
+    "device_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "user_id": { "type": "string", "minLength": 1 },
+    "platform": { "enum": ["ios", "macos"] },
+    "display_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "public_key_thumbprint": { "type": "string", "minLength": 16 },
+    "attestation_status": { "enum": ["verified", "degraded", "unavailable", "rejected"] },
+    "status": { "enum": ["active", "revoked"] },
+    "registered_at": { "type": "string", "format": "date-time" },
+    "revoked_at": { "type": ["string", "null"], "format": "date-time" }
+  }
+}

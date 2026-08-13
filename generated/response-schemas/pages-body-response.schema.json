@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesBodyResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tenant_id", "document_id", "title", "body_ref", "source_receipt_ids", "charter_evidence_ids", "revision_id", "body", "content_type", "visibility", "writes_allowed", "receipt_backed", "body_ref_allowlisted", "standalone_store_allowed", "world_model_source"],
+  "properties": {
+    "tenant_id": { "type": "string" },
+    "document_id": { "type": "string" },
+    "title": { "type": "string" },
+    "body_ref": { "type": "string" },
+    "source_receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "charter_evidence_ids": { "type": "array", "items": { "type": "string" } },
+    "revision_id": { "type": "string" },
+    "body": { "type": "string", "minLength": 1 },
+    "content_type": { "const": "text/markdown; charset=utf-8" },
+    "visibility": { "const": "tenant_only" },
+    "writes_allowed": { "const": false },
+    "receipt_backed": { "const": true },
+    "body_ref_allowlisted": { "const": true },
+    "standalone_store_allowed": { "const": false },
+    "world_model_source": { "const": "generated/world-model/pages-projection-fixtures.json" }
+  }
+}

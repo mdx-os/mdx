@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeOperatorPacketResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "source_projection", "source_receipt_kinds", "terminal_build_count", "packet_present", "needs_human", "human_summary", "boundary", "operator_can_ratify_here", "read_only", "writes_allowed", "execution_allowed", "deployment_authority_granted", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-runtime-operator-packet" },
+    "status": { "const": "OK" },
+    "source_projection": { "type": "string", "minLength": 1 },
+    "source_receipt_kinds": { "type": "array", "items": { "type": "string" } },
+    "terminal_build_count": { "type": "integer", "minimum": 0 },
+    "packet_present": { "type": "boolean" },
+    "needs_human": { "type": "boolean" },
+    "human_summary": { "type": "string", "minLength": 1 },
+    "boundary": { "type": "string", "minLength": 1 },
+    "operator_can_ratify_here": { "const": false },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

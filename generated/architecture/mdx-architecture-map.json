@@ -1,0 +1,18 @@
+{
+  "name": "mdx-architecture-map",
+  "mode": "deterministic-local",
+  "source": "docs/ARCHITECTURE.md",
+  "canonical_visuals": ["04-mdx-operating-dynamic-canonical.svg", "06-inside-the-operating-dynamic.svg", "08-agent-workforce.svg", "12-inside-the-harness.svg"],
+  "crates": ["mdx-core", "mdx-server", "mdx-codegen"],
+  "local_loop_runners": ["aegis_scanner_agent", "charter_attestation_agent", "evals_runner_agent", "forge_orchestrator_agent", "product_shaping_agent", "talent_autonomy_agent"],
+  "companions": ["twin_advisor", "twin_architect", "twin_coach", "twin_coder", "twin_compliance", "twin_problem_solver"],
+  "ephemeral_workers": ["worker_bounded_task_template"],
+  "read_surfaces": ["observatory", "concierge"],
+  "live_substrates": ["temporal", "tensorzero", "mem0", "opentelemetry", "postgres", "render"],
+  "primary_checks": ["make readme-check", "make architecture-check", "make vision-check", "make source-map-check"],
+  "rules": [
+    "architecture docs must name the generated architecture map",
+    "architecture diagrams must stay aligned to generated local loops and populations",
+    "visual model changes require an ADR and make vision-check"
+  ]
+}

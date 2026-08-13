@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/host-descriptor.schema.json",
+  "title": "HostDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["host_id", "tenant_id", "owner_user_id", "display_name", "public_key_thumbprint", "capabilities", "connector_status", "status", "last_seen_at", "accepts_inbound_connections"],
+  "properties": {
+    "host_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "owner_user_id": { "type": "string", "minLength": 1 },
+    "display_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "public_key_thumbprint": { "type": "string", "minLength": 16 },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["local_forge", "event_relay", "checkpoint_export", "artifact_projection"] }
+    },
+    "connector_status": { "enum": ["online", "offline", "degraded", "revoked"] },
+    "status": { "enum": ["active", "revoked"] },
+    "last_seen_at": { "type": "string", "format": "date-time" },
+    "accepts_inbound_connections": { "const": false }
+  }
+}

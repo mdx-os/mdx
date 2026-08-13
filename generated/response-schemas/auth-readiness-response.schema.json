@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthReadinessResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "read_only", "receipt_backed", "local_ready", "auth_session", "tenant_policy", "access_management", "session_controls", "actor_admission", "blocked_authority", "source_routes", "ui_handoff", "checks"],
+  "properties": {
+    "name": { "const": "mdx-auth-multiuser-readiness" },
+    "status": { "enum": ["LOCAL-AUTH-MULTIUSER-MISSING-GOVERNED-EVIDENCE", "LOCAL-AUTH-MULTIUSER-MISSING-ACCESS-EVIDENCE", "LOCAL-AUTH-MULTIUSER-MISSING-SESSION-CONTROLS", "LIVE-LOCAL-AUTH-MULTIUSER-READY-PRODUCTION-BLOCKED"] },
+    "route": { "const": "/auth/readiness.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "local_ready": { "type": "boolean" },
+    "auth_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "status", "tenant_id", "user_id", "role", "roles", "expires_at", "session_cookie_write_allowed", "oauth_login_allowed", "password_login_allowed"],
+      "properties": {
+        "route": { "const": "/local/auth-session.json" },
+        "status": { "const": "deterministic-local-stub" },
+        "tenant_id": { "const": "local_tenant" },
+        "user_id": { "const": "local_user" },
+        "role": { "const": "owner" },
+        "roles": { "type": "array", "minItems": 4, "contains": { "const": "owner" }, "items": { "type": "string" } },
+        "expires_at": { "type": "string", "minLength": 1 },
+        "session_cookie_write_allowed": { "const": false },
+        "oauth_login_allowed": { "const": false },
+        "password_login_allowed": { "const": false }
+      }
+    },
+    "tenant_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preflight_route", "projection_route", "preflight_count", "required_receipt_kind", "terminal_state", "v1_sources_bound", "tenant_membership_policy_recorded", "role_mapping_policy_recorded", "invite_policy_recorded", "approved_model_policy_recorded", "source_receipt_ids"],
+      "properties": {
+        "preflight_route": { "const": "/auth/tenant-policy-preflights.json" },
+        "projection_route": { "const": "/auth/tenant-policy-preflights/projection.json" },
+        "preflight_count": { "type": "integer", "minimum": 0 },
+        "required_receipt_kind": { "const": "auth.tenant_policy.preflighted" },
+        "terminal_state": { "const": "AUTH_TENANT_POLICY_PREFLIGHT_RECORDED_PRODUCTION_AUTH_BLOCKED" },
+        "v1_sources_bound": { "type": "array", "minItems": 9, "items": { "type": "string" } },
+        "tenant_membership_policy_recorded": { "type": "boolean" },
+        "role_mapping_policy_recorded": { "type": "boolean" },
+        "invite_policy_recorded": { "type": "boolean" },
+        "approved_model_policy_recorded": { "type": "boolean" },
+        "source_receipt_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "access_management": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["invite_route", "invite_projection_route", "role_assignment_route", "role_assignment_projection_route", "invite_count", "role_assignment_count", "invite_receipt_kind", "role_assignment_receipt_kind", "access_management_ready", "email_delivery_allowed", "role_assignment_allowed", "session_activation_allowed", "session_cookie_write_allowed", "production_role_write_allowed", "production_auth_provider_allowed"],
+      "properties": {
+        "invite_route": { "const": "/auth/invite-requests.json" },
+        "invite_projection_route": { "const": "/auth/invite-requests/projection.json" },
+        "role_assignment_route": { "const": "/auth/role-assignments.json" },
+        "role_assignment_projection_route": { "const": "/auth/role-assignments/projection.json" },
+        "invite_count": { "type": "integer", "minimum": 0 },
+        "role_assignment_count": { "type": "integer", "minimum": 0 },
+        "invite_receipt_kind": { "const": "auth.invite.requested" },
+        "role_assignment_receipt_kind": { "const": "auth.role_assignment.recorded" },
+        "access_management_ready": { "type": "boolean" },
+        "email_delivery_allowed": { "const": false },
+        "role_assignment_allowed": { "const": false },
+        "session_activation_allowed": { "const": false },
+        "session_cookie_write_allowed": { "const": false },
+        "production_role_write_allowed": { "const": false },
+        "production_auth_provider_allowed": { "const": false }
+      }
+    },
+    "session_controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["write_route", "projection_route", "activation_receipt_kind", "revocation_receipt_kind", "tenant_switch_refusal_receipt_kind", "role_escalation_refusal_receipt_kind", "session_activation_count", "session_revocation_count", "tenant_switch_refusal_count", "role_escalation_refusal_count", "session_controls_ready", "session_cookie_write_allowed", "session_revocation_provider_allowed", "tenant_switch_without_policy_allowed", "role_escalation_without_policy_allowed", "source_receipt_ids"],
+      "properties": {
+        "write_route": { "const": "/auth/session-controls.json" },
+        "projection_route": { "const": "/auth/session-controls/projection.json" },
+        "activation_receipt_kind": { "const": "auth.session.activation.recorded" },
+        "revocation_receipt_kind": { "const": "auth.session.revocation.recorded" },
+        "tenant_switch_refusal_receipt_kind": { "const": "auth.tenant_switch.refused" },
+        "role_escalation_refusal_receipt_kind": { "const": "auth.role_escalation.refused" },
+        "session_activation_count": { "type": "integer", "minimum": 0 },
+        "session_revocation_count": { "type": "integer", "minimum": 0 },
+        "tenant_switch_refusal_count": { "type": "integer", "minimum": 0 },
+        "role_escalation_refusal_count": { "type": "integer", "minimum": 0 },
+        "session_controls_ready": { "type": "boolean" },
+        "session_cookie_write_allowed": { "const": false },
+        "session_revocation_provider_allowed": { "const": false },
+        "tenant_switch_without_policy_allowed": { "const": false },
+        "role_escalation_without_policy_allowed": { "const": false },
+        "source_receipt_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "actor_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["governed_write_route_count", "actor_admission_required_for_mutation", "policy_required_for_mutation", "receipt_required_for_mutation", "source_route_required_for_mutation", "hidden_privilege_bypass_allowed", "tenant_switch_without_policy_allowed", "role_escalation_without_policy_allowed"],
+      "properties": {
+        "governed_write_route_count": { "type": "integer", "minimum": 39 },
+        "actor_admission_required_for_mutation": { "const": true },
+        "policy_required_for_mutation": { "const": true },
+        "receipt_required_for_mutation": { "const": true },
+        "source_route_required_for_mutation": { "const": true },
+        "hidden_privilege_bypass_allowed": { "const": false },
+        "tenant_switch_without_policy_allowed": { "const": false },
+        "role_escalation_without_policy_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service_role_shortcut_allowed", "user_metadata_authorization_allowed", "implicit_tenant_inference_allowed", "production_role_write_allowed", "production_auth_provider_allowed", "supabase_auth_claim_authority_allowed", "session_cookie_write_allowed", "session_revocation_provider_allowed", "oauth_login_allowed", "password_login_allowed", "cutover_allowed", "production_write_allowed"],
+      "properties": {
+        "service_role_shortcut_allowed": { "const": false },
+        "user_metadata_authorization_allowed": { "const": false },
+        "implicit_tenant_inference_allowed": { "const": false },
+        "production_role_write_allowed": { "const": false },
+        "production_auth_provider_allowed": { "const": false },
+        "supabase_auth_claim_authority_allowed": { "const": false },
+        "session_cookie_write_allowed": { "const": false },
+        "session_revocation_provider_allowed": { "const": false },
+        "oauth_login_allowed": { "const": false },
+        "password_login_allowed": { "const": false },
+        "cutover_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "source_routes": { "type": "array", "minItems": 9, "items": { "type": "string" } },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_show_local_auth_ready", "safe_to_show_invite_and_role_receipts", "safe_to_show_session_control_receipts", "must_show_production_auth_blocked", "must_show_email_delivery_blocked", "must_show_session_activation_blocked", "must_show_session_revocation_provider_blocked", "must_show_tenant_switch_refusal", "must_show_role_escalation_refusal", "must_not_enable_service_role_shortcut", "must_not_claim_supabase_auth_cutover", "must_not_allow_tenant_switch_without_policy", "must_not_allow_role_escalation_without_policy", "must_keep_local_stub_label_visible"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Console Access and Session module" },
+        "safe_to_show_local_auth_ready": { "type": "boolean" },
+        "safe_to_show_invite_and_role_receipts": { "const": true },
+        "safe_to_show_session_control_receipts": { "const": true },
+        "must_show_production_auth_blocked": { "const": true },
+        "must_show_email_delivery_blocked": { "const": true },
+        "must_show_session_activation_blocked": { "const": true },
+        "must_show_session_revocation_provider_blocked": { "const": true },
+        "must_show_tenant_switch_refusal": { "const": true },
+        "must_show_role_escalation_refusal": { "const": true },
+        "must_not_enable_service_role_shortcut": { "const": true },
+        "must_not_claim_supabase_auth_cutover": { "const": true },
+        "must_not_allow_tenant_switch_without_policy": { "const": true },
+        "must_not_allow_role_escalation_without_policy": { "const": true },
+        "must_keep_local_stub_label_visible": { "const": true }
+      }
+    },
+    "checks": { "type": "array", "minItems": 4, "items": { "type": "string" } }
+  }
+}

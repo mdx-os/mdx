@@ -1,0 +1,19 @@
+{
+  "name": "mdx-read-surface-readiness-symmetry",
+  "mode": "deterministic-local",
+  "source": "docs/READ-SURFACE-READINESS-SYMMETRY.md",
+  "surfaces": [
+    { "id": "observatory", "route": "/observatory", "source": "generated/read-model-snapshots/observatory.json", "shared_truth": "receipt_ids" },
+    { "id": "concierge", "route": "/concierge", "source": "generated/read-model-snapshots/concierge.json", "shared_truth": "receipt_ids" },
+    { "id": "readiness", "route": "/readiness", "source": "generated/apps/mdx-app-readiness.json", "shared_truth": "controlling_rails" }
+  ],
+  "controlling_rails": [
+    { "legacy_app": "Forge", "next_contract": "generated/product/forge-admission-contract.json", "first_local_proof": "make local-forge-session-proof-check" },
+    { "legacy_app": "Talent", "next_contract": "generated/workers/handoff-evidence-contract.json", "first_local_proof": "make run-local-loops" }
+  ],
+  "rules": [
+    "Observatory and Concierge snapshots must cite identical receipt_ids",
+    "The readiness route must point at the same controlling rails that block Forge and Talent runtime work",
+    "Humans at the edge inspect evidence and readiness through generated read models, not handwritten shadow state"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mdx-product-forge-admission-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-FORGE-ADMISSION-CONTRACT.md",
+  "status": "DECLARED-LOCAL-HANDOFF",
+  "from_loop": "product_shaping_agent",
+  "to_loop": "forge_orchestrator",
+  "allowed_handoff": "request_forge_build",
+  "required_product_evidence": ["product.signal.ingested", "product.bet.shaped", "policy.decision.recorded", "human_sponsor", "product.ratification.recorded"],
+  "required_strategy_evidence": ["strategy.ratification.recorded", "generated/strategy/treasury-reserve-contract.json", "generated/strategy/talent-request-contract.json"],
+  "required_forge_evidence": ["generated/verification/ci-verification-evidence.json"],
+  "handoff_fields": ["source_receipt_ids", "build_intent", "scope", "human_sponsor", "expires_at", "policy_decision_id"],
+  "forbidden_without_forge_authority": ["ship_product_change", "production_deploy", "delegate_worker", "bypass_ci", "skip_human_ratification"],
+  "first_local_proof": "make product-ratification-check",
+  "rules": [
+    "Product may request a Forge build only after Product and Strategy ratification evidence exists",
+    "Forge owns build, test, review, ship, and deploy stage authority",
+    "Build admission carries receipt ids instead of app-local state"
+  ]
+}

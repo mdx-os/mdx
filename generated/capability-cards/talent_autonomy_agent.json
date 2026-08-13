@@ -1,0 +1,7 @@
+{
+  "agent": "talent_autonomy_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["authorize_sponsor_chain", "authorize_worker_lease", "authorize_budget", "authorize_tool_allowlist", "record_authorization_envelope", "check_worker_credential", "request_worker_spawn", "record_blocked_worker_runtime_boundary"],
+  "forbidden_actions": ["run_worker_runtime", "bypass_eval_credential", "bypass_talent_authority_receipts", "bypass_worker_spawn_contract", "production_deploy", "live_spend", "bypass_policy"]
+}

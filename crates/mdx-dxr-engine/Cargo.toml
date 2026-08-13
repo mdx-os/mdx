@@ -1,0 +1,16 @@
+[package]
+name = "mdx-dxr-engine"
+version = "0.1.0"
+description = "Local Rust durable execution runtime boundary for governed MDx DXR."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+mdx-core = { path = "../mdx-core" }
+serde_json = "1"
+
+[[bin]]
+name = "mdx-dxr-engine"
+path = "src/main.rs"

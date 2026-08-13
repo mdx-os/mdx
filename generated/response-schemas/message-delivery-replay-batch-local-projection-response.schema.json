@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageDeliveryReplayBatchLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "batch_count", "rollback_safe_delivery_replay_proven", "websocket_fanout_allowed", "production_delivery_allowed", "live_substrate_required", "production_write_allowed", "batches"],
+  "properties": {
+    "name": { "const": "mdx-message-delivery-replay-batch-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/messages/delivery-replay-batches.json" },
+    "batch_count": { "type": "integer", "minimum": 0 },
+    "rollback_safe_delivery_replay_proven": { "const": true },
+    "websocket_fanout_allowed": { "const": false },
+    "production_delivery_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "batches": { "type": "array" }
+  }
+}

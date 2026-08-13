@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesPublicationVisibilityCheckLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "visibility_check_count", "publication_visibility_proven", "public_visibility_allowed", "production_visibility_allowed", "search_indexing_allowed", "live_substrate_required", "production_write_allowed", "checks"],
+  "properties": {
+    "name": { "const": "mdx-pages-publication-visibility-check-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/publication-visibility-checks.json" },
+    "visibility_check_count": { "type": "integer", "minimum": 0 },
+    "publication_visibility_proven": { "const": true },
+    "public_visibility_allowed": { "const": false },
+    "production_visibility_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "checks": { "type": "array" }
+  }
+}

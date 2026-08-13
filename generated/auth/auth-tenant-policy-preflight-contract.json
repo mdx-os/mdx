@@ -1,0 +1,58 @@
+{
+  "name": "mdx-auth-tenant-policy-preflight-contract",
+  "mode": "deterministic-local",
+  "source": "docs/AUTH-TENANT-POLICY-PREFLIGHT-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/auth/tenant-policy-preflights.json",
+  "projection_route": "/auth/tenant-policy-preflights/projection.json",
+  "access_management_routes": {
+    "invite_write_route": "/auth/invite-requests.json",
+    "invite_projection_route": "/auth/invite-requests/projection.json",
+    "role_assignment_write_route": "/auth/role-assignments.json",
+    "role_assignment_projection_route": "/auth/role-assignments/projection.json",
+    "invite_receipt_kind": "auth.invite.requested",
+    "role_assignment_receipt_kind": "auth.role_assignment.recorded"
+  },
+  "session_control_routes": {
+    "write_route": "/auth/session-controls.json",
+    "projection_route": "/auth/session-controls/projection.json",
+    "activation_receipt_kind": "auth.session.activation.recorded",
+    "revocation_receipt_kind": "auth.session.revocation.recorded",
+    "tenant_switch_refusal_receipt_kind": "auth.tenant_switch.refused",
+    "role_escalation_refusal_receipt_kind": "auth.role_escalation.refused"
+  },
+  "required_receipt_kind": "auth.tenant_policy.preflighted",
+  "source_evidence_kind": "auth.session.local.stub",
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "preflight_id", "source_auth_session_evidence_id", "tenant_membership_scope", "role_mapping_scope", "invite_state_scope", "approved_model_scope"],
+  "v1_sources_bound": ["tenant_orgs", "tenant_org_members", "user_profiles", "mdx_roles", "invites", "tenant_approved_models", "get_user_tenant_id", "get_user_access_level", "get_user_role"],
+  "authority_boundary": {
+    "v1_helper_mapping_recorded": true,
+    "tenant_membership_policy_recorded": true,
+    "role_mapping_policy_recorded": true,
+    "invite_policy_recorded": true,
+    "approved_model_policy_recorded": true,
+    "service_role_shortcut_allowed": false,
+    "user_metadata_authorization_allowed": false,
+    "implicit_tenant_inference_allowed": false,
+    "production_role_write_allowed": false,
+    "email_delivery_allowed": false,
+    "session_activation_allowed": false,
+    "session_revocation_provider_allowed": false,
+    "session_cookie_write_allowed": false,
+    "tenant_switch_without_policy_allowed": false,
+    "role_escalation_without_policy_allowed": false,
+    "production_auth_provider_allowed": false,
+    "supabase_auth_claim_authority_allowed": false,
+    "cutover_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "authTenantPolicyPreflightUrl",
+    "projection_url_var": "authTenantPolicyPreflightProjectionUrl",
+    "handler": "requestGovernedAuthTenantPolicyPreflight",
+    "button_class": "auth-tenant-policy-preflight",
+    "aria_label": "Check governed auth and tenant readiness"
+  },
+  "checks": ["make auth-tenant-policy-preflight-check", "make auth-session-control-check", "cargo test -p mdx-core auth_tenant_policy_preflight", "cargo test -p mdx-core auth_access_management", "cargo test -p mdx-core auth_session_control", "cargo test -p mdx-server auth_tenant_policy"]
+}

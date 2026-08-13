@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeCandidateSelectionLocalPostResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "route", "review_packet_route", "source_host_pr_draft_route", "selection_id", "primary_run_id", "selected_run_id", "recommended_run_id", "candidate_count", "receipt_ids", "selected_matches_recommendation", "override_reason_recorded", "selection_grants_delivery_authority", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-candidate-selection-local-post" },
+        "status": { "const": "RECORDED" },
+        "route": { "const": "/forge/candidate-selections.json" },
+        "review_packet_route": { "const": "/forge/review-packet.json" },
+        "source_host_pr_draft_route": { "const": "/forge/source-host-pr-drafts.json" },
+        "selection_id": { "type": "string", "minLength": 1 },
+        "primary_run_id": { "type": "string", "minLength": 1 },
+        "selected_run_id": { "type": "string", "minLength": 1 },
+        "recommended_run_id": { "type": "string" },
+        "candidate_count": { "type": "integer", "minimum": 2 },
+        "receipt_ids": { "type": "array", "minItems": 2, "items": { "type": "string", "minLength": 1 } },
+        "selected_matches_recommendation": { "type": "boolean" },
+        "override_reason_recorded": { "type": "boolean" },
+        "selection_grants_delivery_authority": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "receipt_ids", "selection_grants_delivery_authority", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-candidate-selection-local-post" },
+        "status": { "const": "REFUSED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "receipt_ids": { "type": "array", "maxItems": 0 },
+        "selection_grants_delivery_authority": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  ]
+}

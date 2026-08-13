@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeSemanticQueryResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-forge-semantic-query" },
+    "status": { "enum": ["OK", "REFUSED"] },
+    "reason": { "type": "string" },
+    "repo_id": { "type": "string" },
+    "operation": { "enum": ["capabilities", "orientation", "workspace_symbol", "definition", "references", "impact_radius", "hover", "file_outline", "related_tests", "diagnostics", "lsp_probe"] },
+    "query": { "type": "string" },
+    "path": { "type": "string" },
+    "line": { "type": "integer", "minimum": 0 },
+    "primary_language": { "type": "string", "minLength": 1 },
+    "language_pack_id": { "type": "string", "minLength": 1 },
+    "semantic_session_id": { "type": "string", "pattern": "^semantic_session_fnv1a64:[a-fA-F0-9]{16}$" },
+    "fallback_index_status": { "enum": ["indexed", "capped", "empty"] },
+    "source_file_count": { "type": "integer", "minimum": 0, "maximum": 500 },
+    "indexed_file_count": { "type": "integer", "minimum": 0, "maximum": 500 },
+    "indexed_symbol_count": { "type": "integer", "minimum": 0 },
+    "related_test_anchor_count": { "type": "integer", "minimum": 0 },
+    "semantic_intelligence": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^(lsp|diagnostics|symbols|references|hover|code_actions|structural|fallback):.+" }
+    },
+    "semantic_tool_readiness": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^(anchor|fallback|lsp|structural):[^=]+=(available|missing)$" }
+    },
+    "lsp_execution_status": { "enum": ["not_started", "disabled", "missing_server", "initialized", "failed"] },
+    "lsp_execution_allowed": { "type": "boolean" },
+    "lsp_server_command": { "type": "string" },
+    "lsp_probe_reason": { "type": "string" },
+    "adapter_execution_allowed": { "const": false },
+    "provider_calls_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "result_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+    "results": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "line", "column", "snippet"],
+        "properties": {
+          "kind": { "enum": ["workspace_symbol", "definition", "reference", "hover_context", "file_symbol", "related_test", "diagnostic"] },
+          "path": { "type": "string", "minLength": 1 },
+          "line": { "type": "integer", "minimum": 1 },
+          "column": { "type": "integer", "minimum": 1 },
+          "snippet": { "type": "string" }
+        }
+      }
+    },
+    "summary": { "type": "string" }
+  }
+}

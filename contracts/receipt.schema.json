@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/receipt.schema.json",
+  "title": "MDx Ledger Receipt",
+  "type": "object",
+  "required": ["receipt_id", "tenant_id", "trace_id", "actor_id", "kind", "payload", "hash"],
+  "properties": {
+    "receipt_id": { "type": "string" },
+    "tenant_id": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "actor_id": { "type": "string" },
+    "kind": { "type": "string" },
+    "policy_decision_id": { "type": ["string", "null"] },
+    "payload": { "type": "object" },
+    "previous_hash": { "type": ["string", "null"] },
+    "hash": { "type": "string" }
+  }
+}
+

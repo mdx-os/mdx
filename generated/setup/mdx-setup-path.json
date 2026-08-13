@@ -1,0 +1,39 @@
+{
+  "name": "mdx-setup-path",
+  "purpose": "The one canonical way to stand MDx up locally, plus the opt-in production-shaped path. Cold start is a single command; the GUI takes over after a running stack.",
+  "entry_command": "make setup",
+  "cold_start_rule": "The cold start is one command. It DETECTS prerequisites and prints exact install steps for any that are missing, but never installs them - safe on locked-down machines. Everything after a running stack happens in the GUI, not the terminal.",
+  "drift_rule": "There is exactly one default local path. This contract is the single source of truth; setup-path-check enforces it against the Makefile, scripts, and QUICKSTART so the snapshot and Docker stories cannot silently re-diverge.",
+  "canonical_path": {
+    "id": "local-snapshot",
+    "label": "Local, snapshot-backed",
+    "default": true,
+    "needs_docker": false,
+    "needs_postgres": false,
+    "durability": "snapshot file at .mdx-local/kernel-ledger-snapshot.json",
+    "for": "the default - anyone standing MDx up on one machine, no database to run",
+    "steps": [
+      "detect prerequisites (Rust, Node, pnpm) and print exact install steps for any missing - never auto-install",
+      "install the workspace packages the product shell needs",
+      "build the kernel",
+      "boot the snapshot-backed kernel and the product shell",
+      "open the browser to the first-run welcome screen"
+    ]
+  },
+  "opt_in_path": {
+    "id": "docker-postgres",
+    "label": "Production-shaped (Docker + Postgres)",
+    "default": false,
+    "needs_docker": true,
+    "needs_postgres": true,
+    "for": "rehearsing the production-shaped stack on one machine, through the deployment-profile gate",
+    "entry": "deploy/docker-compose (local-secure); see deploy/README.md"
+  },
+  "prerequisites": [
+    { "tool": "rust", "command": "cargo", "why": "build the kernel", "install_hint": "https://rustup.rs" },
+    { "tool": "node", "command": "node", "why": "run the product shell", "install_hint": "install Node.js LTS from https://nodejs.org" },
+    { "tool": "pnpm", "command": "pnpm", "version": "9.15.9", "why": "the product shell is a pnpm workspace", "install_hint": "corepack enable && corepack prepare pnpm@9.15.9 --activate" }
+  ],
+  "success": "a first-run welcome screen in the browser, never a JSON file",
+  "check": "make setup-path-check"
+}

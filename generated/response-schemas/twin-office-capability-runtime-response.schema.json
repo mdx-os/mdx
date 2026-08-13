@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinOfficeCapabilityRuntimeResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "status", "route", "generate_route", "download_route", "marketplace_pack_route", "capability_pack_id", "capability_pack_version", "capability_pack_flavor", "generated_artifact_count", "generation_live", "office_output_generation_live", "office_input_parsing_live", "docx_generation", "xlsx_generation", "pptx_generation", "reading_routes", "storage_contract_state", "download_allowed", "receipt_backed", "raw_private_content_recorded", "provider_call_allowed", "frontier_raw_content_allowed", "memory_write_performed", "production_write_allowed", "ui_handoff", "evidence"],
+  "properties": {
+    "name": { "const": "mdx-twin-office-capability-runtime" },
+    "status": { "const": "LOCAL_OFFICE_NATIVE_PACK_READY" },
+    "route": { "const": "/twin/office-capability-runtime.json" },
+    "generate_route": { "const": "/twin/office/generated-artifacts.json" },
+    "download_route": { "const": "/twin/office/downloads.json" },
+    "marketplace_pack_route": { "const": "/marketplace/packs/mdx.office.native.v0.json" },
+    "capability_pack_id": { "const": "mdx.office.native.v0" },
+    "capability_pack_version": { "const": "0.1.0" },
+    "capability_pack_flavor": { "const": "native" },
+    "generated_artifact_count": { "type": "integer", "minimum": 0 },
+    "generation_live": { "const": true },
+    "office_output_generation_live": { "const": true },
+    "office_input_parsing_live": { "const": false },
+    "storage_contract_state": { "const": "LOCAL_OFFICE_ARTIFACT_STORED_BY_REFERENCE" },
+    "download_allowed": { "const": true },
+    "receipt_backed": { "const": true },
+    "raw_private_content_recorded": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "frontier_raw_content_allowed": { "const": false },
+    "memory_write_performed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

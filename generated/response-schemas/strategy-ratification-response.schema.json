@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StrategyRatificationResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposal_id",
+    "runtime_status",
+    "question",
+    "options",
+    "why_now",
+    "blocked_actions",
+    "ratification_required",
+    "receipt_ids",
+    "source_contracts"
+  ],
+  "properties": {
+    "proposal_id": { "type": "string" },
+    "runtime_status": { "const": "DECLARED-LOCAL-READ-SURFACE" },
+    "question": { "type": "string" },
+    "options": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "why_now": { "type": "string" },
+    "blocked_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "ratification_required": { "const": true },
+    "receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "source_contracts": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "mdx-waiver-register",
+  "mode": "deterministic-local",
+  "source": "docs/WAIVERS.md",
+  "active_waivers": [],
+  "required_fields": ["id", "owner", "reason", "scope", "expires_at", "mitigation_check", "risk_id"],
+  "rules": [
+    "active waivers must have an owner, reason, scope, expiry, mitigation check, and risk id",
+    "expired waivers fail local verification",
+    "waivers must not disable no-fake-green, policy, receipt, or tenant isolation checks"
+  ]
+}

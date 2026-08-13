@@ -1,0 +1,9 @@
+{
+  "name": "charter_attestation_agent",
+  "loop": "charter_attestation_agent",
+  "tools": [
+    { "name": "deterministic_obligation_checker", "risk": "LOW", "policy_required": true, "receipt_required": true },
+    { "name": "evidence_attestor", "risk": "MEDIUM", "policy_required": true, "receipt_required": true },
+    { "name": "exception_reviewer", "risk": "MEDIUM", "policy_required": true, "receipt_required": true }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ReplacementProofIndexResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "production_cutover_allowed", "proof_check", "proof_index_file", "proof_index", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-replacement-proof-index-route" },
+    "route": { "const": "/v1/replacement-proof-index.json" },
+    "status": { "enum": ["LOCAL_PROOF_INDEX_SERVED", "LOCAL_PROOF_INDEX_MISSING", "LOCAL_PROOF_INDEX_INVALID"] },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "proof_index_file": { "const": ".mdx-local/v1-shadow/v1-replacement-proof-index.json" },
+    "proof_index": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": ["name", "status", "proof_check", "required_shadow_compare_count", "observed_shadow_compare_count", "readiness_route", "read_shadow_acceptance", "local_http_smoke", "blocked_authority"],
+          "properties": {
+            "name": { "const": "mdx-v1-replacement-proof-index" },
+            "status": { "const": "LOCAL_REPLACEMENT_PROOF_INDEXED" },
+            "proof_check": { "const": "make v1-replacement-proof" },
+            "required_shadow_compare_count": { "const": 5 },
+            "observed_shadow_compare_count": { "const": 5 },
+            "readiness_route": {
+              "type": "object",
+              "required": ["route", "status", "cutover_blocker_count"],
+              "properties": {
+                "route": { "const": "/v1/replacement-readiness.json" },
+                "status": { "const": "OK" },
+                "cutover_blocker_count": { "type": "integer", "minimum": 11 }
+              }
+            },
+            "read_shadow_acceptance": {
+              "type": "object",
+              "required": ["status", "production_read_observed", "human_acceptance_granted", "production_cutover_allowed", "production_write_allowed"],
+              "properties": {
+                "status": { "const": "LOCAL_ACCEPTANCE_EVIDENCE_RECORDED_PRODUCTION_READ_BLOCKED" },
+                "production_read_observed": { "const": false },
+                "human_acceptance_granted": { "const": false },
+                "production_cutover_allowed": { "const": false },
+                "production_write_allowed": { "const": false }
+              }
+            },
+            "local_http_smoke": {
+              "type": "object",
+              "required": ["status", "route_count", "receipt_backed_routes"],
+              "properties": {
+                "status": { "const": "OK" },
+                "route_count": { "type": "integer", "minimum": 80 },
+                "receipt_backed_routes": { "type": "integer", "minimum": 70 }
+              }
+            },
+            "blocked_authority": {
+              "type": "object",
+              "required": ["production_cutover_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed"],
+              "properties": {
+                "production_cutover_allowed": { "const": false },
+                "production_write_allowed": { "const": false },
+                "provider_call_allowed": { "const": false },
+                "worker_spawn_allowed": { "const": false },
+                "patch_application_allowed": { "const": false },
+                "deployment_authority_allowed": { "const": false }
+              }
+            }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "production_cutover_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "patch_application_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false }
+      }
+    }
+  }
+}

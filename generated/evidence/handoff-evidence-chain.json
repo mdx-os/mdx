@@ -1,0 +1,36 @@
+{
+  "name": "mdx-public-handoff-evidence-chain",
+  "mode": "public",
+  "source": "CONTRIBUTING.md",
+  "status": "DECLARED",
+  "question": "What evidence moves a scoped change toward review?",
+  "steps": [
+    {
+      "id": "scope",
+      "evidence": "pull request description",
+      "required_receipt": "change.scope.declared"
+    },
+    {
+      "id": "local_validation",
+      "evidence": "make local-smoke",
+      "required_receipt": "local.validation.observed"
+    },
+    {
+      "id": "ci_validation",
+      "evidence": "generated/verification/ci-verification-evidence.json",
+      "required_receipt": "ci.verification.observed"
+    },
+    {
+      "id": "human_review",
+      "evidence": "pull request review",
+      "required_receipt": "review.decision.recorded"
+    }
+  ],
+  "read_surfaces": ["apps/mdx-host/src/routes/admin/evidence"],
+  "forbidden_actions": ["bypass_ci", "ship_without_review", "claim_unobserved_external_proof"],
+  "first_local_proof": "make local-smoke",
+  "rules": [
+    "The chain describes evidence and does not grant authority.",
+    "External readiness requires observed external evidence."
+  ]
+}

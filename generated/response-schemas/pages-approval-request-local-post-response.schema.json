@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesApprovalRequestLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "auth_session_tenant_id", "auth_session_user_id", "auth_session_role", "writes_route", "projection_route", "approval_request_id", "approval_request_receipt_id", "policy_decision_id", "source_edit_draft_receipt_id", "document_id", "draft_id", "public_visibility_allowed", "search_indexing_allowed", "embedding_provider_allowed", "rich_editor_allowed", "standalone_store_allowed", "live_substrate_required", "production_publish_allowed", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-pages-approval-request-local-post" },
+    "status": { "const": "PAGE_APPROVAL_REQUEST_RECORDED_PUBLICATION_BLOCKED" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "auth_session_tenant_id": { "type": "string", "minLength": 1 },
+    "auth_session_user_id": { "type": "string", "minLength": 1 },
+    "auth_session_role": { "type": "string", "minLength": 1 },
+    "writes_route": { "const": "/pages/approval-requests.json" },
+    "projection_route": { "const": "/pages/approval-requests/projection.json" },
+    "approval_request_id": { "type": "string", "minLength": 1 },
+    "approval_request_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "source_edit_draft_receipt_id": { "type": "string", "minLength": 1 },
+    "document_id": { "type": "string", "minLength": 1 },
+    "draft_id": { "type": "string", "minLength": 1 },
+    "public_visibility_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "embedding_provider_allowed": { "const": false },
+    "rich_editor_allowed": { "const": false },
+    "standalone_store_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_publish_allowed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

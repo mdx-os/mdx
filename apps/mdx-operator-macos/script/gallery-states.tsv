@@ -1,0 +1,32 @@
+# Seeded UI-state gallery for the visual-QA capture rail.
+#
+# One row per named UI state: <name> TAB <space-separated MDX_SHOT_* env>.
+# capture_gallery.sh launches the staged app once per state per appearance/a11y
+# variant with these vars set, so every frame is deterministic and driven by the
+# real views against a real (isolated, worn) kernel. The MDX_SHOT_* hooks are
+# inert in the shipping app; they only steer the app into a known state for the
+# camera. Blank lines and lines starting with # are ignored.
+#
+# States marked "kernel-data" depend on the seeded snapshot actually containing
+# that shape (a running run, a parallel group). When it does not, the app lands
+# on the honest nearest surface and the capture manifest records that, rather
+# than the rail faking the state.
+#
+# name                  env
+home                    MDX_SHOT_ROUTE=home
+offline                 MDX_SHOT_HEALTH=offline MDX_SHOT_DIAGNOSE=1
+degraded                MDX_SHOT_HEALTH=degraded
+run-detail              MDX_SHOT_ROUTE=runs MDX_SHOT_RUN=first
+live-run                MDX_SHOT_ROUTE=runs MDX_SHOT_RUN=active
+parallel-candidates     MDX_SHOT_RUN=parallel
+review-desk             MDX_SHOT_ROUTE=review MDX_SHOT_RUN=first
+marketplace             MDX_SHOT_ROUTE=marketplace
+pages                   MDX_SHOT_ROUTE=pages MDX_SHOT_PAGE_TITLE=Activation_Runway
+settings-account        MDX_SHOT_SETTINGS=account
+settings-connection     MDX_SHOT_SETTINGS=connection
+settings-models         MDX_SHOT_SETTINGS=models
+settings-authority      MDX_SHOT_SETTINGS=authority
+settings-updates        MDX_SHOT_SETTINGS=updates
+onboarding-win          MDX_SHOT_WELCOME=set
+twin-sensitive          MDX_SHOT_ROUTE=twin MDX_SHOT_TWIN_ATTACH=1 MDX_SHOT_TWIN_SENSITIVE=1
+twin-grounded           MDX_SHOT_TWIN_GROUNDED=1

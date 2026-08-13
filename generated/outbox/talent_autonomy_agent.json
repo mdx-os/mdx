@@ -1,0 +1,7 @@
+{
+  "loop": "talent_autonomy_agent",
+  "agent": "talent_autonomy_agent",
+  "topics": [
+    { "name": "observatory.worker_spawn_blocked", "source_receipt_kind": "worker.spawn_requested", "delivery": "local_only" }
+  ]
+}

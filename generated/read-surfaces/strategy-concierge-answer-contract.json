@@ -1,0 +1,59 @@
+{
+  "name": "mdx-strategy-concierge-answer-contract",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-CONCIERGE-ANSWER-CONTRACT.md",
+  "status": "DECLARED-LOCAL-READ-SURFACE",
+  "surface": "concierge",
+  "depends_on": [
+    "generated/strategy/strategy-ratification-surface.json",
+    "generated/strategy/treasury-reserve-contract.json",
+    "generated/strategy/treasury-reserve-scenarios.json",
+    "generated/strategy/talent-request-contract.json",
+    "generated/strategy/talent-request-scenarios.json",
+    "generated/response-schemas/strategy-ratification-response.schema.json",
+    "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "generated/read-model-snapshots/concierge.json"
+  ],
+  "answer_shapes": [
+    {
+      "id": "strategy_ratification_summary_answer",
+      "question": "What needs human ratification before Strategy can open downstream action?",
+      "answer": "Strategy can stage options and evidence, but direction, live budget, worker spawn, Forge handoff, and production deploy remain blocked until human ratification plus policy, Treasury, and Talent evidence exist.",
+      "required_citations": ["generated/strategy/strategy-ratification-surface.json", "generated/read-surfaces/human-edge-read-surface-matrix.json"],
+      "blocked_actions": ["set_company_direction", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "production_deploy"],
+      "allowed": true
+    },
+    {
+      "id": "strategy_treasury_reserve_readiness_answer",
+      "question": "Can Strategy request a Treasury reserve?",
+      "answer": "Concierge may summarize Treasury reserve readiness, but live spend and budget allocation stay blocked until Treasury authority emits receipt-backed approval.",
+      "required_citations": ["generated/strategy/treasury-reserve-contract.json", "generated/strategy/treasury-reserve-scenarios.json"],
+      "blocked_actions": ["allocate_live_budget", "live_spend", "spawn_worker", "handoff_to_forge", "production_deploy"],
+      "allowed": true
+    },
+    {
+      "id": "strategy_talent_planning_readiness_answer",
+      "question": "Can Strategy request Talent planning?",
+      "answer": "Concierge may summarize Talent planning readiness, but worker spawn, tool grants, worker budget, live execution, and deployment stay blocked until Talent authority and worker contracts emit receipt-backed evidence.",
+      "required_citations": ["generated/strategy/talent-request-contract.json", "generated/strategy/talent-request-scenarios.json"],
+      "blocked_actions": ["spawn_worker", "grant_tool_access", "allocate_worker_budget", "live_worker_execution", "production_deploy"],
+      "allowed": true
+    }
+  ],
+  "blocked_answer_shapes": [
+    { "id": "answer_that_sets_direction", "blocked_by": "autonomous_direction_setting" },
+    { "id": "answer_that_allocates_budget", "blocked_by": "treasury_authority_required" },
+    { "id": "answer_that_live_spends", "blocked_by": "treasury_authority_required" },
+    { "id": "answer_that_spawns_worker", "blocked_by": "talent_authority_required" },
+    { "id": "answer_that_grants_tool_access", "blocked_by": "talent_authority_required" },
+    { "id": "answer_that_hands_off_to_forge", "blocked_by": "product_or_strategy_ratification_receipt_required" }
+  ],
+  "required_response_fields": ["answer", "required_citations", "blocked_actions", "receipt_ids"],
+  "first_local_proof": "make strategy-ratification-check",
+  "rules": [
+    "Concierge may summarize Strategy ratification state but cannot ratify for the human",
+    "Concierge may summarize Treasury and Talent readiness but cannot emit authority",
+    "Every Strategy answer cites source contracts and receipt ids",
+    "Concierge must not turn Strategy questions into direction, budget, worker, Forge, or deploy actions"
+  ]
+}

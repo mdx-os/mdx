@@ -1,0 +1,39 @@
+{
+  "name": "mdx-pages-approval-decision-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-APPROVAL-DECISION-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "approve_route": "/pages/approval-decisions/approve.json",
+  "reject_route": "/pages/approval-decisions/reject.json",
+  "projection_route": "/pages/approval-decisions/projection.json",
+  "required_receipt_kind": "pages.approval.decision.recorded",
+  "source_receipt_kind": "pages.approval.requested",
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "approval_decision_id", "approval_request_receipt_id", "decision_outcome", "decision_note"],
+  "decision_outcomes": ["approved", "rejected"],
+  "authority_boundary": {
+    "human_decision_recorded": true,
+    "self_review_permitted": true,
+    "one_terminal_decision_per_request": true,
+    "public_visibility_allowed": false,
+    "search_indexing_allowed": false,
+    "embedding_provider_allowed": false,
+    "rich_editor_allowed": false,
+    "standalone_store_allowed": false,
+    "production_publish_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "approve_url_var": "pagesApprovalDecisionApproveUrl",
+    "reject_url_var": "pagesApprovalDecisionRejectUrl",
+    "projection_url_var": "pagesApprovalDecisionProjectionUrl",
+    "approve_handler": "approveGovernedPagesApproval",
+    "reject_handler": "rejectGovernedPagesApproval",
+    "approve_button_class": "pages-approve-decision",
+    "reject_button_class": "pages-reject-decision",
+    "approve_aria_label": "Approve governed Pages request",
+    "reject_aria_label": "Reject governed Pages request",
+    "fetch_count": 10
+  },
+  "checks": ["make pages-approval-decision-check", "cargo test -p mdx-core pages_approval_request", "cargo test -p mdx-server pages_approval_request"]
+}

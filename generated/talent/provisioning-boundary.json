@@ -1,0 +1,18 @@
+{
+  "name": "mdx-talent-provisioning-boundary",
+  "mode": "deterministic-local",
+  "runtime_status": "DECLARED-LOCAL-AUTHORITY",
+  "future_loop_runner_id": "talent_autonomy_agent",
+  "declared_loop": true,
+  "worker_spawn_contract": "generated/workers/spawn-request-contract.json",
+  "worker_retirement_contract": "generated/workers/retirement-receipt-contract.json",
+  "worker_credential_gate": "generated/talent/worker-credential-gate.json",
+  "authorization_envelope": "generated/talent/authorization-envelope.json",
+  "spawn_request_schema": "contracts/worker-spawn-request.schema.json",
+  "worker_runtime_boundary": "generated/workers/runtime-boundary.json",
+  "required_receipts": ["worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "forbidden_paths": ["direct_worker_spawn", "unscoped_worker_runtime", "unsponsored_worker_runtime", "unbudgeted_worker_runtime"],
+  "worker_templates": [
+    { "id": "worker_bounded_task_template", "path": "workers/templates/bounded-task.yaml", "spawn_request_receipt_kind": "worker.spawn_requested", "retirement_receipt_kind": "worker.retired", "parent_required": true, "human_sponsor_chain_required": true, "budget_required": true, "tool_allowlist_required": true }
+  ]
+}

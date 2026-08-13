@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinSessionDraftAdmissionResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "source", "mode", "status", "allowed_companions", "admission_contract", "admitted_fixture", "refusal_fixtures"],
+  "properties": {
+    "name": { "const": "mdx-twin-session-persona-contract" },
+    "source": { "const": "docs/TWIN-SESSION-PERSONA-CONTRACT.md" },
+    "mode": { "const": "deterministic-local" },
+    "status": { "const": "LIVE-LOCAL-CONTRACT" },
+    "allowed_companions": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string" },
+      "contains": { "const": "twin_advisor" }
+    },
+    "admission_contract": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["required_fields", "receipt_kinds", "forbidden_capabilities"],
+      "properties": {
+        "required_fields": {
+          "type": "array",
+          "minItems": 10,
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "const": "tenant_id" } },
+            { "contains": { "const": "actor_id" } },
+            { "contains": { "const": "companion_stance" } },
+            { "contains": { "const": "persona_profile_id" } },
+            { "contains": { "const": "evidence_refs" } }
+          ]
+        },
+        "receipt_kinds": {
+          "type": "array",
+          "minItems": 6,
+          "items": { "type": "string" },
+          "contains": { "const": "twin.session.draft.admitted" }
+        },
+        "forbidden_capabilities": {
+          "type": "array",
+          "minItems": 8,
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "const": "provider_call" } },
+            { "contains": { "const": "memory_write" } },
+            { "contains": { "const": "worker_spawn" } }
+          ]
+        }
+      }
+    },
+    "admitted_fixture": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["admission_result", "draft_receipt_kind", "provider_call_allowed", "memory_write_allowed", "worker_spawn_allowed"],
+      "properties": {
+        "admission_result": { "const": "ADMITTED_LOCAL_DRAFT" },
+        "draft_receipt_kind": { "const": "twin.session.draft.admitted" },
+        "provider_call_allowed": { "const": false },
+        "memory_write_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false }
+      }
+    },
+    "refusal_fixtures": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "object" },
+      "contains": { "type": "object", "required": ["refusal"], "properties": { "refusal": { "const": "missing_actor" } } }
+    }
+  }
+}

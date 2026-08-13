@@ -1,0 +1,23 @@
+{
+  "name": "mdx-worker-handoff-evidence-contract",
+  "mode": "deterministic-local",
+  "runtime_status": "PENDING-LIVE-RUN",
+  "source": "docs/WORKER-HANDOFF-EVIDENCE.md",
+  "source_manifest": "generated/agents/mdx-agent-populations.json",
+  "depends_on": ["generated/workers/credential-check-contract.json", "generated/workers/spawn-request-contract.json", "generated/workers/retirement-receipt-contract.json", "generated/verification/ci-verification-evidence.json"],
+  "handoff_admission_required": true,
+  "handoff_admission_fn": "mdx_core::admit_worker_handoff",
+  "required_receipt_kind": "worker.handoff.recorded",
+  "required_receipt_order": ["worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_fields": ["parent_loop_id", "worker_template_id", "worker_run_id", "spawn_receipt_id", "credential_check_receipt_id", "output_artifacts", "verification_evidence", "summary", "next_owner", "requested_receipt_kind"],
+  "consumers": ["generated/talent/provisioning-boundary.json"],
+  "forbidden_paths": ["orphaned_worker_output", "artifact_without_receipt", "handoff_without_parent", "handoff_after_retirement_only"],
+  "workers": [
+    { "id": "worker_bounded_task_template", "path": "workers/templates/bounded-task.yaml", "runtime_status": "PENDING-LIVE-RUN", "handoff_receipt_kind": "worker.handoff.recorded", "spawn_request_receipt_kind": "worker.spawn_requested", "retirement_receipt_kind": "worker.retired", "parent_required": true, "human_sponsor_chain_required": true }
+  ],
+  "rules": [
+    "worker handoff evidence must cite credential and spawn receipts",
+    "worker outputs are not queryable company state until handoff evidence is recorded",
+    "worker retirement must not hide missing handoff evidence"
+  ]
+}

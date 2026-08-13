@@ -1,0 +1,9 @@
+{
+  "name": "product_shaping_agent",
+  "loop": "product_shaping_agent",
+  "tools": [
+    { "name": "product_signal_ingestor", "risk": "MEDIUM", "policy_required": true, "receipt_required": true },
+    { "name": "product_bet_shaper", "risk": "MEDIUM", "policy_required": true, "receipt_required": true },
+    { "name": "product_handoff_requester", "risk": "HIGH", "policy_required": true, "receipt_required": true }
+  ]
+}

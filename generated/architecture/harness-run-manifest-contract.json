@@ -1,0 +1,24 @@
+{
+  "name": "mdx-harness-run-manifest-contract",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-RUN-MANIFEST-CONTRACT.md",
+  "schema": "contracts/harness-run-manifest.schema.json",
+  "status": "READY-LOCAL-CONTRACT",
+  "authority": "admission-only",
+  "default_mode": "plan_only",
+  "required_fields": ["run_id", "tenant_id", "actor_id", "origin_surface", "mode", "goal", "input_artifacts", "allowed_write_scope", "blocked_paths", "tool_manifest", "model_policy", "context_policy", "permission_policy", "budget_policy", "quality_gates", "approval_policy", "receipt_policy", "telemetry_policy", "exit_criteria", "trust_boundary"],
+  "optional_fields": ["policy_profile", "enterprise_pack", "created_at", "parent_run_id", "child_run_policy", "external_machine_policy"],
+  "modes": ["read_only", "plan_only", "ask_before_action", "approved_execution", "headless_guarded", "worker_bounded", "review_only", "security_review", "ci_repair", "goal_persistent"],
+  "budget_fields": ["max_turns", "max_tool_calls", "max_runtime_ms", "max_context_tokens", "max_output_tokens", "max_event_bytes", "max_transcript_bytes", "max_cost_cents"],
+  "trust_boundary_fields": ["workspace_trusted", "project_local_execution_allowed", "mcp_startup_allowed", "network_allowed", "secrets_available", "approval_receipt_id"],
+  "rules": [
+    "generated contracts do not grant execution authority",
+    "runtime history belongs in append-only transcript",
+    "policy profile overlays enterprise rules",
+    "enterprise packs narrow provider selection, retention, redaction, budget, and audit behavior",
+    "project-local configuration cannot widen the trust boundary",
+    "budget exhaustion stops or blocks the run with receipts",
+    "write authority requires manifest admission, path mediation, policy decision, and receipts"
+  ],
+  "checks": ["make harness-run-manifest-check", "make harness-runway-check", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

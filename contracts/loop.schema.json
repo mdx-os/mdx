@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/loop.schema.json",
+  "title": "MDx Loop Declaration",
+  "type": "object",
+  "required": ["id", "agent", "transitions", "receipt_kinds", "policy_required", "budget"],
+  "properties": {
+    "id": { "type": "string" },
+    "agent": { "type": "string" },
+    "transitions": {
+      "type": "array",
+      "items": { "enum": ["TRIGGER", "ACTION", "OUTCOME", "SIGNAL", "ADJUSTMENT"] },
+      "minItems": 5
+    },
+    "receipt_kinds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 5
+    },
+    "policy_required": { "type": "boolean", "const": true },
+    "budget": {
+      "type": "object",
+      "required": [
+        "max_runtime_ms",
+        "max_receipts",
+        "max_policy_decisions",
+        "required_transitions",
+        "max_outbox_events",
+        "max_credentials",
+        "max_memory_records",
+        "max_charter_records"
+      ],
+      "properties": {
+        "max_runtime_ms": { "type": "integer", "minimum": 1 },
+        "max_receipts": { "type": "integer", "minimum": 1 },
+        "max_policy_decisions": { "type": "integer", "minimum": 1 },
+        "required_transitions": { "type": "integer", "minimum": 5 },
+        "max_outbox_events": { "type": "integer", "minimum": 0 },
+        "max_credentials": { "type": "integer", "minimum": 0 },
+        "max_memory_records": { "type": "integer", "minimum": 0 },
+        "max_charter_records": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

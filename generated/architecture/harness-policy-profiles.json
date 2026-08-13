@@ -1,0 +1,35 @@
+{
+  "name": "mdx-harness-policy-profiles",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-POLICY-PROFILES.md",
+  "status": "READY-LOCAL-CONTRACT",
+  "default_policy_profile": "core",
+  "default_enterprise_pack": "none",
+  "required_pack_fields": ["enterprise_pack_id", "allowed_policy_profiles", "provider_profile_allowlist", "max_context_tokens", "max_output_tokens", "max_cost_cents", "data_retention", "context_redaction_required", "telemetry_redaction_required", "approval_receipt_required", "audit_export_allowed"],
+  "enterprise_packs": [
+    {
+      "enterprise_pack_id": "none",
+      "allowed_policy_profiles": ["core"],
+      "provider_profile_allowlist": ["deterministic_stub"],
+      "max_context_tokens": 4096,
+      "max_output_tokens": 1024,
+      "max_cost_cents": 0,
+      "data_retention": "local_ephemeral",
+      "context_redaction_required": true,
+      "telemetry_redaction_required": true,
+      "approval_receipt_required": false,
+      "audit_export_allowed": false
+    }
+  ],
+  "runtime_enforcement": ["HarnessRunManifest.enterprise_pack", "LocalHarnessProviderGateway enterprise_pack_mismatch denial", "harness.provider.profile.denied"],
+  "rules": [
+    "policy profiles define baseline harness limits",
+    "enterprise packs may narrow behavior but cannot widen trust boundaries",
+    "enterprise packs cannot enable secrets, network access, larger budgets, looser retention, weaker redaction, or local audit export",
+    "enterprise pack contracts are enforced during provider selection",
+    "manifest enterprise pack mismatches fail closed with denied provider receipts",
+    "customer-specific architecture belongs in named packs, not runtime branches"
+  ],
+  "forbidden_capabilities": ["no customer-named runtime branches", "no project-local widening of trust boundaries", "no provider secrets in policy artifacts", "no live status without enforcing runtime proof"],
+  "checks": ["make harness-policy-profiles-check", "make harness-provider-gateway-check", "make harness-run-manifest-check", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

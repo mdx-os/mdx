@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeRepoTaskScoutResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "repo_id", "label", "repo_receipt_id", "language_pack_id", "primary_language", "safe_next_move", "files_scanned", "source_files_seen", "test_files_seen", "candidate_count", "candidates", "suggested_checks", "selected_checks_source", "scout_limits", "repo_onboarding_packet_route", "repo_readiness_route", "run_route", "review_packet_route", "raw_source_content_recorded", "secret_values_recorded", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "network_call_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-task-scout" },
+        "status": { "enum": ["TASKS_FOUND", "NO_DETERMINISTIC_TASKS_FOUND"] },
+        "repo_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "repo_receipt_id": { "type": "string", "minLength": 1 },
+        "language_pack_id": { "type": "string", "minLength": 1 },
+        "primary_language": { "type": "string" },
+        "safe_next_move": { "type": "string", "minLength": 1 },
+        "files_scanned": { "type": "integer", "minimum": 0, "maximum": 250 },
+        "source_files_seen": { "type": "integer", "minimum": 0 },
+        "test_files_seen": { "type": "integer", "minimum": 0 },
+        "candidate_count": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "candidates": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["task_id", "kind", "title", "path", "line", "prompt_template", "recommended_shape", "task_class", "complexity_tier", "suggested_checks", "semantic_orientation_queries", "proof_strategy", "write_scope_hint", "off_limits_patterns", "review_focus", "why_this_first", "raw_source_content_recorded", "grants_execution_authority"],
+            "properties": {
+              "task_id": { "type": "string", "minLength": 1 },
+              "kind": { "enum": ["todo_cleanup", "untested_public_symbol", "error_boundary", "deprecated_api", "contained_refactor"] },
+              "title": { "type": "string", "minLength": 1 },
+              "path": { "type": "string" },
+              "line": { "type": "integer", "minimum": 0 },
+              "prompt_template": { "type": "string", "minLength": 1 },
+              "recommended_shape": { "const": "run" },
+              "task_class": { "enum": ["bug_fix", "refactor"] },
+              "complexity_tier": { "enum": ["small", "medium"] },
+              "suggested_checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "semantic_orientation_queries": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["operation", "path", "query", "why"],
+                  "properties": {
+                    "operation": { "enum": ["capabilities", "definition", "references", "file_outline", "related_tests"] },
+                    "path": { "type": "string" },
+                    "query": { "type": "string" },
+                    "why": { "type": "string", "minLength": 1 }
+                  }
+                }
+              },
+              "proof_strategy": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["selected_checks", "proof_command_source", "related_tests_required_before_finish", "minimum_evidence"],
+                "properties": {
+                  "selected_checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+                  "proof_command_source": { "enum": ["repo_profile_inferred", "operator_required"] },
+                  "related_tests_required_before_finish": { "type": "boolean" },
+                  "minimum_evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+                }
+              },
+              "write_scope_hint": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "off_limits_patterns": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+              "review_focus": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "why_this_first": { "type": "string", "minLength": 1 },
+              "raw_source_content_recorded": { "const": false },
+              "grants_execution_authority": { "const": false }
+            }
+          }
+        },
+        "suggested_checks": { "type": "array", "items": { "type": "string" } },
+        "selected_checks_source": { "enum": ["repo_profile_inferred", "operator_required"] },
+        "scout_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_files_scanned", "max_candidates", "artifact_filtering_applied"],
+          "properties": {
+            "max_files_scanned": { "const": 250 },
+            "max_candidates": { "const": 10 },
+            "artifact_filtering_applied": { "const": true }
+          }
+        },
+        "repo_onboarding_packet_route": { "const": "/forge/repo-onboarding-packet.json" },
+        "repo_readiness_route": { "const": "/forge/repo-readiness.json" },
+        "run_route": { "const": "/forge/runs.json" },
+        "review_packet_route": { "const": "/forge/review-packet.json" },
+        "raw_source_content_recorded": { "const": false },
+        "secret_values_recorded": { "const": false },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "network_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "raw_source_content_recorded", "secret_values_recorded", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "network_call_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-task-scout" },
+        "status": { "const": "REFUSED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "raw_source_content_recorded": { "const": false },
+        "secret_values_recorded": { "const": false },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "network_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  ]
+}

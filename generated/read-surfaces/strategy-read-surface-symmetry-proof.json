@@ -1,0 +1,33 @@
+{
+  "name": "mdx-strategy-read-surface-symmetry-proof",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-READ-SURFACE-SYMMETRY.md",
+  "status": "PROOF-NEXT",
+  "depends_on": [
+    "generated/strategy/strategy-ratification-surface.json",
+    "generated/read-surfaces/strategy-concierge-answer-contract.json",
+    "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "apps/observatory/src/lib/localTruth.js",
+    "apps/concierge/src/lib/localTruth.js"
+  ],
+  "shared_evidence": {
+    "strategy_surface": "generated/strategy/strategy-ratification-surface.json",
+    "response_schema": "generated/response-schemas/strategy-ratification-response.schema.json",
+    "concierge_answer": "generated/read-surfaces/strategy-concierge-answer-contract.json",
+    "human_edge_matrix": "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "blocked_actions": ["set_company_direction", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "production_deploy"]
+  },
+  "surfaces": [
+    { "id": "strategy_route", "source": "generated/strategy/strategy-ratification-surface.json", "shared_truth": ["routes", "response_schema_path", "forbidden_jobs"] },
+    { "id": "observatory", "source": "apps/observatory/src/lib/localTruth.js", "shared_truth": ["strategyEvidence.schema", "strategyEvidence.blocked", "strategyEvidence.source_boundaries"] },
+    { "id": "concierge", "source": "generated/read-surfaces/strategy-concierge-answer-contract.json", "shared_truth": ["answer_shapes.required_citations", "answer_shapes.blocked_actions"] }
+  ],
+  "forbidden_paths": ["observatory_concierge_strategy_mismatch", "answer_without_strategy_contract", "ui_only_strategy_truth", "shadow_strategy_answer", "autonomous_ratification"],
+  "first_local_proof": "make strategy-ratification-check",
+  "rules": [
+    "Observatory and Concierge must cite the same Strategy ratification surface",
+    "Observatory and Concierge must cite the same Strategy response schema",
+    "Strategy read surfaces must keep ratification, budget, worker, Forge, and deploy actions blocked",
+    "No read surface may invent Strategy evidence outside generated contracts"
+  ]
+}

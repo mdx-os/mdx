@@ -1,0 +1,29 @@
+{
+  "name": "mdx-message-hot-path-budget",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-HOT-PATH-BUDGET.md",
+  "status": "CONTRACT-NEXT",
+  "depends_on": [
+    "generated/world-model/message-event-plane-contract.json",
+    "generated/world-model/message-thread-projection-contract.json",
+    "generated/routes/message-readonly-route-contract.json"
+  ],
+  "budgets": [
+    { "path": "message_projection_read", "max_p50_ms": 5, "max_p95_ms": 15, "max_p99_ms": 20, "llm_allowed": false },
+    { "path": "message_event_append", "max_p50_ms": 5, "max_p95_ms": 15, "max_p99_ms": 20, "llm_allowed": false },
+    { "path": "message_fanout_enqueue", "max_p50_ms": 5, "max_p95_ms": 15, "max_p99_ms": 20, "llm_allowed": false }
+  ],
+  "forbidden_paths": [
+    "synchronous_llm_on_message_hot_path",
+    "remote_memory_lookup_on_message_hot_path",
+    "unbounded_projection_query",
+    "presence_before_latency_budget"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Message hot paths target sub-20ms p99 before UI work expands",
+    "No model inference is allowed on the Message hot path",
+    "Slow reasoning happens asynchronously through receipts and outbox topics",
+    "Presence and realtime fanout wait for measured hot-path budgets"
+  ]
+}

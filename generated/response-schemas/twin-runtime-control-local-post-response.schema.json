@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinRuntimeControlLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "session_id", "item_kind", "item_id", "source_draft_receipt_id", "control_receipt_id", "terminal_state", "local_preview_allowed", "live_provider_call_allowed", "tool_execution_allowed", "connector_execution_allowed", "network_allowed", "secret_values_recorded", "provider_secret_values_recorded", "output_text_recorded", "worker_spawn_allowed", "agent_swarm_allowed", "production_write_allowed"],
+  "properties": {
+    "name": {
+      "enum": [
+        "mdx-twin-agent-mode-preflight-local-post",
+        "mdx-twin-hook-preflight-local-post",
+        "mdx-twin-skill-preflight-local-post",
+        "mdx-twin-connector-preflight-local-post",
+        "mdx-twin-agent-handoff-preflight-local-post"
+      ]
+    },
+    "status": {
+      "enum": [
+        "TWIN_AGENT_MODE_PREFLIGHT_RECORDED_AUTHORITY_BLOCKED",
+        "TWIN_HOOK_PREFLIGHT_RECORDED_EXECUTION_BLOCKED",
+        "TWIN_SKILL_PREFLIGHT_RECORDED_PROVIDER_OR_TOOL_BLOCKED",
+        "TWIN_CONNECTOR_PREFLIGHT_RECORDED_EXECUTION_BLOCKED",
+        "TWIN_AGENT_HANDOFF_PREFLIGHT_RECORDED_SWARM_BLOCKED"
+      ]
+    },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": {
+      "enum": [
+        "/twin/agent-mode-preflights.json",
+        "/twin/hook-preflights.json",
+        "/twin/skill-preflights.json",
+        "/twin/connector-preflights.json",
+        "/twin/agent-handoff-preflights.json"
+      ]
+    },
+    "projection_route": {
+      "enum": [
+        "/twin/agent-mode-preflights/projection.json",
+        "/twin/hook-preflights/projection.json",
+        "/twin/skill-preflights/projection.json",
+        "/twin/connector-preflights/projection.json",
+        "/twin/agent-handoff-preflights/projection.json"
+      ]
+    },
+    "session_id": { "type": "string", "minLength": 1 },
+    "item_kind": { "enum": ["agent_mode", "hook", "skill", "connector", "agent_handoff"] },
+    "item_id": { "type": "string", "minLength": 1 },
+    "source_draft_receipt_id": { "type": "string", "minLength": 1 },
+    "control_receipt_id": { "type": "string", "minLength": 1 },
+    "terminal_state": { "type": "string", "minLength": 1 },
+    "local_preview_allowed": { "type": "boolean" },
+    "live_provider_call_allowed": { "const": false },
+    "tool_execution_allowed": { "const": false },
+    "connector_execution_allowed": { "const": false },
+    "network_allowed": { "const": false },
+    "secret_values_recorded": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "output_text_recorded": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "agent_swarm_allowed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

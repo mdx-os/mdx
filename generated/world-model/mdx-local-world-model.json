@@ -1,0 +1,21 @@
+{
+  "name": "mdx-local-world-model",
+  "mode": "deterministic-local",
+  "components": [
+    { "component": "workforce_graph", "sources": ["agent_credentials", "generated/agents/mdx-agent-populations.json"], "status": "partial-local", "mutated_by": ["evals_runner_agent"], "read_by": ["observatory", "concierge", "twin_companions"] },
+    { "component": "charter_graph", "sources": ["charter_records", "charter receipts"], "status": "local", "mutated_by": ["evals_runner_agent", "aegis_scanner_agent", "charter_attestation_agent"], "read_by": ["observatory", "twin_companions"] },
+    { "component": "treasury_graph", "sources": ["treasury_authorizations", "treasury.authority.granted"], "status": "partial-local", "mutated_by": ["treasury_authority"], "read_by": ["observatory"] },
+    { "component": "operating_graph", "sources": ["loop_runs", "policy_decisions", "outbox_events"], "status": "local", "mutated_by": ["local_loop_runners"], "read_by": ["observatory", "twin_companions"] },
+    { "component": "ledger_graph", "sources": ["ledger_entries", "ledger_chain_heads"], "status": "local", "mutated_by": ["StorageProvider::append_receipt"], "read_by": ["observatory", "concierge", "twin_companions"] },
+    { "component": "signal_corpus", "sources": ["receipt_kinds", "outbox_topics", "trace_events"], "status": "partial-local", "mutated_by": ["loop_runners", "outbox", "trace_exporter"], "read_by": ["observatory"] },
+    { "component": "memory", "sources": ["memory_records", "memory provenance"], "status": "local-stub", "mutated_by": ["MemoryProvider"], "read_by": ["observatory", "twin_companions"] },
+    { "component": "evidence_corpus", "sources": ["receipt evidence", "charter evidence", "generated/read-model-snapshots", "generated/world-model/pages-message-contract.json"], "status": "local", "mutated_by": ["loop_runners", "codegen"], "read_by": ["observatory", "concierge", "twin_companions"] }
+  ],
+  "rules": [
+    "consequential_actions_update_ledger_graph",
+    "read_surfaces_declare_world_model_sources",
+    "companions_read_without_mutation",
+    "ephemeral_workers_write_lifecycle_receipts_before_queryable_state",
+    "live_substrate_claims_remain_pending_until_observed"
+  ]
+}

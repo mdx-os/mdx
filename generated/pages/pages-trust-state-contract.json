@@ -1,0 +1,18 @@
+{
+  "name": "mdx-pages-trust-state-contract",
+  "contract_version": 1,
+  "human_line": "No page is trusted by silence. Trust is computed from what is known - source, owner, lifecycle, evidence - and what would make a page more trustworthy is named out loud.",
+  "dimensions": {
+    "source_known": "the body is served from a recorded source reference, never a copy",
+    "owner": "the first recorded actor in the page's chain, or the declared author for charter pages",
+    "evidence_count": "charter attestations counted, never invented",
+    "lifecycle_state": "from the lifecycle projection"
+  },
+  "trusted_for_ai": {
+    "rule": "published AND source_known AND a named owner",
+    "consumers": "the agent citation policy (P8) reads this flag - Twin cites only pages that carry it",
+    "never": "an unreviewed draft becoming an agent's ground truth"
+  },
+  "more_trustworthy_with": "every page below the bar lists exactly what is missing - a published revision, a named owner, evidence worth citing",
+  "freshness": "review cadence and staleness land with the ownership slice (P4) and extend this contract"
+}

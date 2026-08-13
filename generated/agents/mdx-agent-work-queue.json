@@ -1,0 +1,35 @@
+{
+  "name": "mdx-public-contributor-opportunities",
+  "mode": "public",
+  "status": "OPEN",
+  "purpose": "A small set of useful places for contributors to start.",
+  "source": "CONTRIBUTING.md",
+  "selection_mode": "maintainer-guided",
+  "selection_rule": "Choose one bounded outcome and discuss larger changes before implementation.",
+  "score_floor_target": null,
+  "roles": ["contributor", "maintainer"],
+  "parallel_rules": [],
+  "checks": ["make local-smoke"],
+  "forbidden_patterns": ["credentials", "private customer data", "fabricated readiness evidence"],
+  "handoff_required_fields": ["why", "changed", "validation", "risk"],
+  "work_items": [
+    {
+      "id": "public-docs",
+      "priority": 1,
+      "summary": "Make setup and contributor guidance easier to follow.",
+      "owner_type": ["contributor"]
+    },
+    {
+      "id": "product-polish",
+      "priority": 2,
+      "summary": "Improve a bounded Twin, Forge, Pages, or Message workflow.",
+      "owner_type": ["contributor", "maintainer"]
+    },
+    {
+      "id": "native-quality",
+      "priority": 3,
+      "summary": "Strengthen macOS or iOS reliability and release ergonomics.",
+      "owner_type": ["contributor", "maintainer"]
+    }
+  ]
+}

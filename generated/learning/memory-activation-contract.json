@@ -1,0 +1,71 @@
+{
+  "name": "mdx-learning-memory-activation-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define Learn's governed memory activation gate: turn a reviewed memory candidate into active MDx-owned memory as a receipt-backed object without provider memory, generated refresh, or behavior change.",
+  "writes_route": "/learning/memory-activations.json",
+  "projection_route": "/learning/memory-activations/projection.json",
+  "receipt_kind": "learning.memory.activated",
+  "required_fields": [
+    "active_memory_id",
+    "memory_promotion_id",
+    "memory_promotion_receipt_id",
+    "judgment_decision_receipt_id",
+    "actor_id",
+    "target_type",
+    "target_path",
+    "lesson_summary",
+    "evidence_refs",
+    "activation_basis",
+    "rollback_plan",
+    "local_checks",
+    "approval_refs",
+    "review_owner",
+    "active_memory_state",
+    "active_memory_receipt_id",
+    "policy_decision_id"
+  ],
+  "optional_fields": [
+    "applicability_work_tiers",
+    "applicability_language_packs",
+    "applicability_notes"
+  ],
+  "applicability_rule": "applicability fields are comma-joined work complexity tiers and language pack ids scoping where the lesson rides into Forge context; empty means universal, and an explicit list that does not name a run excludes the lesson from that run",
+  "valid_target_types": [
+    "page",
+    "decision_record",
+    "generated_contract",
+    "source_map",
+    "model_scorecard",
+    "worker_scorecard"
+  ],
+  "active_memory_states": [
+    "active",
+    "superseded",
+    "retired"
+  ],
+  "v0_boundaries": {
+    "writes_active_memory": true,
+    "refreshes_generated_artifacts": false,
+    "writes_provider_memory": false,
+    "updates_scorecards": false,
+    "applies_adaptation": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "changes_prompt_shape": false,
+    "changes_guardrails": false,
+    "changes_runtime_behavior": false,
+    "requires_memory_promotion_receipt": true,
+    "requires_judgment_decision_receipt": true,
+    "requires_rollback_plan": true,
+    "requires_local_checks": true,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make local-smoke"]
+}

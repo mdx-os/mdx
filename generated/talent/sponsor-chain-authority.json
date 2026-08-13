@@ -1,0 +1,17 @@
+{
+  "name": "mdx-talent-sponsor-chain-authority",
+  "mode": "deterministic-local",
+  "runtime_status": "DECLARED-LOCAL-AUTHORITY",
+  "source": "docs/TALENT-SPONSOR-CHAIN-AUTHORITY.md",
+  "future_loop_runner_id": "talent_autonomy_agent",
+  "required_receipt_kind": "talent.sponsor_chain.authorized",
+  "required_before": ["talent.authorization.recorded", "worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_fields": ["tenant_id", "parent_loop_id", "requested_by_loop_id", "human_sponsor_chain", "sponsor_authority_receipt_ids", "scope", "expires_at", "policy_decision_id"],
+  "consumers": ["generated/talent/authorization-envelope.json", "generated/workers/spawn-request-contract.json"],
+  "forbidden_paths": ["authorization_without_sponsor_chain_authority", "worker_spawn_without_sponsor_chain_authority", "sponsor_chain_reuse_across_scope", "sponsor_chain_reuse_across_tenant", "sponsor_chain_without_policy_decision", "anonymous_worker_sponsor"],
+  "rules": [
+    "Talent cannot authorize worker accountability from an inline sponsor list",
+    "Sponsor chain authority is bounded by tenant, parent loop, requested loop, scope, expiry, and policy decision",
+    "Human sponsor chains remain separate from budget, tool, and credential authority"
+  ]
+}

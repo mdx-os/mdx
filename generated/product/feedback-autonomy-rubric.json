@@ -1,0 +1,87 @@
+{
+  "name": "mdx-feedback-autonomy-rubric",
+  "mode": "deterministic-local",
+  "source": "docs/FEEDBACK-AUTONOMY-CLOSED-LOOP.md",
+  "status": "DECLARED-CLOSED-LOOP-PREP",
+  "promise": "Every feedback item gets a visible fate, and low-risk feedback can become a governed change when the rubric, authority, checks, and receipts are satisfied.",
+  "message_channel": "#beta-feedback",
+  "lifecycle": ["captured", "acknowledged", "assessed", "shaped", "authorized", "forging", "landed", "replied"],
+  "surface_chain": ["feedback_button", "message", "product", "pages", "forge", "proof", "message_closeout"],
+  "decision_lanes": [
+    {
+      "id": "batch_later",
+      "meaning": "Acknowledge and keep the signal for a scheduled batch instead of immediate work.",
+      "allows": ["message_acknowledgement", "duplicate_linking"],
+      "blocks": ["forge_handoff", "code_mutation", "ship_claim"]
+    },
+    {
+      "id": "declined_with_receipt",
+      "meaning": "Close the loop politely with an explanation and no downstream work.",
+      "allows": ["product_assessment", "pages_assessment_draft"],
+      "blocks": ["forge_handoff", "code_mutation", "ship_claim"]
+    },
+    {
+      "id": "autopilot_allowed",
+      "meaning": "MDx may shape and hand the work to Forge without a human decision.",
+      "requires_all": ["narrow_scope", "deterministic_write_scope", "low_risk", "reversible", "testable", "inside_existing_contract", "no_trust_boundary_change", "receipt_chain_complete"],
+      "allows": ["product_work_item", "pages_assessment", "forge_work_request", "validation_evidence", "message_closeout_reply"],
+      "blocks": ["production_deploy_without_authority", "secret_or_auth_change", "destructive_action"]
+    },
+    {
+      "id": "autopilot_with_review",
+      "meaning": "MDx may assess, spec, and prepare work, but a human must approve before mutation, merge, deploy, or trust-boundary change.",
+      "requires_any": ["privacy_adjacent", "cross_surface_behavior", "new_data_retention", "new_attachment_boundary", "ambiguous_product_direction"],
+      "allows": ["pages_assessment", "product_work_item", "forge_plan_preparation"],
+      "blocks": ["merge_without_review", "deployment_without_review", "ship_claim_without_review"]
+    },
+    {
+      "id": "needs_human",
+      "meaning": "Stop and request a person before downstream action.",
+      "requires_any": ["security_boundary", "auth_or_identity", "pricing_or_business_model", "deletion_or_destructive_action", "external_integration", "large_product_direction", "production_deployment"],
+      "allows": ["message_escalation_reply", "pages_assessment"],
+      "blocks": ["forge_handoff", "code_mutation", "ship_claim"]
+    }
+  ],
+  "scoring_dimensions": [
+    { "id": "user_pain", "question": "Does the feedback describe a real blocked or confusing moment?" },
+    { "id": "product_leverage", "question": "Would the change improve repeated beta use or diagnosis?" },
+    { "id": "clarity", "question": "Can acceptance criteria be written without guessing?" },
+    { "id": "scope_size", "question": "Can the work stay inside a narrow write scope?" },
+    { "id": "risk", "question": "Is the blast radius low and reversible?" },
+    { "id": "privacy_security", "question": "Does it avoid new private content, secrets, auth, retention, or tenant boundaries?" },
+    { "id": "authority", "question": "Can current Product, Forge, Talent, CI, and deployment authority cover the loop?" },
+    { "id": "evidence", "question": "Can local checks and receipts prove the outcome?" }
+  ],
+  "required_receipt_chain": [
+    "beta.feedback.captured",
+    "message.feedback.acknowledged",
+    "product.feedback.assessed",
+    "pages.feedback.assessment_published",
+    "work.item.shaped",
+    "forge.work.requested",
+    "forge.evidence.attached",
+    "pages.change.closeout_published",
+    "message.feedback.closed_loop_replied"
+  ],
+  "seed_cases": [
+    {
+      "id": "beta_feedback_screenshot_attachment",
+      "feedback": "Allow beta feedback sender to attach an explicit screenshot.",
+      "initial_lane": "autopilot_with_review",
+      "destination_lane_after_boundary": "autopilot_allowed",
+      "why": "High diagnostic leverage for beta feedback, but screenshots can contain private content.",
+      "must_define_before_autopilot": ["explicit_user_action", "attachment_size_type_limits", "redaction_or_confirmation", "retention_and_deletion", "metadata_receipts_only", "message_pages_display_rules"]
+    }
+  ],
+  "rules": [
+    "feedback must keep a visible fate from capture to closeout",
+    "the original Message thread receives acknowledgement, assessment, build, and closeout replies",
+    "Pages records assessment and closeout thinking without replacing receipts",
+    "Product decides the autonomy lane before Forge receives work",
+    "Forge starts automatically only when a deterministic write scope exists",
+    "Forge cannot bypass Product, Talent, worker, CI, human ratification, or deployment authority",
+    "attachments require an explicit privacy and storage boundary before autopilot"
+  ],
+  "first_execution_slice": "feedback_autonomy_closed_loop_contract",
+  "checks": ["make feedback-autonomy-check", "make beta-feedback-contract-check", "make product-ratification-check", "make pages-message-check"]
+}

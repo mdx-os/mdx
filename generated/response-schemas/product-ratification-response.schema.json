@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProductRatificationResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bet_id",
+    "runtime_status",
+    "question",
+    "shaped_bet",
+    "required_before_ratification",
+    "blocked_actions",
+    "ratification_required",
+    "receipt_ids",
+    "source_contracts"
+  ],
+  "properties": {
+    "bet_id": { "type": "string" },
+    "runtime_status": { "const": "LOCAL-BLOCKED-AT-HUMAN-RATIFICATION" },
+    "question": { "type": "string" },
+    "shaped_bet": { "type": "string" },
+    "required_before_ratification": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "blocked_actions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "ratification_required": { "const": true },
+    "receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "source_contracts": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  }
+}

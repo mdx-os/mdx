@@ -1,0 +1,938 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		060F2BF60EABE96A97F50997 /* MDxOperatorShared in Frameworks */ = {isa = PBXBuildFile; productRef = FF9C7FB84C072E97EF7C12D9 /* MDxOperatorShared */; };
+		09806EB316AC845949F279D6 /* AppAttestRiskProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6DEFE160B22BDC44CC82BA3 /* AppAttestRiskProvider.swift */; };
+		0B79F5706F6C867FB64CF132 /* MobileCloudAuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C319E2DBA0491A89425C26 /* MobileCloudAuthStore.swift */; };
+		42CD1A5A3F18E4CC075D5A44 /* ViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794994124E6A715CB273CDF4 /* ViewStyle.swift */; };
+		49B5EFEBE209603F88174366 /* MDxAnywhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB2A3EF0B008F766B8A0EB /* MDxAnywhereApp.swift */; };
+		5CFF1CF62E7FA943FC241880 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446992397A2194694AB665C6 /* ReviewView.swift */; };
+		6346E7BBF543629A82E9CF2B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3699D17DD1FC27B406B588E6 /* PrivacyInfo.xcprivacy */; };
+		6556AA995A538B970B9AD866 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C79B3402DD25773CD8F76E /* RootTabView.swift */; };
+		67782D8EB16A5E2BF7F73AD3 /* MobileSessionTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E42B72E8CBFF2F63995A9 /* MobileSessionTimelineView.swift */; };
+		7088884D233486FCAFAA9587 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCD354590CB9A2E2D16934E /* NotificationService.swift */; };
+		70BDE39B732DF6CC1DE670B2 /* OfflineDraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB466C1AE08A017024FF381F /* OfflineDraftStore.swift */; };
+		7794F963188EEBCDFB95BD43 /* MDxOperatorShared in Frameworks */ = {isa = PBXBuildFile; productRef = 69858405556CF0E2F289BE3E /* MDxOperatorShared */; };
+		848853B75145D5E50D2DFDB9 /* PushNotificationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A30757DA49B084874E58F16 /* PushNotificationBridge.swift */; };
+		88031237E8459EB0AF4A24C7 /* YouView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31AE3DF15EA59AE8EBBF1BD /* YouView.swift */; };
+		88C35385D44AE8F386E59B77 /* MobileCloudGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948795BC9E2565FCCD80ACCC /* MobileCloudGateView.swift */; };
+		98514B4E75DBF3F6EA66A62D /* PairingScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA9C065C75CA8E74F40D0B6 /* PairingScannerView.swift */; };
+		A0AC797B235AB283A712AE19 /* FixtureContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964A5B8D9B39E02E4B3FD69E /* FixtureContractTests.swift */; };
+		A37C5124F0EC4247B0749EAF /* BiometricDecisionAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE13E03A42D6AB1BDE1F9AF2 /* BiometricDecisionAuthorizer.swift */; };
+		A6B2728DF9CBCE93DFA0F848 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = B092C651416161DD20F0E1BA /* Supabase */; };
+		ABBB629852B6BC1275D431FC /* ForgeActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA4EEDD62A5B54D305CEED7 /* ForgeActivityWidget.swift */; };
+		B174126EA2DF1942D1E7F6A2 /* MDxOperatorShared in Frameworks */ = {isa = PBXBuildFile; productRef = 0325EA38126E1BD315D336F5 /* MDxOperatorShared */; };
+		B23CB6878442F2B3D163E6A8 /* TrustedDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669C2C2D2896894F44641278 /* TrustedDevicesView.swift */; };
+		B44B78A4C93A1A28C3107018 /* MDxAnywhereActivity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9EAF39E43C394442D7E3411D /* MDxAnywhereActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB7848CA7977678B18E692A5 /* ForgeLiveActivityCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FDA7AF3E28C322BA04F605 /* ForgeLiveActivityCoordinator.swift */; };
+		D03121B05CE13DFBF554E94C /* ForgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9120507B83F2DDCE597E014D /* ForgeView.swift */; };
+		D4849D78195338471E5EC323 /* MDxAnywhereNotifications.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A85268371264BB1AD734E13 /* MDxAnywhereNotifications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D6F38A49C08C07F929B3FAC0 /* MobileStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE8F7C76D4F86418CD0EEEA /* MobileStateUITests.swift */; };
+		DEED4D20940064DBDCECA5CB /* ForgeAnywhereStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD711EA9BBFF620D2FC7F5FE /* ForgeAnywhereStore.swift */; };
+		E055B6E5B7C46195B1370F61 /* NowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EC920AECA4FC6A2D2C7FC5 /* NowView.swift */; };
+		F7C1A829363745001B19075D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 371853A738FA112CBAC34D33 /* Assets.xcassets */; };
+		FFA01AE694987B0F37038DBA /* MobileTrustStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACE6DFA3C71A0ED9C0C5A65 /* MobileTrustStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		12352111DF4464F9064E2F16 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2F5AE1ED3B985D1B1D82EDA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E37AB308F10188641D180C64;
+			remoteInfo = MDxAnywhere;
+		};
+		703D9FFB7A8030625606DE96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2F5AE1ED3B985D1B1D82EDA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AC9E38A1D0F7B9F6DC6A48D1;
+			remoteInfo = MDxAnywhereActivity;
+		};
+		B75BE34BF84C4BCC9DF8399E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2F5AE1ED3B985D1B1D82EDA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E37AB308F10188641D180C64;
+			remoteInfo = MDxAnywhere;
+		};
+		EB132C3898F5F8529E35DB66 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2F5AE1ED3B985D1B1D82EDA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57B65B67F99E8F59D31272D6;
+			remoteInfo = MDxAnywhereNotifications;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B0C65298683C6FB338A06460 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D4849D78195338471E5EC323 /* MDxAnywhereNotifications.appex in Embed Foundation Extensions */,
+				B44B78A4C93A1A28C3107018 /* MDxAnywhereActivity.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		195DFD35930D5D66FD4BD3F5 /* MDxAnywhereTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MDxAnywhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A85268371264BB1AD734E13 /* MDxAnywhereNotifications.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MDxAnywhereNotifications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CCD354590CB9A2E2D16934E /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		3699D17DD1FC27B406B588E6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		371853A738FA112CBAC34D33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3ACE6DFA3C71A0ED9C0C5A65 /* MobileTrustStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileTrustStore.swift; sourceTree = "<group>"; };
+		446992397A2194694AB665C6 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
+		48C79B3402DD25773CD8F76E /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		4FA9C065C75CA8E74F40D0B6 /* PairingScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingScannerView.swift; sourceTree = "<group>"; };
+		624FF76B0C13D6C1952EBAB3 /* MDxAnywhere.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MDxAnywhere.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		669C2C2D2896894F44641278 /* TrustedDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedDevicesView.swift; sourceTree = "<group>"; };
+		794994124E6A715CB273CDF4 /* ViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStyle.swift; sourceTree = "<group>"; };
+		7A30757DA49B084874E58F16 /* PushNotificationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBridge.swift; sourceTree = "<group>"; };
+		7EE8F7C76D4F86418CD0EEEA /* MobileStateUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileStateUITests.swift; sourceTree = "<group>"; };
+		90FDA7AF3E28C322BA04F605 /* ForgeLiveActivityCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgeLiveActivityCoordinator.swift; sourceTree = "<group>"; };
+		9120507B83F2DDCE597E014D /* ForgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgeView.swift; sourceTree = "<group>"; };
+		948795BC9E2565FCCD80ACCC /* MobileCloudGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCloudGateView.swift; sourceTree = "<group>"; };
+		964A5B8D9B39E02E4B3FD69E /* FixtureContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureContractTests.swift; sourceTree = "<group>"; };
+		98EC920AECA4FC6A2D2C7FC5 /* NowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowView.swift; sourceTree = "<group>"; };
+		9AA4EEDD62A5B54D305CEED7 /* ForgeActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgeActivityWidget.swift; sourceTree = "<group>"; };
+		9EAF39E43C394442D7E3411D /* MDxAnywhereActivity.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = MDxAnywhereActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3C319E2DBA0491A89425C26 /* MobileCloudAuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCloudAuthStore.swift; sourceTree = "<group>"; };
+		A6DEFE160B22BDC44CC82BA3 /* AppAttestRiskProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAttestRiskProvider.swift; sourceTree = "<group>"; };
+		ACB651AFA8470F5ACC484722 /* MDxAnywhereUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MDxAnywhereUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE13E03A42D6AB1BDE1F9AF2 /* BiometricDecisionAuthorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricDecisionAuthorizer.swift; sourceTree = "<group>"; };
+		BE2E42B72E8CBFF2F63995A9 /* MobileSessionTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSessionTimelineView.swift; sourceTree = "<group>"; };
+		C311D443AF79C5CD166CBCB2 /* mdx-operator-shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "mdx-operator-shared"; path = "../mdx-operator-shared"; sourceTree = SOURCE_ROOT; };
+		D31AE3DF15EA59AE8EBBF1BD /* YouView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouView.swift; sourceTree = "<group>"; };
+		FB466C1AE08A017024FF381F /* OfflineDraftStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineDraftStore.swift; sourceTree = "<group>"; };
+		FD711EA9BBFF620D2FC7F5FE /* ForgeAnywhereStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgeAnywhereStore.swift; sourceTree = "<group>"; };
+		FFCB2A3EF0B008F766B8A0EB /* MDxAnywhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDxAnywhereApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		74106CA55B184A139A1FDD27 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B174126EA2DF1942D1E7F6A2 /* MDxOperatorShared in Frameworks */,
+				A6B2728DF9CBCE93DFA0F848 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8121AC02BC42B4316283954C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				060F2BF60EABE96A97F50997 /* MDxOperatorShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9ED16BE27EA036E343F29FC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7794F963188EEBCDFB95BD43 /* MDxOperatorShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0EA8BB3BCF45269DDAE7C9FE /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				C311D443AF79C5CD166CBCB2 /* mdx-operator-shared */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		19ADE3F8A8A58C7B2702DED6 /* MDxAnywhereUITests */ = {
+			isa = PBXGroup;
+			children = (
+				7EE8F7C76D4F86418CD0EEEA /* MobileStateUITests.swift */,
+			);
+			name = MDxAnywhereUITests;
+			path = Tests/MDxAnywhereUITests;
+			sourceTree = "<group>";
+		};
+		3A2F649BA9E8B698A18FC0DE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				FFCB2A3EF0B008F766B8A0EB /* MDxAnywhereApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3C66D202ABA2F132B0E5CE51 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				FD711EA9BBFF620D2FC7F5FE /* ForgeAnywhereStore.swift */,
+				3ACE6DFA3C71A0ED9C0C5A65 /* MobileTrustStore.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		3D9BAEAA736CC811CDE8B41F /* MDxAnywhereTests */ = {
+			isa = PBXGroup;
+			children = (
+				964A5B8D9B39E02E4B3FD69E /* FixtureContractTests.swift */,
+			);
+			name = MDxAnywhereTests;
+			path = Tests/MDxAnywhereTests;
+			sourceTree = "<group>";
+		};
+		442441915318A74B33ABAAE8 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				794994124E6A715CB273CDF4 /* ViewStyle.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		5EF4980A6C50D54B1B77E60E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				371853A738FA112CBAC34D33 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7B6CC139D7C3EB0CA8A1EA25 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A6DEFE160B22BDC44CC82BA3 /* AppAttestRiskProvider.swift */,
+				BE13E03A42D6AB1BDE1F9AF2 /* BiometricDecisionAuthorizer.swift */,
+				90FDA7AF3E28C322BA04F605 /* ForgeLiveActivityCoordinator.swift */,
+				A3C319E2DBA0491A89425C26 /* MobileCloudAuthStore.swift */,
+				FB466C1AE08A017024FF381F /* OfflineDraftStore.swift */,
+				7A30757DA49B084874E58F16 /* PushNotificationBridge.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		8F1C4E725506A8E6BDD1EFFD /* MDxAnywhereNotifications */ = {
+			isa = PBXGroup;
+			children = (
+				1CCD354590CB9A2E2D16934E /* NotificationService.swift */,
+			);
+			name = MDxAnywhereNotifications;
+			path = Sources/MDxAnywhereNotifications;
+			sourceTree = "<group>";
+		};
+		8F670D7233940165FAF43C69 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9120507B83F2DDCE597E014D /* ForgeView.swift */,
+				948795BC9E2565FCCD80ACCC /* MobileCloudGateView.swift */,
+				BE2E42B72E8CBFF2F63995A9 /* MobileSessionTimelineView.swift */,
+				98EC920AECA4FC6A2D2C7FC5 /* NowView.swift */,
+				4FA9C065C75CA8E74F40D0B6 /* PairingScannerView.swift */,
+				446992397A2194694AB665C6 /* ReviewView.swift */,
+				48C79B3402DD25773CD8F76E /* RootTabView.swift */,
+				669C2C2D2896894F44641278 /* TrustedDevicesView.swift */,
+				D31AE3DF15EA59AE8EBBF1BD /* YouView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8F68CA67BE8653C3B0FFB169 /* MDxAnywhereActivity */ = {
+			isa = PBXGroup;
+			children = (
+				9AA4EEDD62A5B54D305CEED7 /* ForgeActivityWidget.swift */,
+			);
+			name = MDxAnywhereActivity;
+			path = Sources/MDxAnywhereActivity;
+			sourceTree = "<group>";
+		};
+		A62ED5C0A57EBB615222FAEE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				624FF76B0C13D6C1952EBAB3 /* MDxAnywhere.app */,
+				9EAF39E43C394442D7E3411D /* MDxAnywhereActivity.appex */,
+				1A85268371264BB1AD734E13 /* MDxAnywhereNotifications.appex */,
+				195DFD35930D5D66FD4BD3F5 /* MDxAnywhereTests.xctest */,
+				ACB651AFA8470F5ACC484722 /* MDxAnywhereUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE4A2EBC0C88EE5FC6E5C5EE = {
+			isa = PBXGroup;
+			children = (
+				CC04533B17E80AD79232B2A0 /* MDxAnywhere */,
+				8F68CA67BE8653C3B0FFB169 /* MDxAnywhereActivity */,
+				8F1C4E725506A8E6BDD1EFFD /* MDxAnywhereNotifications */,
+				3D9BAEAA736CC811CDE8B41F /* MDxAnywhereTests */,
+				19ADE3F8A8A58C7B2702DED6 /* MDxAnywhereUITests */,
+				0EA8BB3BCF45269DDAE7C9FE /* Packages */,
+				5EF4980A6C50D54B1B77E60E /* Resources */,
+				A62ED5C0A57EBB615222FAEE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC04533B17E80AD79232B2A0 /* MDxAnywhere */ = {
+			isa = PBXGroup;
+			children = (
+				3699D17DD1FC27B406B588E6 /* PrivacyInfo.xcprivacy */,
+				3A2F649BA9E8B698A18FC0DE /* App */,
+				7B6CC139D7C3EB0CA8A1EA25 /* Services */,
+				3C66D202ABA2F132B0E5CE51 /* Stores */,
+				442441915318A74B33ABAAE8 /* Support */,
+				8F670D7233940165FAF43C69 /* Views */,
+			);
+			name = MDxAnywhere;
+			path = Sources/MDxAnywhere;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		57B65B67F99E8F59D31272D6 /* MDxAnywhereNotifications */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 47B9E88FBD0F99293E6DC2CF /* Build configuration list for PBXNativeTarget "MDxAnywhereNotifications" */;
+			buildPhases = (
+				7BEA778DEB078ECD7BAB27AC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MDxAnywhereNotifications;
+			packageProductDependencies = (
+			);
+			productName = MDxAnywhereNotifications;
+			productReference = 1A85268371264BB1AD734E13 /* MDxAnywhereNotifications.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		A37F0BA5EDA0A6F3A1C9B057 /* MDxAnywhereUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF5363F29FE345353877144B /* Build configuration list for PBXNativeTarget "MDxAnywhereUITests" */;
+			buildPhases = (
+				E6003B93AE5C3B1E83BB448A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D493D481B1081698F70C48D9 /* PBXTargetDependency */,
+			);
+			name = MDxAnywhereUITests;
+			packageProductDependencies = (
+			);
+			productName = MDxAnywhereUITests;
+			productReference = ACB651AFA8470F5ACC484722 /* MDxAnywhereUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		AC9E38A1D0F7B9F6DC6A48D1 /* MDxAnywhereActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9675BA9F94F4329D3C552890 /* Build configuration list for PBXNativeTarget "MDxAnywhereActivity" */;
+			buildPhases = (
+				1E498BA26FF5FAB85E9FE00C /* Sources */,
+				9ED16BE27EA036E343F29FC0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MDxAnywhereActivity;
+			packageProductDependencies = (
+				69858405556CF0E2F289BE3E /* MDxOperatorShared */,
+			);
+			productName = MDxAnywhereActivity;
+			productReference = 9EAF39E43C394442D7E3411D /* MDxAnywhereActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		B1661492C1E0B427F85D886D /* MDxAnywhereTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C6AB1F7792A002F10B257C04 /* Build configuration list for PBXNativeTarget "MDxAnywhereTests" */;
+			buildPhases = (
+				5C5CE5A41FADEBE385467847 /* Sources */,
+				8121AC02BC42B4316283954C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83C1C398D8056EDD688E12C3 /* PBXTargetDependency */,
+			);
+			name = MDxAnywhereTests;
+			packageProductDependencies = (
+				FF9C7FB84C072E97EF7C12D9 /* MDxOperatorShared */,
+			);
+			productName = MDxAnywhereTests;
+			productReference = 195DFD35930D5D66FD4BD3F5 /* MDxAnywhereTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E37AB308F10188641D180C64 /* MDxAnywhere */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD463D72A37FC4DB1A6AA5AF /* Build configuration list for PBXNativeTarget "MDxAnywhere" */;
+			buildPhases = (
+				DA11645D8ED1A1791B7E8A71 /* Sources */,
+				7461BBC3348040373F8A1746 /* Resources */,
+				74106CA55B184A139A1FDD27 /* Frameworks */,
+				B0C65298683C6FB338A06460 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BD5A43BF95EA7EB8A28A27AC /* PBXTargetDependency */,
+				E5D76B13A8D17222828D8EB6 /* PBXTargetDependency */,
+			);
+			name = MDxAnywhere;
+			packageProductDependencies = (
+				0325EA38126E1BD315D336F5 /* MDxOperatorShared */,
+				B092C651416161DD20F0E1BA /* Supabase */,
+			);
+			productName = MDxAnywhere;
+			productReference = 624FF76B0C13D6C1952EBAB3 /* MDxAnywhere.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2F5AE1ED3B985D1B1D82EDA2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					57B65B67F99E8F59D31272D6 = {
+						ProvisioningStyle = Automatic;
+					};
+					A37F0BA5EDA0A6F3A1C9B057 = {
+						ProvisioningStyle = Automatic;
+						TestTargetID = E37AB308F10188641D180C64;
+					};
+					AC9E38A1D0F7B9F6DC6A48D1 = {
+						ProvisioningStyle = Automatic;
+					};
+					B1661492C1E0B427F85D886D = {
+						ProvisioningStyle = Automatic;
+					};
+					E37AB308F10188641D180C64 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E4DDC4E3849849DC8C5C7AF3 /* Build configuration list for PBXProject "MDxAnywhere" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BE4A2EBC0C88EE5FC6E5C5EE;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D02C85C8883732BF4BFFC74C /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				1C06BA9FB80DE139B5261928 /* XCLocalSwiftPackageReference "../mdx-operator-shared" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A62ED5C0A57EBB615222FAEE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E37AB308F10188641D180C64 /* MDxAnywhere */,
+				AC9E38A1D0F7B9F6DC6A48D1 /* MDxAnywhereActivity */,
+				57B65B67F99E8F59D31272D6 /* MDxAnywhereNotifications */,
+				B1661492C1E0B427F85D886D /* MDxAnywhereTests */,
+				A37F0BA5EDA0A6F3A1C9B057 /* MDxAnywhereUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7461BBC3348040373F8A1746 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7C1A829363745001B19075D /* Assets.xcassets in Resources */,
+				6346E7BBF543629A82E9CF2B /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E498BA26FF5FAB85E9FE00C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABBB629852B6BC1275D431FC /* ForgeActivityWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C5CE5A41FADEBE385467847 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0AC797B235AB283A712AE19 /* FixtureContractTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7BEA778DEB078ECD7BAB27AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7088884D233486FCAFAA9587 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA11645D8ED1A1791B7E8A71 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09806EB316AC845949F279D6 /* AppAttestRiskProvider.swift in Sources */,
+				A37C5124F0EC4247B0749EAF /* BiometricDecisionAuthorizer.swift in Sources */,
+				DEED4D20940064DBDCECA5CB /* ForgeAnywhereStore.swift in Sources */,
+				BB7848CA7977678B18E692A5 /* ForgeLiveActivityCoordinator.swift in Sources */,
+				D03121B05CE13DFBF554E94C /* ForgeView.swift in Sources */,
+				49B5EFEBE209603F88174366 /* MDxAnywhereApp.swift in Sources */,
+				0B79F5706F6C867FB64CF132 /* MobileCloudAuthStore.swift in Sources */,
+				88C35385D44AE8F386E59B77 /* MobileCloudGateView.swift in Sources */,
+				67782D8EB16A5E2BF7F73AD3 /* MobileSessionTimelineView.swift in Sources */,
+				FFA01AE694987B0F37038DBA /* MobileTrustStore.swift in Sources */,
+				E055B6E5B7C46195B1370F61 /* NowView.swift in Sources */,
+				70BDE39B732DF6CC1DE670B2 /* OfflineDraftStore.swift in Sources */,
+				98514B4E75DBF3F6EA66A62D /* PairingScannerView.swift in Sources */,
+				848853B75145D5E50D2DFDB9 /* PushNotificationBridge.swift in Sources */,
+				5CFF1CF62E7FA943FC241880 /* ReviewView.swift in Sources */,
+				6556AA995A538B970B9AD866 /* RootTabView.swift in Sources */,
+				B23CB6878442F2B3D163E6A8 /* TrustedDevicesView.swift in Sources */,
+				42CD1A5A3F18E4CC075D5A44 /* ViewStyle.swift in Sources */,
+				88031237E8459EB0AF4A24C7 /* YouView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6003B93AE5C3B1E83BB448A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6F38A49C08C07F929B3FAC0 /* MobileStateUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		83C1C398D8056EDD688E12C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E37AB308F10188641D180C64 /* MDxAnywhere */;
+			targetProxy = B75BE34BF84C4BCC9DF8399E /* PBXContainerItemProxy */;
+		};
+		BD5A43BF95EA7EB8A28A27AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57B65B67F99E8F59D31272D6 /* MDxAnywhereNotifications */;
+			targetProxy = EB132C3898F5F8529E35DB66 /* PBXContainerItemProxy */;
+		};
+		D493D481B1081698F70C48D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E37AB308F10188641D180C64 /* MDxAnywhere */;
+			targetProxy = 12352111DF4464F9064E2F16 /* PBXContainerItemProxy */;
+		};
+		E5D76B13A8D17222828D8EB6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AC9E38A1D0F7B9F6DC6A48D1 /* MDxAnywhereActivity */;
+			targetProxy = 703D9FFB7A8030625606DE96 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2863AE5A46368B13641755F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APP_ATTEST_ENVIRONMENT = development;
+				APS_ENVIRONMENT = development;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Support/MDxAnywhere.entitlements;
+				INFOPLIST_FILE = "Support/MDxAnywhere-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		2A421341F25061D4795DBD88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Support/MDxAnywhereActivity-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.activity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4741C276836EDF62260A7E62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mdx.anywhere.ui-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MDxAnywhere;
+			};
+			name = Release;
+		};
+		4E1EC1BDCF230F27891007B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APP_ATTEST_ENVIRONMENT = production;
+				APS_ENVIRONMENT = production;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Support/MDxAnywhere.entitlements;
+				INFOPLIST_FILE = "Support/MDxAnywhere-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MDX_PUBLIC_HOST_URL = "https://mdx-beta-staging-host.onrender.com";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		5CA57D879628BE2E4B5C4DEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		82316B360C6087E756FF960A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Support/MDxAnywhereNotifications-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.notifications;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		99F6AB8AABE5F176CD1F3BE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Support/MDxAnywhereNotifications-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.notifications;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CE7683C10D0BD29181B87903 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MDxAnywhere.app/MDxAnywhere";
+			};
+			name = Debug;
+		};
+		DDCF6EC35A516E037489FCA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mdx.anywhere.ui-tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MDxAnywhere;
+			};
+			name = Debug;
+		};
+		E058DADE774FEE4812A66E3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MDxAnywhere.app/MDxAnywhere";
+			};
+			name = Release;
+		};
+		E5EFFE5CE24EE5FEB5F37E9F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.9.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		F8C56C319CFA934ABE5B5C86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Support/MDxAnywhereActivity-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mdx.anywhere.activity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		47B9E88FBD0F99293E6DC2CF /* Build configuration list for PBXNativeTarget "MDxAnywhereNotifications" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99F6AB8AABE5F176CD1F3BE4 /* Debug */,
+				82316B360C6087E756FF960A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9675BA9F94F4329D3C552890 /* Build configuration list for PBXNativeTarget "MDxAnywhereActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A421341F25061D4795DBD88 /* Debug */,
+				F8C56C319CFA934ABE5B5C86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AD463D72A37FC4DB1A6AA5AF /* Build configuration list for PBXNativeTarget "MDxAnywhere" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2863AE5A46368B13641755F4 /* Debug */,
+				4E1EC1BDCF230F27891007B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BF5363F29FE345353877144B /* Build configuration list for PBXNativeTarget "MDxAnywhereUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDCF6EC35A516E037489FCA2 /* Debug */,
+				4741C276836EDF62260A7E62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C6AB1F7792A002F10B257C04 /* Build configuration list for PBXNativeTarget "MDxAnywhereTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE7683C10D0BD29181B87903 /* Debug */,
+				E058DADE774FEE4812A66E3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E4DDC4E3849849DC8C5C7AF3 /* Build configuration list for PBXProject "MDxAnywhere" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5EFFE5CE24EE5FEB5F37E9F /* Debug */,
+				5CA57D879628BE2E4B5C4DEA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		1C06BA9FB80DE139B5261928 /* XCLocalSwiftPackageReference "../mdx-operator-shared" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../mdx-operator-shared";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D02C85C8883732BF4BFFC74C /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.46.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0325EA38126E1BD315D336F5 /* MDxOperatorShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MDxOperatorShared;
+		};
+		69858405556CF0E2F289BE3E /* MDxOperatorShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MDxOperatorShared;
+		};
+		B092C651416161DD20F0E1BA /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D02C85C8883732BF4BFFC74C /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		FF9C7FB84C072E97EF7C12D9 /* MDxOperatorShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MDxOperatorShared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 2F5AE1ED3B985D1B1D82EDA2 /* Project object */;
+}

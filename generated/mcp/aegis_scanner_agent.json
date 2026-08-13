@@ -1,0 +1,9 @@
+{
+  "name": "aegis_scanner_agent",
+  "loop": "aegis_scanner_agent",
+  "tools": [
+    { "name": "deterministic_local_scanner", "risk": "LOW", "policy_required": true, "receipt_required": true },
+    { "name": "finding_classifier", "risk": "LOW", "policy_required": true, "receipt_required": true },
+    { "name": "remediation_planner", "risk": "MEDIUM", "policy_required": true, "receipt_required": true }
+  ]
+}

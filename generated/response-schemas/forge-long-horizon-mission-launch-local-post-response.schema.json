@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeLongHorizonMissionLaunchLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "delegated_route", "delegated_status", "checkpoint_route", "dashboard_route", "live_provider_calls_allowed", "adapter_execution_allowed", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-forge-long-horizon-mission-launch-local-post" },
+    "status": { "enum": ["MISSION_LAUNCH_DELEGATED", "REFUSED"] },
+    "reason": { "type": "string" },
+    "mission_id": { "type": "string", "minLength": 1 },
+    "milestone_id": { "type": "string", "minLength": 1 },
+    "shape": { "enum": ["run", "fleet"] },
+    "delegated_route": { "enum": ["", "/forge/runs.json", "/forge/fleet-runs.json"] },
+    "delegated_status": { "type": "string", "minLength": 1 },
+    "delegated_response": { "type": "object", "additionalProperties": true },
+    "receipt_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "auto_fleet_plan": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "created": { "type": "boolean" },
+        "fleet_id": { "type": "string" },
+        "source": { "enum": ["mission_packet_write_scope"] },
+        "requested_width": { "type": "integer", "minimum": 1 },
+        "effective_stream_count": { "type": "integer", "minimum": 1 },
+        "authority_opened": { "enum": ["fleet_plan_and_ratification_only"] },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "checkpoint_route": { "const": "/forge/long-horizon-mission-checkpoints.json" },
+    "dashboard_route": { "const": "/forge/long-horizon-mission-dashboard.json" },
+    "authority_opened": { "enum": ["delegated_route_only"] },
+    "launch_records_checkpoint": { "const": false },
+    "live_provider_calls_allowed": { "const": false },
+    "adapter_execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

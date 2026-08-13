@@ -1,0 +1,9 @@
+* @mdx-os/maintainers
+
+/apps/ @mdx-os/maintainers
+/crates/ @mdx-os/maintainers
+/generated/ @mdx-os/maintainers
+/contracts/ @mdx-os/maintainers
+/migrations/ @mdx-os/maintainers
+/docs/ @mdx-os/maintainers
+/.github/ @mdx-os/maintainers

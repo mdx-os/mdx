@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeSourceHostLiveDeliveryResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "run_id", "source_host", "source_repo", "source_branch", "target_base_branch", "pull_request_url", "delivery_guardrails", "delivery_blocked_reasons", "dry_run", "credential_values_recorded", "network_call_allowed", "remote_push_allowed", "pull_request_open_allowed", "approval_allowed", "deployment_authority_granted", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-source-host-live-delivery" },
+        "status": { "const": "LIVE_PR_OPENED" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "source_host": { "enum": ["github", "bitbucket"] },
+        "source_repo": { "type": "string", "minLength": 1 },
+        "source_branch": { "type": "string", "minLength": 1 },
+        "target_base_branch": { "type": "string", "minLength": 1 },
+        "pull_request_url": { "type": "string" },
+        "delivery_guardrails": { "type": "object" },
+        "delivery_blocked_reasons": {
+          "type": "array",
+          "items": { "enum": ["repo_intake_missing", "repo_intake_authority_boundary_breached", "proof_coverage_not_satisfied", "behavior_proof_not_covered", "semantic_orientation_missing", "related_tests_missing", "dependency_map_missing", "candidate_strategy_semantic_operations_missing", "fleet_stream_strategy_semantic_operations_missing", "fleet_integration_strategy_semantic_operations_missing", "fleet_stream_not_recommended", "candidate_selection_missing", "candidate_not_selected", "candidate_not_recommended", "candidate_selection_override_reason_missing"] }
+        },
+        "dry_run": { "const": false },
+        "credential_values_recorded": { "const": false },
+        "network_call_allowed": { "const": true },
+        "remote_push_allowed": { "const": true },
+        "pull_request_open_allowed": { "const": true },
+        "approval_allowed": { "const": false },
+        "deployment_authority_granted": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "detail", "delivery_receipt_id", "policy_decision_id", "credential_values_recorded", "network_call_allowed", "remote_push_allowed", "pull_request_open_allowed", "approval_allowed", "deployment_authority_granted", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-source-host-live-delivery" },
+        "status": { "const": "LIVE_DELIVERY_FAILED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "detail": { "type": "string" },
+        "delivery_receipt_id": { "type": "string" },
+        "policy_decision_id": { "type": "string" },
+        "credential_values_recorded": { "const": false },
+        "network_call_allowed": { "const": true },
+        "remote_push_allowed": { "const": true },
+        "pull_request_open_allowed": { "const": true },
+        "approval_allowed": { "const": false },
+        "deployment_authority_granted": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "delivery_receipt_id", "policy_decision_id", "credential_values_recorded", "network_call_allowed", "remote_push_allowed", "pull_request_open_allowed", "approval_allowed", "deployment_authority_granted", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-source-host-live-delivery" },
+        "status": { "const": "REFUSED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "delivery_receipt_id": { "type": "string" },
+        "policy_decision_id": { "type": "string" },
+        "credential_values_recorded": { "const": false },
+        "network_call_allowed": { "const": false },
+        "remote_push_allowed": { "const": false },
+        "pull_request_open_allowed": { "const": false },
+        "approval_allowed": { "const": false },
+        "deployment_authority_granted": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  ]
+}

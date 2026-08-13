@@ -1,0 +1,13 @@
+{
+  "name": "talent_autonomy_agent",
+  "loop": "talent_autonomy_agent",
+  "tools": [
+    { "name": "talent_sponsor_chain_authorizer", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "talent_worker_lease_authorizer", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "talent_budget_authorizer", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "talent_tool_allowlist_authorizer", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "talent_authorization_recorder", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "worker_credential_checker", "risk": "HIGH", "policy_required": true, "receipt_required": true },
+    { "name": "worker_spawn_requester", "risk": "HIGH", "policy_required": true, "receipt_required": true }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "mdx-talent-tool-allowlist",
+  "mode": "deterministic-local",
+  "runtime_status": "DECLARED-LOCAL-AUTHORITY",
+  "source": "docs/TALENT-TOOL-ALLOWLIST.md",
+  "future_loop_runner_id": "talent_autonomy_agent",
+  "required_receipt_kind": "talent.tool_allowlist.authorized",
+  "required_before": ["talent.authorization.recorded", "worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_fields": ["tenant_id", "parent_loop_id", "worker_template_id", "capability_scope", "allowed_tools", "forbidden_tools", "scope", "expires_at", "policy_decision_id", "source_receipt_ids"],
+  "consumers": ["generated/talent/authorization-envelope.json", "generated/workers/spawn-request-contract.json"],
+  "forbidden_paths": ["authorization_without_tool_allowlist_authority", "worker_spawn_without_tool_allowlist_authority", "tool_allowlist_reuse_across_scope", "tool_allowlist_reuse_across_tenant", "grant_forbidden_tool", "tool_allowlist_without_policy_decision"],
+  "rules": [
+    "Talent cannot authorize worker tools from an unproven inline list",
+    "Tool allowlist authority is bounded by tenant, worker template, capability, scope, expiry, and policy decision",
+    "Tool grants stay separate from budget authority and worker credentialing"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinProductionMemoryRefusalLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "session_id", "source_draft_receipt_id", "refusal_receipt_id", "refused_capability", "terminal_state", "live_provider_call_allowed", "production_memory_write_allowed", "tool_execution_allowed", "hidden_service_role_allowed", "provider_call_allowed", "worker_spawn_allowed", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-twin-production-memory-refusal-local-post" },
+    "status": { "const": "TWIN_PRODUCTION_MEMORY_REFUSED_LOCAL_ONLY" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "session_id": { "type": "string", "minLength": 1 },
+    "source_draft_receipt_id": { "type": "string", "minLength": 1 },
+    "refusal_receipt_id": { "type": "string", "minLength": 1 },
+    "refused_capability": { "const": "production_memory_write" },
+    "terminal_state": { "const": "TWIN_PRODUCTION_MEMORY_REFUSED_LOCAL_ONLY" },
+    "live_provider_call_allowed": { "const": false },
+    "production_memory_write_allowed": { "const": false },
+    "tool_execution_allowed": { "const": false },
+    "hidden_service_role_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

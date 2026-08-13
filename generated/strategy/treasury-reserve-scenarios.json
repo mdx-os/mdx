@@ -1,0 +1,26 @@
+{
+  "name": "mdx-strategy-treasury-reserve-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-TREASURY-RESERVE-SCENARIOS.md",
+  "contract": "generated/strategy/treasury-reserve-contract.json",
+  "allowed": [
+    {
+      "id": "request_reserve_with_ratified_strategy",
+      "requires": ["product.ratification.recorded", "strategy.options.synthesized", "strategy.ratification.recorded", "policy.decision.recorded", "human_sponsor"],
+      "allows": ["request_treasury_reserve"]
+    }
+  ],
+  "blocked": [
+    { "id": "missing_product_ratification_blocks_reserve", "missing": "product.ratification.recorded", "blocks": ["request_treasury_reserve", "handoff_to_forge"] },
+    { "id": "missing_strategy_options_blocks_reserve", "missing": "strategy.options.synthesized", "blocks": ["request_treasury_reserve", "set_company_direction"] },
+    { "id": "missing_strategy_ratification_blocks_reserve", "missing": "strategy.ratification.recorded", "blocks": ["request_treasury_reserve", "allocate_live_budget"] },
+    { "id": "missing_policy_decision_blocks_reserve", "missing": "policy.decision.recorded", "blocks": ["request_treasury_reserve", "live_spend"] },
+    { "id": "missing_human_sponsor_blocks_reserve", "missing": "human_sponsor", "blocks": ["request_treasury_reserve", "production_deploy"] }
+  ],
+  "hard_stops": ["allocate_live_budget", "live_spend", "spawn_worker", "handoff_to_forge", "production_deploy"],
+  "rules": [
+    "one allowed path only requests a Treasury reserve",
+    "reserve request is not live spend or budget allocation",
+    "each blocked path names the missing evidence and forbidden downstream action"
+  ]
+}

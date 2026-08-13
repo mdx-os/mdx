@@ -1,0 +1,35 @@
+{
+  "name": "mdx-pages-read-surface-symmetry-proof",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-READ-SURFACE-SYMMETRY.md",
+  "status": "PROOF-NEXT",
+  "depends_on": [
+    "generated/world-model/pages-projection-fixtures.json",
+    "generated/read-surfaces/pages-concierge-answer-contract.json",
+    "apps/observatory/src/lib/localTruth.js"
+  ],
+  "shared_evidence": {
+    "document_id": "page_evidence_evals_runner",
+    "title": "Evals Runner Evidence Summary",
+    "receipt_ids": ["receipt_evals_runner_completed", "receipt_credential_minted"],
+    "world_model_source": "generated/world-model/pages-projection-fixtures.json"
+  },
+  "developer_onboarding_shared_evidence": {
+    "document_ids": ["page_developer_start_here", "page_agent_context_spine", "page_ui_taste_and_rails", "page_ui_app_experience_upgrade", "page_pr_and_handoff_standard", "page_local_proof_runway", "page_activation_runway", "page_harness_policy_profiles", "page_harness_safe_tool_plane"],
+    "world_model_source": "generated/world-model/pages-projection-fixtures.json",
+    "required_surfaces": ["observatory", "concierge"]
+  },
+  "surfaces": [
+    { "id": "pages_projection", "source": "generated/world-model/pages-projection-fixtures.json", "shared_truth": ["document_id", "source_receipt_ids"] },
+    { "id": "observatory", "source": "apps/observatory/src/lib/localTruth.js", "shared_truth": ["pagesEvidence.allowed.document_id", "pagesEvidence.allowed.source_receipt_ids"] },
+    { "id": "concierge", "source": "generated/read-surfaces/pages-concierge-answer-contract.json", "shared_truth": ["answer_shapes.document_id", "answer_shapes.required_citations"] }
+  ],
+  "forbidden_paths": ["observatory_concierge_receipt_mismatch", "answer_without_projection_document", "ui_only_pages_truth", "shadow_pages_answer"],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Observatory and Concierge must cite the same Pages document id",
+    "Observatory and Concierge must cite the same Pages receipt ids",
+    "Pages answers and panels must name the World Model projection source",
+    "No read surface may invent Pages evidence outside generated projection fixtures"
+  ]
+}

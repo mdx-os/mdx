@@ -1,0 +1,7 @@
+{
+  "loop": "evals_runner_agent",
+  "agent": "evals_runner_agent",
+  "topics": [
+    { "name": "observatory.credential_ready", "source_receipt_kind": "credential.minted", "delivery": "local_only" }
+  ]
+}

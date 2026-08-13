@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeLongHorizonMissionCheckpointLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "dashboard_route", "mission_id", "milestone_id", "checkpoint_event", "checkpoint_receipt_id", "policy_decision_id", "mission_state", "live_provider_calls_allowed", "adapter_execution_allowed", "production_write_allowed", "live_substrate_required"],
+  "properties": {
+    "name": { "const": "mdx-forge-long-horizon-mission-checkpoint-local-post" },
+    "status": { "enum": ["MISSION_MILESTONE_STARTED", "MISSION_MILESTONE_COMPLETED", "MISSION_MILESTONE_BLOCKED", "MISSION_PAUSED_FOR_OPERATOR", "MISSION_RESUMED", "MISSION_STEERED", "REFUSED"] },
+    "reason": { "type": "string", "minLength": 1 },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "type": "string", "minLength": 1 },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/forge/long-horizon-mission-checkpoints.json" },
+    "projection_route": { "const": "/forge/long-horizon-missions/projection.json" },
+    "dashboard_route": { "const": "/forge/long-horizon-mission-dashboard.json" },
+    "mission_id": { "type": "string", "minLength": 1 },
+    "milestone_id": { "type": "string" },
+    "checkpoint_event": { "enum": ["milestone_started", "milestone_completed", "milestone_blocked", "mission_paused", "mission_resumed", "mission_steered"] },
+    "checkpoint_receipt_id": { "type": "string" },
+    "policy_decision_id": { "type": "string" },
+    "mission_state": { "enum": ["ADMITTED_WAITING_FOR_LOCAL_EXECUTION", "IN_PROGRESS_LOCAL_CHECKPOINTS", "BLOCKED_NEEDS_OPERATOR", "PAUSED_FOR_OPERATOR", "UNKNOWN"] },
+    "receipt_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "live_provider_calls_allowed": { "const": false },
+    "adapter_execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "live_substrate_required": { "const": false }
+  }
+}

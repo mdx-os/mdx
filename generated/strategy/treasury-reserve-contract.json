@@ -1,0 +1,20 @@
+{
+  "name": "mdx-strategy-treasury-reserve-contract",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-TREASURY-RESERVE-CONTRACT.md",
+  "status": "DECLARED-LOCAL-AUTHORITY-REQUEST",
+  "from_surface": "strategy_ratification",
+  "to_authority": "treasury_reserve",
+  "allowed_request": "request_treasury_reserve",
+  "required_strategy_evidence": ["strategy.options.synthesized", "strategy.ratification.recorded", "policy.decision.recorded", "human_sponsor"],
+  "required_product_evidence": ["product.ratification.recorded"],
+  "required_contracts": ["generated/strategy/strategy-ratification-surface.json", "generated/product/strategy-handoff-contract.json", "generated/read-surfaces/human-edge-read-surface-matrix.json"],
+  "request_fields": ["source_receipt_ids", "purpose", "amount_ceiling", "expires_at", "human_sponsor", "policy_decision_id"],
+  "forbidden_without_treasury_authority": ["allocate_live_budget", "live_spend", "spawn_worker", "handoff_to_forge", "production_deploy"],
+  "first_local_proof": "make strategy-ratification-check",
+  "rules": [
+    "Strategy may request a Treasury reserve but cannot allocate live budget",
+    "Treasury authority must be transaction-scoped and receipt-backed before spend",
+    "Reserve requests cite Product and Strategy ratification evidence"
+  ]
+}

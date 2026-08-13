@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/schemas/harness-run-manifest.schema.json",
+  "title": "MDx Harness Run Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "tenant_id",
+    "actor_id",
+    "origin_surface",
+    "mode",
+    "goal",
+    "input_artifacts",
+    "allowed_write_scope",
+    "blocked_paths",
+    "tool_manifest",
+    "model_policy",
+    "context_policy",
+    "permission_policy",
+    "budget_policy",
+    "quality_gates",
+    "approval_policy",
+    "receipt_policy",
+    "telemetry_policy",
+    "exit_criteria",
+    "trust_boundary"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "actor_id": { "type": "string", "minLength": 1 },
+    "origin_surface": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "parent_run_id": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 },
+    "enterprise_pack": { "type": "string", "minLength": 1 },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "read_only",
+        "plan_only",
+        "ask_before_action",
+        "approved_execution",
+        "headless_guarded",
+        "worker_bounded",
+        "review_only",
+        "security_review",
+        "ci_repair",
+        "goal_persistent"
+      ]
+    },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "definition_of_done"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "definition_of_done": { "type": "string", "minLength": 1 }
+      }
+    },
+    "input_artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact_ref" },
+      "uniqueItems": true
+    },
+    "allowed_write_scope": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "blocked_paths": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "tool_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_tools", "blocked_tools", "default_parallelism"],
+      "properties": {
+        "allowed_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "blocked_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "default_parallelism": { "type": "integer", "minimum": 1, "maximum": 8 }
+      }
+    },
+    "model_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_profiles", "provider_fail_closed"],
+      "properties": {
+        "allowed_profiles": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "provider_fail_closed": { "type": "boolean" }
+      }
+    },
+    "context_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_sources", "redaction_required", "max_context_tokens"],
+      "properties": {
+        "allowed_sources": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "redaction_required": { "type": "boolean" },
+        "max_context_tokens": { "$ref": "#/$defs/non_negative_integer" }
+      }
+    },
+    "permission_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file_read",
+        "file_write",
+        "shell",
+        "git",
+        "patch",
+        "browser",
+        "mcp",
+        "network"
+      ],
+      "properties": {
+        "file_read": { "$ref": "#/$defs/permission_level" },
+        "file_write": { "$ref": "#/$defs/permission_level" },
+        "shell": { "$ref": "#/$defs/permission_level" },
+        "git": { "$ref": "#/$defs/permission_level" },
+        "patch": { "$ref": "#/$defs/permission_level" },
+        "browser": { "$ref": "#/$defs/permission_level" },
+        "mcp": { "$ref": "#/$defs/permission_level" },
+        "network": { "$ref": "#/$defs/permission_level" }
+      }
+    },
+    "budget_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_turns",
+        "max_tool_calls",
+        "max_runtime_ms",
+        "max_context_tokens",
+        "max_output_tokens",
+        "max_event_bytes",
+        "max_transcript_bytes",
+        "max_cost_cents"
+      ],
+      "properties": {
+        "max_turns": { "$ref": "#/$defs/non_negative_integer" },
+        "max_tool_calls": { "$ref": "#/$defs/non_negative_integer" },
+        "max_runtime_ms": { "$ref": "#/$defs/non_negative_integer" },
+        "max_context_tokens": { "$ref": "#/$defs/non_negative_integer" },
+        "max_output_tokens": { "$ref": "#/$defs/non_negative_integer" },
+        "max_event_bytes": { "$ref": "#/$defs/non_negative_integer" },
+        "max_transcript_bytes": { "$ref": "#/$defs/non_negative_integer" },
+        "max_cost_cents": { "$ref": "#/$defs/non_negative_integer" }
+      }
+    },
+    "quality_gates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/quality_gate" },
+      "minItems": 1
+    },
+    "approval_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "approval_receipt_required"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["none", "ask_first", "per_action", "plan_hash", "human_ratified"]
+        },
+        "approval_receipt_required": { "type": "boolean" }
+      }
+    },
+    "receipt_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_receipt_kinds", "final_verdict_required"],
+      "properties": {
+        "required_receipt_kinds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "final_verdict_required": { "type": "boolean" }
+      }
+    },
+    "telemetry_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["redaction_required", "retention_days", "audit_export_allowed"],
+      "properties": {
+        "redaction_required": { "type": "boolean" },
+        "retention_days": { "$ref": "#/$defs/non_negative_integer" },
+        "audit_export_allowed": { "type": "boolean" }
+      }
+    },
+    "exit_criteria": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "trust_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspace_trusted",
+        "project_local_execution_allowed",
+        "mcp_startup_allowed",
+        "network_allowed",
+        "secrets_available"
+      ],
+      "properties": {
+        "workspace_trusted": { "type": "boolean" },
+        "project_local_execution_allowed": { "type": "boolean" },
+        "mcp_startup_allowed": { "type": "boolean" },
+        "network_allowed": { "type": "boolean" },
+        "secrets_available": { "type": "boolean" },
+        "approval_receipt_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "child_run_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "max_child_runs"],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "max_child_runs": { "$ref": "#/$defs/non_negative_integer" }
+      }
+    },
+    "external_machine_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "handoff_evidence_required", "mdx_owned_verdict_required"],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "handoff_evidence_required": { "type": "boolean" },
+        "mdx_owned_verdict_required": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "uri"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "uri": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" }
+      }
+    },
+    "quality_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "command", "required"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "required": { "type": "boolean" }
+      }
+    },
+    "permission_level": {
+      "type": "string",
+      "enum": ["forbidden", "read_only", "ask_first", "allowed_with_policy"]
+    },
+    "non_negative_integer": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

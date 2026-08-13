@@ -1,0 +1,34 @@
+{
+  "name": "mdx-product-read-surface-symmetry-proof",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-READ-SURFACE-SYMMETRY.md",
+  "status": "PROOF-NEXT",
+  "depends_on": [
+    "generated/product/ratification-contract.json",
+    "generated/response-schemas/product-ratification-response.schema.json",
+    "generated/read-surfaces/product-concierge-answer-contract.json",
+    "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "apps/observatory/src/lib/localTruth.js",
+    "apps/concierge/src/lib/localTruth.js"
+  ],
+  "shared_evidence": {
+    "product_contract": "generated/product/ratification-contract.json",
+    "response_schema": "generated/response-schemas/product-ratification-response.schema.json",
+    "concierge_answer": "generated/read-surfaces/product-concierge-answer-contract.json",
+    "human_edge_matrix": "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "blocked_actions": ["set_direction", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "ship_product_change"]
+  },
+  "surfaces": [
+    { "id": "product_route", "source": "generated/response-schemas/product-ratification-response.schema.json", "shared_truth": ["runtime_status", "blocked_actions", "ratification_required"] },
+    { "id": "observatory", "source": "apps/observatory/src/lib/localTruth.js", "shared_truth": ["productEvidence.schema_title", "productEvidence.blocked", "productEvidence.read_surface"] },
+    { "id": "concierge", "source": "generated/read-surfaces/product-concierge-answer-contract.json", "shared_truth": ["answer_shapes.required_citations", "answer_shapes.blocked_actions"] }
+  ],
+  "forbidden_paths": ["observatory_concierge_product_mismatch", "answer_without_product_contract", "ui_only_product_truth", "shadow_product_answer", "autonomous_product_ratification"],
+  "first_local_proof": "make product-ratification-check",
+  "rules": [
+    "Observatory and Concierge must cite the same Product ratification contract",
+    "Observatory and Concierge must cite the same Product response schema",
+    "Product read surfaces must keep direction, budget, worker, Forge, and ship actions blocked",
+    "No read surface may invent Product evidence outside generated contracts"
+  ]
+}

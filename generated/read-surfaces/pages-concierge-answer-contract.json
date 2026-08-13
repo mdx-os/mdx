@@ -1,0 +1,37 @@
+{
+  "name": "mdx-pages-concierge-answer-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-CONCIERGE-ANSWER-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "surface": "concierge",
+  "depends_on": [
+    "generated/world-model/pages-projection-fixtures.json",
+    "generated/routes/pages-readonly-route-contract.json",
+    "generated/read-model-snapshots/concierge.json"
+  ],
+  "answer_shapes": [
+    { "id": "pages_evidence_summary_answer", "question": "What Pages evidence exists for evals runner?", "answer": "Evals Runner Evidence Summary is queryable because it cites receipt_evals_runner_completed and receipt_credential_minted.", "document_id": "page_evidence_evals_runner", "required_citations": ["receipt_evals_runner_completed", "receipt_credential_minted"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_developer_onboarding_answer", "question": "Where should a new developer start in MDx?", "answer": "Start with the Developer Start Here page, then follow the Agent Context Spine, UI Taste And Rails, PR And Handoff Standard, and Local Proof Runway pages for the exact docs, checks, and proof path.", "document_id": "page_developer_start_here", "required_citations": ["receipt_onboarding_context_spine", "receipt_agent_context_spine_check", "receipt_ui_first_viewport_check", "receipt_agent_working_contract_check", "receipt_local_smoke"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_ui_app_experience_answer", "question": "How should Pages, Message, and Twin become real app surfaces?", "answer": "Use UI App Experience Upgrade: Pages stays a receipt-backed evidence corpus, Message waits for ordered event projections, and Twin can route and preview grounded reasoning without tool execution or hidden state changes.", "document_id": "page_ui_app_experience_upgrade", "required_citations": ["receipt_ui_app_experience_check", "receipt_ui_first_viewport_check"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_local_proof_runway_answer", "question": "How do I prove a local MDx change is real?", "answer": "Use Local Proof Runway to run local smoke, operational handoff, local proof, and evidence checks before trusting a change or handing it to another agent.", "document_id": "page_local_proof_runway", "required_citations": ["receipt_local_smoke", "receipt_operational_handoff_check"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_activation_runway_answer", "question": "What is the current activation path?", "answer": "Use Activation Runway to keep local proof current, respect the live-substrate hard stops, and name which external provider decisions still need credentials and human approval.", "document_id": "page_activation_runway", "required_citations": ["receipt_activation_runway_check", "receipt_operational_proof"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_harness_policy_profiles_answer", "question": "How should enterprise-specific harness policy be modeled?", "answer": "Use Harness Policy Profiles: core is the default profile, none is the default enterprise pack, and packs may narrow behavior without widening trust boundaries or adding customer-specific runtime branches.", "document_id": "page_harness_policy_profiles", "required_citations": ["receipt_harness_policy_profiles_check", "receipt_harness_provider_gateway_check"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true },
+    { "id": "pages_harness_safe_tool_plane_answer", "question": "How should harness tool access stay safe?", "answer": "Use Harness Safe Tool Plane: read, search, list, and patch mediation stay inside declared path scope with output caps, policy decisions, receipts, and denied unsafe actions.", "document_id": "page_harness_safe_tool_plane", "required_citations": ["receipt_harness_safe_tool_plane_check", "receipt_harness_cli_inspection_check"], "world_model_sources": ["generated/world-model/pages-projection-fixtures.json"], "allowed": true }
+  ],
+  "blocked_answer_shapes": [
+    { "id": "answer_without_receipts", "blocked_by": "pages_documents_require_receipt_backed_provenance" },
+    { "id": "answer_from_shadow_pages_store", "blocked_by": "pages_and_message_are_world_model_domains_not_parallel_truth_stores" },
+    { "id": "answer_with_uncited_agent_authorship", "blocked_by": "uncited_agent_authorship" }
+  ],
+  "required_response_fields": ["answer", "document_id", "receipt_ids", "world_model_sources"],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Concierge answers Pages questions from World Model projections only",
+    "Every Pages answer cites source receipt ids",
+    "Every Pages answer document id must resolve to a route-visible Pages projection",
+    "Developer onboarding answers cite Pages documents instead of copying long docs into chat",
+    "Activation runway answers cite local proof and live-substrate hard stops",
+    "Concierge must not infer document truth from route state or app internals",
+    "Blocked Pages projections must remain unanswerable"
+  ]
+}

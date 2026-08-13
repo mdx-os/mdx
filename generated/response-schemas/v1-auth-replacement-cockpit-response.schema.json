@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1AuthReplacementCockpitResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "production_write_allowed", "production_cutover_allowed", "service_role_shortcut_allowed", "user_metadata_authorization_allowed", "implicit_tenant_inference_allowed", "production_role_write_allowed", "production_auth_provider_allowed", "supabase_auth_claim_authority_allowed", "provider_call_allowed", "served_route_count", "core_proof_count", "evidence_kind_count", "refusal_case_count", "governed_route_count", "required_evidence_version", "proof_check", "route_check", "cockpit", "auth_tenant_policy_control", "auth_shadow_compare", "auth_session_boundary", "auth_tenant_policy_preflight_contract", "grant_posture_control", "cutover_blockers", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-auth-replacement-cockpit" },
+    "route": { "const": "/v1/auth-replacement-cockpit.json" },
+    "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_AUTH_TENANT_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "service_role_shortcut_allowed": { "const": false },
+    "user_metadata_authorization_allowed": { "const": false },
+    "implicit_tenant_inference_allowed": { "const": false },
+    "production_role_write_allowed": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "supabase_auth_claim_authority_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "served_route_count": { "const": 3 },
+    "core_proof_count": { "const": 2 },
+    "evidence_kind_count": { "const": 3 },
+    "refusal_case_count": { "const": 9 },
+    "governed_route_count": { "const": 34 },
+    "required_evidence_version": { "const": 2 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-auth-replacement-cockpit-route-check" },
+    "cockpit": {
+      "type": "object",
+      "required": ["name", "status", "route", "served_route_count", "core_proof_count", "evidence_kind_count", "refusal_case_count", "governed_route_count", "ui_handoff", "replacement_readiness", "auth_capabilities", "served_routes", "core_proof", "required_evidence_kinds", "required_refusal_cases", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_auth_replacement_cockpit" },
+        "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_AUTH_TENANT_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/auth-replacement-cockpit.json" },
+        "served_route_count": { "const": 3 },
+        "core_proof_count": { "const": 2 },
+        "evidence_kind_count": { "const": 3 },
+        "refusal_case_count": { "const": 9 },
+        "governed_route_count": { "const": 34 },
+        "ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_governed_local_writes", "safe_to_wire_production_auth_actions", "safe_to_wire_supabase_claim_actions", "safe_to_wire_service_role_actions", "safe_to_wire_role_write_actions", "safe_to_wire_tenant_switch_actions", "production_authority_allowed"],
+          "properties": {
+            "status": { "const": "AUTH_REPLACEMENT_COCKPIT_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_governed_local_writes": { "const": true },
+            "safe_to_wire_production_auth_actions": { "const": false },
+            "safe_to_wire_supabase_claim_actions": { "const": false },
+            "safe_to_wire_service_role_actions": { "const": false },
+            "safe_to_wire_role_write_actions": { "const": false },
+            "safe_to_wire_tenant_switch_actions": { "const": false },
+            "production_authority_allowed": { "const": false }
+          }
+        },
+        "replacement_readiness": {
+          "type": "object",
+          "required": ["locally_replayable", "v1_user_job_preserved", "local_actor_admission_first_class", "refusal_cases_proven", "governed_routes_bound", "production_auth_boundary_proven", "auth_tenant_policy_preflighted", "service_role_boundary_proven", "production_auth_mapping_required", "human_security_review_required", "production_read_shadow_required", "grant_snapshot_required", "live_auth_provider_turn_on_required", "service_role_shortcut_refusal_required", "tenant_role_refusal_cases_required", "rollback_safe_actor_admission_required", "cutover_green_allowed"],
+          "properties": {
+            "locally_replayable": { "const": true },
+            "v1_user_job_preserved": { "const": true },
+            "local_actor_admission_first_class": { "const": true },
+            "refusal_cases_proven": { "const": true },
+            "governed_routes_bound": { "const": true },
+            "production_auth_boundary_proven": { "const": true },
+            "auth_tenant_policy_preflighted": { "const": true },
+            "service_role_boundary_proven": { "const": true },
+            "production_auth_mapping_required": { "const": true },
+            "human_security_review_required": { "const": true },
+            "production_read_shadow_required": { "const": true },
+            "grant_snapshot_required": { "const": true },
+            "live_auth_provider_turn_on_required": { "const": true },
+            "service_role_shortcut_refusal_required": { "const": true },
+            "tenant_role_refusal_cases_required": { "const": true },
+            "rollback_safe_actor_admission_required": { "const": true },
+            "cutover_green_allowed": { "const": false }
+          }
+        },
+        "auth_capabilities": {
+          "type": "array",
+          "minItems": 6,
+          "allOf": [
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "local_auth_session" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "actor_admission" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "tenant_policy_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "governed_write_admission" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "service_role_refusal" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "tenant_role_refusal" } } } }
+          ]
+        },
+        "served_routes": {
+          "type": "array",
+          "minItems": 3,
+          "allOf": [
+            { "contains": { "const": "GET /local/auth-session.json" } },
+            { "contains": { "const": "POST /auth/tenant-policy-preflights.json" } },
+            { "contains": { "const": "GET /auth/tenant-policy-preflights/projection.json" } }
+          ]
+        },
+        "core_proof": {
+          "type": "array",
+          "minItems": 2,
+          "allOf": [
+            { "contains": { "const": "cargo test -q -p mdx-core actor_admission" } },
+            { "contains": { "const": "cargo test -q -p mdx-core auth_tenant_policy_preflight" } }
+          ]
+        },
+        "required_evidence_kinds": {
+          "type": "array",
+          "minItems": 3,
+          "allOf": [
+            { "contains": { "const": "auth.session.local.stub" } },
+            { "contains": { "const": "local_actor_admission_report" } },
+            { "contains": { "const": "auth.tenant_policy.preflighted" } }
+          ]
+        },
+        "required_refusal_cases": {
+          "type": "array",
+          "minItems": 9,
+          "allOf": [
+            { "contains": { "const": "missing_tenant" } },
+            { "contains": { "const": "service_role_bypass" } },
+            { "contains": { "const": "user_metadata_authorization" } },
+            { "contains": { "const": "role_escalation_without_policy" } },
+            { "contains": { "const": "tenant_switch_without_policy" } }
+          ]
+        },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "auth_tenant_policy_control": {
+      "type": "object",
+      "required": ["name", "status", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_auth_tenant_policy_control" },
+        "status": { "const": "CHECK_BOUND_LOCAL_ONLY_NOT_PRODUCTION_AUTH" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "auth_shadow_compare": {
+      "type": "object",
+      "required": ["name", "status", "expected_route_count", "expected_core_proof_count", "expected_evidence_kind_count", "expected_refusal_case_count", "expected_governed_route_count", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_auth_shadow_compare" },
+        "status": { "const": "LOCAL_HTTP_AND_CORE_SHADOW_COMPARE" },
+        "expected_route_count": { "const": 3 },
+        "expected_core_proof_count": { "const": 2 },
+        "expected_evidence_kind_count": { "const": 3 },
+        "expected_refusal_case_count": { "const": 9 },
+        "expected_governed_route_count": { "const": 34 },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "auth_session_boundary": {
+      "type": "object",
+      "required": ["name", "status", "local_route", "actor_admission"],
+      "properties": {
+        "name": { "const": "mdx-auth-session-boundary" },
+        "status": { "const": "deterministic-local-stub" },
+        "local_route": { "const": "/local/auth-session.json" },
+        "actor_admission": { "type": "object" }
+      }
+    },
+    "auth_tenant_policy_preflight_contract": {
+      "type": "object",
+      "required": ["name", "runtime_status", "write_route", "projection_route", "required_receipt_kind"],
+      "properties": {
+        "name": { "const": "mdx-auth-tenant-policy-preflight-contract" },
+        "runtime_status": { "const": "LIVE-LOCAL-GOVERNED-WRITE" },
+        "write_route": { "const": "/auth/tenant-policy-preflights.json" },
+        "projection_route": { "const": "/auth/tenant-policy-preflights/projection.json" },
+        "required_receipt_kind": { "const": "auth.tenant_policy.preflighted" }
+      }
+    },
+    "grant_posture_control": { "type": "object" },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "cutover_green_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "cutover_green_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "proof_index_route": {
+      "type": "object",
+      "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "route": { "const": "/v1/replacement-proof-index.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["service_role_shortcut_allowed", "user_metadata_authorization_allowed", "implicit_tenant_inference_allowed", "production_role_write_allowed", "production_auth_provider_allowed", "supabase_auth_claim_authority_allowed", "provider_call_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "service_role_shortcut_allowed": { "const": false },
+        "user_metadata_authorization_allowed": { "const": false },
+        "implicit_tenant_inference_allowed": { "const": false },
+        "production_role_write_allowed": { "const": false },
+        "production_auth_provider_allowed": { "const": false },
+        "supabase_auth_claim_authority_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

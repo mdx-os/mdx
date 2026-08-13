@@ -1,0 +1,20 @@
+{
+  "name": "mdx-strategy-ratification-surface",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-RATIFICATION-SURFACE.md",
+  "status": "DECLARED-LOCAL-READ-SURFACE",
+  "routes": ["/strategy", "/strategy.json"],
+  "response_schema_path": "generated/response-schemas/strategy-ratification-response.schema.json",
+  "human_edge_job": "strategy_ratification",
+  "source_boundaries": ["generated/strategy/strategy-loop-scaffold.json", "generated/product/ratification-contract.json", "generated/read-surfaces/human-edge-read-surface-matrix.json", "generated/ui/human-edge-contract.json"],
+  "read_model_fields": ["proposal_id", "question", "options", "why_now", "evidence_receipt_ids", "blocked_actions", "ratification_required", "expires_at"],
+  "allowed_jobs": ["compare_options", "inspect_evidence", "ratify_or_reject", "request_more_evidence"],
+  "forbidden_jobs": ["autonomous_direction_setting", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "production_deploy"],
+  "required_before_write": ["human_ratification_receipt", "policy_decision_receipt", "treasury_authority_for_budget_requests"],
+  "rules": [
+    "Strategy is a guided ratification surface before it is a runtime loop",
+    "Strategy may stage questions and options but cannot set direction",
+    "Budget and worker actions remain blocked until human ratification, policy, Treasury, and Talent evidence exist",
+    "Strategy answers cite receipt ids and source contracts"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "mdx-pages-v1-parity-matrix",
+  "contract_version": 1,
+  "human_line": "Every v1 Pages capability, accounted for: shipped, shipped differently on the governed rails, or deferred out loud with the reason.",
+  "statuses": ["shipped", "shipped_differently", "deferred"],
+  "entries": [
+    { "id": "page_crud_lifecycle", "v1": "create/edit/get/list pages with slug lookup", "status": "shipped", "where": "P1-P2", "note": "library + reader + editor; lifecycle derived from receipts, never a parallel status field" },
+    { "id": "propose_approve_reject", "v1": "agents propose, humans approve or reject, pending triage queue with diffs", "status": "shipped", "where": "P2", "note": "the waiting-on-you strip + compare vs published; every decision is a receipt" },
+    { "id": "governance_tiers", "v1": "auto_publish / light_review (24h auto-approve cron) / full_approval per page type", "status": "shipped_differently", "where": "P2+P7", "note": "ONE governed rail for every page - nothing publishes without a human decision; templates carry advisory shape instead of per-type authority; an auto-approve cron is exactly the silent mutation the doctrine forbids" },
+    { "id": "revisions_and_diff", "v1": "get_revisions + get_diff per page", "status": "shipped", "where": "P2", "note": "history from publication receipts, restore = new publication of an old body, compare in the editor" },
+    { "id": "relationships", "v1": "create/delete relationship edges, related pages, referenced-by", "status": "shipped_differently", "where": "P3", "note": "derived from recorded bodies and receipts (cites, cited-by, mentions) - never hand-declared edges that drift" },
+    { "id": "search_exact", "v1": "search_pages + search index", "status": "shipped", "where": "P6", "note": "authored + charter corpus, every hit says why it matched, trust chips from the same flag agents obey" },
+    { "id": "semantic_search_rag", "v1": "pgvector embeddings, backfill pipeline, semantic retrieval", "status": "deferred", "where": "CTX lane", "note": "arrives with CTX; candidates will filter through the agent citation policy, never around it" },
+    { "id": "agent_authorship", "v1": "agent_auth + authorship status + circuit breaker", "status": "shipped_differently", "where": "P2+P8", "note": "agents write through the same governed rail with their actor id; citability is earned per page (trusted_for_ai), not granted per agent" },
+    { "id": "memify", "v1": "pages distilled into agent memory", "status": "deferred", "where": "CTX lane", "note": "memory consolidation is CTX's job; pages already expose what it needs (citable list + receipts)" },
+    { "id": "pulse_overview", "v1": "get_pulse activity overview", "status": "shipped_differently", "where": "P1+P9", "note": "the lifecycle projection + the admin stewardship dashboard say what changed and what needs an eye" },
+    { "id": "page_types", "v1": "PageType enum (session_brief, signal, note, plan, article, report, decision, compliance, security)", "status": "shipped_differently", "where": "P7", "note": "nine declared shapes that suggest and never block; the review rule is universal, the shape is advisory" },
+    { "id": "auto_lint", "v1": "autolint pipeline on page content", "status": "deferred", "where": "unscheduled", "note": "the missing-sections advisory covers the template case; content linting waits for a consumer who asks for it" }
+  ],
+  "v2_surpluses": [
+    "trusted_for_ai derived per page and served to agents at /pages/agent-citations.json with the receipt to cite",
+    "stewardship: owner, reviewer, review cadence, staleness that flips citability off and a fresh review that earns it back",
+    "write-once body store - a published revision is never rewritten",
+    "the World Model panel: what a page rests on, what rests on it, where the company talks about it - all derived",
+    "comments ride the Message contract and decisions surface in the World Model with zero new kernel writes",
+    "templates seed the stewardship cadence at publish, on the record",
+    "every lifecycle step is a receipt a human can open"
+  ]
+}

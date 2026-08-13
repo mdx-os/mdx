@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LocalApiIndexResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "mode", "status", "routes", "next_commands", "notes"],
+  "properties": {
+    "name": { "const": "mdx-local-api-index" },
+    "mode": { "const": "deterministic-local" },
+    "status": { "const": "OK" },
+    "routes": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "purpose"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/(local|v2)/" },
+          "purpose": { "type": "string", "minLength": 1 }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/auth-session.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/evidence-index.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/activation-summary.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/activation-report.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/dogfood-proof.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/local/operational-handoff.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/provider-turn-on-matrix.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/provider-activation-request.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/provider-turn-on-decision.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/provider-turn-on-drill.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/seeded-tenant-demo.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/fresh-install-readiness.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/local-round-trip.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/deployment-plan.json" } } } },
+        { "contains": { "type": "object", "required": ["path"], "properties": { "path": { "const": "/v2/public-release-plan.json" } } } }
+      ]
+    },
+    "next_commands": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" },
+      "allOf": [
+        { "contains": { "const": "make local-ui-proof" } },
+        { "contains": { "const": "make operational-proof" } },
+        { "contains": { "const": "make local-dev-stack" } }
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "contains": { "const": "all mutation remains behind policy and receipt gates" }
+    }
+  }
+}

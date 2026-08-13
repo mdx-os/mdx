@@ -1,0 +1,37 @@
+{
+  "name": "mdx-pages-message-sequencing",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-MESSAGE-SEQUENCING.md",
+  "sequence": [
+    {
+      "step": 1,
+      "surface": "Pages",
+      "v2_shape": "world_model_evidence_corpus",
+      "status": "NEXT",
+      "required_contract": "generated/world-model/pages-message-contract.json",
+      "first_local_proof": "make pages-message-check",
+      "allowed_next_work": ["receipt-backed document projection", "read-only Pages surface", "Concierge and Twin citation grounding"],
+      "forbidden_next_work": ["standalone document store", "uncited agent authorship", "rich editor before provenance"]
+    },
+    {
+      "step": 2,
+      "surface": "Message",
+      "v2_shape": "communication_event_plane",
+      "status": "DEFER-UNTIL-PAGES-PROJECTION",
+      "required_contract": "generated/world-model/pages-message-contract.json",
+      "first_local_proof": "make pages-message-check",
+      "allowed_next_work": ["typed message event contract", "thread and channel projections", "outbox-linked agent communication events"],
+      "forbidden_next_work": ["Slack clone UI before event plane", "parallel message truth store", "presence or fanout before event ordering"]
+    }
+  ],
+  "performance_rails": [
+    "Message hot path must not synchronously call an LLM",
+    "Realtime fanout waits until event ordering tenant isolation and receipt linkage are declared",
+    "Read surfaces query Pages and Message through World Model projections"
+  ],
+  "rules": [
+    "Pages comes before Message runtime because institutional memory grounds the communication plane",
+    "Message starts as append-only communication events before channels threads presence or realtime UI",
+    "Both surfaces remain World Model domains and cannot own parallel truth"
+  ]
+}

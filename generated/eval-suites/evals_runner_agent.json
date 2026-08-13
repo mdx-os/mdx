@@ -1,0 +1,5 @@
+{
+  "loop": "evals_runner_agent",
+  "agent": "evals_runner_agent",
+  "tests": ["policy_decision_before_consequential_action", "receipt_for_each_loop_transition", "credential_requires_eval_verdict", "memory_write_requires_consolidation_gate", "charter_record_links_evidence_receipt", "concierge_answer_cites_receipts"]
+}
