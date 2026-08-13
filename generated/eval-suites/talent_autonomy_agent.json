@@ -1,0 +1,5 @@
+{
+  "loop": "talent_autonomy_agent",
+  "agent": "talent_autonomy_agent",
+  "tests": ["policy_decision_before_each_talent_authority_receipt", "receipt_for_each_talent_authority_transition", "authorization_consumes_all_authority_receipts", "credential_check_precedes_worker_spawn_request", "talent_blocks_before_worker_runtime", "talent_stays_within_local_budget"]
+}

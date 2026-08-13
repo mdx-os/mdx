@@ -1,0 +1,44 @@
+{
+  "name": "mdx-forge-anywhere-session-contract",
+  "version": 1,
+  "status": "CONTRACT_ONLY_AUTHORITY_CLOSED",
+  "source": "docs/MDX-IPHONE-FORGE-GAMEPLAN.md",
+  "decision": "docs/adr/0495-forge-anywhere-one-session-many-targets.md",
+  "canonical_session_schema": "generated/response-schemas/forge-work-session.schema.json",
+  "schema_paths": {
+    "execution_target": "generated/response-schemas/execution-target.schema.json",
+    "device_descriptor": "generated/response-schemas/device-descriptor.schema.json",
+    "host_descriptor": "generated/response-schemas/host-descriptor.schema.json",
+    "handoff_checkpoint": "generated/response-schemas/handoff-checkpoint.schema.json",
+    "session_command": "generated/response-schemas/session-command.schema.json",
+    "session_event": "generated/response-schemas/session-event.schema.json"
+  },
+  "execution_target_kinds": ["paired_host", "mdx_cloud", "customer_managed"],
+  "command_invariants": [
+    "versioned",
+    "idempotent",
+    "expiring",
+    "expected_session_version_required",
+    "actor_device_bound",
+    "execution_target_bound",
+    "tenant_bound"
+  ],
+  "session_invariants": [
+    "one_session_identity_across_targets",
+    "append_only_event_sequence",
+    "checkpoint_required_for_target_handoff",
+    "provider_neutral_mobile_projection",
+    "provider_neutral_authority_semantics"
+  ],
+  "security_invariants": [
+    "no_provider_credentials_on_mobile",
+    "no_source_host_tokens_on_mobile",
+    "no_inbound_host_listener",
+    "opaque_push_references_only",
+    "revocation_checked_on_every_command",
+    "stale_state_cannot_grant_authority"
+  ],
+  "execution_authority_open": false,
+  "deployment_authority_open": false,
+  "production_write_allowed": false
+}

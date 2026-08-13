@@ -1,0 +1,23 @@
+{
+  "name": "mdx-forge-work-classification",
+  "mode": "deterministic-local",
+  "source": "docs/FORGE-WORK-CLASSIFICATION.md",
+  "status": "LIVE-LOCAL-WORK-CLASSIFICATION",
+  "runtime": "mdx_core::LocalForgeWorkClassifier",
+  "classification_route": "/forge/work-classifications.json",
+  "projection_route": "/forge/work-classifications/projection.json",
+  "run_route": "/forge/runs.json",
+  "mission_route": "/forge/long-horizon-missions.json",
+  "scoreboard_route": "/forge/fleet-eval-scoreboard.json",
+  "dashboard_route": "/forge/long-horizon-mission-dashboard.json",
+  "classification_response_schema": "generated/response-schemas/forge-work-classification-local-post-response.schema.json",
+  "projection_response_schema": "generated/response-schemas/forge-work-classification-local-projection-response.schema.json",
+  "class_vocabulary": ["bug_fix", "feature", "refactor", "security", "ci_repair", "docs_code", "multi_file", "architecture", "api_compat", "migration", "performance", "concurrency", "observability", "product_ux", "long_horizon"],
+  "complexity_tiers": ["small", "medium", "large", "xl", "extreme"],
+  "decision_fields": ["recommended_shape", "task_class", "complexity_tier", "confidence_pct", "suggested_checks", "allowed_write_scope", "blocked_paths", "mission_recommended"],
+  "depends_on": ["generated/architecture/forge-fleet-eval-harness.json", "generated/architecture/forge-long-horizon-missions.json"],
+  "receipt_kinds": ["forge.work_classification.recorded"],
+  "authority_policy": "classification is a proposal for operator confirmation and never grants execution authority",
+  "forbidden_capabilities": ["no live provider calls from classification", "no external adapter execution", "no provider secret export", "no patch application", "no production write", "no human ratification bypass", "no deployment authority"],
+  "checks": ["make forge-work-classification-check", "cargo test -p mdx-core harness_work_classification", "cargo check -p mdx-server", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

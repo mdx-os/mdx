@@ -1,0 +1,15 @@
+{
+  "name": "mdx-pages-message-world-model",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-MESSAGE-WORLD-MODEL.md",
+  "domains": [
+    { "domain": "pages_evidence_documents", "v2_shape": "world_model_evidence_corpus", "status": "PLANNED", "required_fields": ["tenant_id", "document_id", "title", "body_ref", "author_actor_id", "source_receipt_ids", "charter_evidence_ids", "created_at"], "read_by": ["concierge", "observatory", "twin_companions"], "mutated_by": ["future_pages_projection", "loop_runners"] },
+    { "domain": "message_events", "v2_shape": "communication_event_plane", "status": "DEFERRED", "required_fields": ["tenant_id", "thread_id", "message_id", "actor_id", "loop_id", "receipt_id", "outbox_topic", "created_at"], "read_by": ["concierge", "observatory", "twin_companions"], "mutated_by": ["outbox", "future_message_surface"] }
+  ],
+  "rules": [
+    "pages_documents_require_receipt_backed_provenance",
+    "message_events_require_actor_loop_receipt_thread_and_tenant",
+    "pages_and_message_are_world_model_domains_not_parallel_truth_stores",
+    "read_surfaces_query_pages_and_message_through_world_model"
+  ]
+}

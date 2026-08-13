@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1WriteShadowDryRunResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "service_role_runtime_allowed", "provider_call_allowed", "worker_spawn_allowed", "deployment_authority_allowed", "v2_system_of_record_allowed", "production_cutover_allowed", "surface_count", "governed_route_count", "policy_control", "approval_request_control", "approval_decision_control", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-write-shadow-dry-run" },
+    "route": { "const": "/v1/write-shadow-dry-run.json" },
+    "status": { "const": "DRY_RUN_READY_PRODUCTION_WRITE_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "dual_write_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "v2_system_of_record_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "surface_count": { "const": 4 },
+    "governed_route_count": { "const": 18 },
+    "policy_control": {
+      "type": "object",
+      "required": ["name", "status", "surface_policy_requirements", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_write_shadow_mirror_policy_control" },
+        "status": { "const": "POLICY_DECLARED_PRODUCTION_WRITE_BLOCKED" },
+        "surface_policy_requirements": { "type": "array", "minItems": 4 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["write_mirror_allowed", "production_write_allowed", "service_role_runtime_allowed"],
+          "properties": {
+            "write_mirror_allowed": { "const": false },
+            "production_write_allowed": { "const": false },
+            "service_role_runtime_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "approval_request_control": {
+      "type": "object",
+      "required": ["name", "status", "write_route", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_write_mirror_approval_request_control" },
+        "status": { "const": "CHECK_BOUND_APPROVAL_REQUEST_RECORDED_NO_MIRROR" },
+        "write_route": { "const": "/v1/write-mirror-approval-requests.json" },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["human_approval_granted", "write_mirror_allowed", "production_write_allowed"],
+          "properties": {
+            "human_approval_granted": { "const": false },
+            "write_mirror_allowed": { "const": false },
+            "production_write_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "approval_decision_control": {
+      "type": "object",
+      "required": ["name", "status", "write_route", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_write_mirror_approval_decision_control" },
+        "status": { "const": "CHECK_BOUND_APPROVAL_DECISION_RECORDED_NO_MIRROR" },
+        "write_route": { "const": "/v1/write-mirror-approval-decisions.json" },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["human_approval_granted", "write_mirror_allowed", "production_write_allowed"],
+          "properties": {
+            "human_approval_granted": { "const": false },
+            "write_mirror_allowed": { "const": false },
+            "production_write_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "service_role_runtime_allowed", "provider_call_allowed", "worker_spawn_allowed", "deployment_authority_allowed", "v2_system_of_record_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "write_mirror_allowed": { "const": false },
+        "dual_write_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false },
+        "v2_system_of_record_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

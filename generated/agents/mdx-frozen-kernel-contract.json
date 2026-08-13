@@ -1,0 +1,103 @@
+{
+  "name": "mdx-frozen-kernel-contract",
+  "source": "docs/FROZEN-KERNEL-CONTRACT.md",
+  "status": "ACTIVE",
+  "mode": "hard_fail_plus_human_review",
+  "purpose": "Protect the kernel spine while maintainers and their agents work on branches.",
+  "review_policy": {
+    "hard_fail_check": "make frozen-kernel-contract-check",
+    "human_review_required": true,
+    "review_packet": "docs/FROZEN-KERNEL-CHANGE-REVIEW.md",
+    "allowed_unreviewed_change": "no protected paths changed"
+  },
+  "protected_globs": [
+    "crates/mdx-core/src/lib.rs",
+    "crates/mdx-core/src/storage*.rs",
+    "crates/mdx-core/src/*receipt*.rs",
+    "crates/mdx-core/src/*snapshot*.rs",
+    "crates/mdx-core/src/*auth*.rs",
+    "crates/mdx-core/src/*tenant*.rs",
+    "crates/mdx-core/src/*secret*.rs",
+    "crates/mdx-core/src/*model*.rs",
+    "crates/mdx-server/src/http*.rs",
+    "crates/mdx-server/src/main.rs",
+    "crates/mdx-server/src/receipt_routes.rs",
+    "crates/mdx-server/src/kernel_snapshot.rs",
+    "crates/mdx-server/src/request_security.rs",
+    "crates/mdx-server/src/install_model_connect.rs",
+    "crates/mdx-server/src/twin_live_gateway.rs",
+    "generated/openapi/mdx.json",
+    "generated/routes/mdx-local-routes.json",
+    "generated/routes/mdx-runtime-route-smoke-matrix.json",
+    "generated/change-gates/mdx-change-gates.json",
+    "generated/source-map/mdx-source-map.json",
+    "generated/verification/mdx-local-verification.json",
+    "generated/security/mdx-security-posture.json",
+    "generated/security/mdx-threat-model.json",
+    "generated/auth/mdx-auth-session-boundary.json",
+    "generated/live-substrates/provider-turn-on-evidence.json",
+    "generated/agents/mdx-frozen-kernel-contract.json",
+    "scripts/local-http-smoke*.sh",
+    "scripts/*security*.mjs",
+    "scripts/frozen-kernel-contract-check.mjs",
+    "Makefile",
+    ".github/workflows/ci.yml",
+    ".github/CODEOWNERS"
+  ],
+  "invariants": [
+    {
+      "id": "route_catalog_counts",
+      "summary": "Route catalogs, route counts, OpenAPI, and smoke matrix remain generated and count-consistent.",
+      "evidence": ["generated/openapi/mdx.json", "generated/routes/mdx-local-routes.json", "generated/routes/mdx-runtime-route-smoke-matrix.json", "make ci-runtime-surface-check"]
+    },
+    {
+      "id": "governed_write_routes",
+      "summary": "Governed writes stay declared, actor-admitted, receipt-backed, and fail-closed.",
+      "evidence": ["GOVERNED_WRITE_ROUTES", "crates/mdx-server/src/request_security.rs", "make security-check", "make no-fake-green-check"]
+    },
+    {
+      "id": "receipt_action_spine",
+      "summary": "Receipt kinds, action kinds, and evidence-chain shape cannot drift silently.",
+      "evidence": ["*_RECEIPT_KIND", "ActionKind", "make generated-clean", "make source-map-check"]
+    },
+    {
+      "id": "snapshot_restore",
+      "summary": "Ledger snapshots restore durably, reject tamper, and preserve monotonic ids.",
+      "evidence": ["crates/mdx-server/src/kernel_snapshot.rs", "make local-kernel-restart-proof", "make postgres-kernel-restore-proof"]
+    },
+    {
+      "id": "storage_boundary",
+      "summary": "Runtime receipt writes go through StorageProvider and never reach around the storage boundary.",
+      "evidence": ["StorageProvider", "make security-check", "make postgres-boundary-check"]
+    },
+    {
+      "id": "auth_session_tenant",
+      "summary": "Auth, session, role, and tenant admission cannot bypass governed-write identity rules.",
+      "evidence": ["generated/auth/mdx-auth-session-boundary.json", "make auth-session-check", "make security-check"]
+    },
+    {
+      "id": "provider_secret_lifecycle",
+      "summary": "Provider keys stay transient and presence-only; receipts and disk never contain secret values.",
+      "evidence": ["generated/live-substrates/provider-turn-on-evidence.json", "make model-turn-on-contract-check", "make secret-history-check"]
+    },
+    {
+      "id": "request_path_panic",
+      "summary": "Serving paths do not depend on unwrap or expect for recoverable request state.",
+      "evidence": ["make frozen-kernel-contract-check", "make security-check"]
+    },
+    {
+      "id": "ci_required_manifest",
+      "summary": "The beta branch required-check manifest is frozen and cannot be quietly narrowed.",
+      "evidence": ["generated/verification/mdx-local-verification.json", ".github/workflows/ci.yml", "make verification-manifest-check"]
+    }
+  ],
+  "required_checks": [
+    "make frozen-kernel-contract-check",
+    "make agent-work-queue-check",
+    "make agent-preflight-check",
+    "make change-gate-check",
+    "make source-map-check",
+    "make verification-manifest-check",
+    "make generated-clean"
+  ]
+}

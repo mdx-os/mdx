@@ -1,0 +1,185 @@
+{
+  "name": "mdx-security-scanner-policy",
+  "version": 1,
+  "artifact_root": "audit/runs",
+  "minimum_posture_score": 85,
+  "nightly_blocks_on_missing_required": true,
+  "block_severities": ["critical", "high"],
+  "accepted_findings": [
+    {
+      "scanner": "trivy-fs",
+      "category": "iac",
+      "id": "KSV-0109",
+      "path": "deploy/kubernetes/base/configmap.yaml",
+      "reason": "MDX_SECRETS_BACKEND is a non-secret backend selector. Secret values are supplied only through mdx-runtime-secrets or the external secret store."
+    },
+    {
+      "scanner": "trivy-fs",
+      "category": "iac",
+      "id": "KSV-01010",
+      "path": "deploy/kubernetes/base/configmap.yaml",
+      "reason": "MDX_SECRETS_BACKEND is a non-secret backend selector. Secret values are supplied only through mdx-runtime-secrets or the external secret store."
+    },
+    {
+      "scanner": "semgrep",
+      "category": "sast",
+      "id": "typescript.react.security.react-insecure-request.react-insecure-request",
+      "path": "scripts/ctx-provider-turn-on-check.mjs",
+      "reason": "This proof script polls a local loopback health endpoint for a spawned test server. It is not a production network path."
+    },
+    {
+      "scanner": "semgrep",
+      "category": "sast",
+      "id": "typescript.react.security.react-insecure-request.react-insecure-request",
+      "path": "apps/mdx-host/scripts/screenshot-proof.mjs",
+      "reason": "This screenshot proof seeds a spawned local kernel over loopback HTTP only. It is not a production network path."
+    },
+    {
+      "scanner": "trivy-fs",
+      "category": "iac",
+      "id": "AWS-0104",
+      "path": "ProxySecurityGroup",
+      "reason": "The isolated dependency proxy requires outbound HTTPS to dynamic package-registry and source-host addresses. Forge runtime traffic reaches it only on port 3128, and Squid enforces the deployed FQDN allowlist while denying private destinations and all unmatched requests.",
+      "expires_on": "2026-10-31",
+      "mitigation_check": "hosted-sandbox-backend-check verifies proxy-only runtime egress, an explicit deployed allowlist, and refusal of an unlisted domain. Reassess before expiry or replace with a network-layer domain control."
+    },
+    {
+      "scanner": "osv-scanner",
+      "category": "dependency",
+      "id": "RUSTSEC-2026-0253",
+      "reason": "aws-sdk-s3 pins lru 0.16 for its S3 Express identity cache. The affected pop path requires a key with a panicking Drop implementation; the SDK cache key is a String wrapper with no custom Drop. Track the AWS SDK until it adopts lru 0.18.2 or newer.",
+      "expires_on": "2026-10-31"
+    }
+  ],
+  "scanners": {
+    "repo-secret-history": {
+      "category": "secrets",
+      "required": true,
+      "block_on_unavailable": true,
+      "availability_command": ["sh", "-c", "true"],
+      "command": ["sh", "./scripts/secret-history-check.sh"]
+    },
+    "gitleaks": {
+      "category": "secrets",
+      "required": true,
+      "block_on_unavailable": true,
+      "availability_command": ["gitleaks", "version"],
+      "command": [
+        "gitleaks",
+        "detect",
+        "--config",
+        ".gitleaks.toml",
+        "--source",
+        ".",
+        "--report-format",
+        "json",
+        "--redact",
+        "--no-banner",
+        "--no-git"
+      ]
+    },
+    "cargo-audit": {
+      "category": "dependency",
+      "required": true,
+      "block_on_unavailable": false,
+      "applies_when": { "files_exist": ["Cargo.lock"] },
+      "availability_command": ["cargo", "audit", "--version"],
+      "command": ["cargo", "audit", "--json"]
+    },
+    "cargo-deny": {
+      "category": "rust-supply-chain",
+      "required": true,
+      "block_on_unavailable": false,
+      "applies_when": { "files_exist": ["Cargo.lock"] },
+      "availability_command": ["cargo", "deny", "--version"],
+      "command": ["cargo", "deny", "--format", "json", "check", "advisories", "bans", "sources"]
+    },
+    "osv-scanner": {
+      "category": "dependency",
+      "required": true,
+      "block_on_unavailable": false,
+      "applies_when": { "files_exist": ["Cargo.lock"] },
+      "availability_command": ["osv-scanner", "--version"],
+      "command": [
+        "osv-scanner",
+        "scan",
+        "source",
+        "--lockfile",
+        "Cargo.lock",
+        "--lockfile",
+        "pnpm-lock.yaml",
+        "--format",
+        "json"
+      ]
+    },
+    "rust-unsafe-inventory": {
+      "category": "rust-unsafe",
+      "required": true,
+      "block_on_unavailable": true,
+      "applies_when": { "files_exist": ["Cargo.toml"] },
+      "availability_command": ["node", "--version"],
+      "command": ["node", "scripts/rust-unsafe-inventory.mjs"]
+    },
+    "pnpm-audit": {
+      "category": "dependency",
+      "required": true,
+      "block_on_unavailable": false,
+      "applies_when": { "files_exist": ["pnpm-lock.yaml"] },
+      "availability_command": ["pnpm", "--version"],
+      "command": ["pnpm", "audit", "--json"]
+    },
+    "semgrep": {
+      "category": "sast",
+      "required": true,
+      "block_on_unavailable": false,
+      "availability_command": ["semgrep", "--version"],
+      "command": [
+        "semgrep",
+        "scan",
+        "--config",
+        "p/owasp-top-ten",
+        "--config",
+        "p/secrets",
+        "--json",
+        "--exclude",
+        "target",
+        "--exclude",
+        "node_modules",
+        "--exclude",
+        ".svelte-kit",
+        "--exclude",
+        ".mdx-local",
+        "--exclude",
+        "audit/runs"
+      ]
+    },
+    "trivy-fs": {
+      "category": "container-iac-dependency",
+      "required": true,
+      "block_on_unavailable": false,
+      "timeout_seconds": 60,
+      "availability_command": ["trivy", "--version"],
+      "command": [
+        "trivy",
+        "fs",
+        "--format",
+        "json",
+        "--scanners",
+        "misconfig,secret",
+        "--skip-dirs",
+        "target",
+        "--skip-dirs",
+        "node_modules",
+        "--skip-dirs",
+        ".svelte-kit",
+        "--skip-dirs",
+        ".mdx-local",
+        "--skip-dirs",
+        "audit/runs",
+        "--skip-dirs",
+        ".git",
+        "."
+      ]
+    }
+  }
+}

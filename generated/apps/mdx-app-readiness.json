@@ -1,0 +1,27 @@
+{
+  "name": "mdx-app-readiness",
+  "mode": "deterministic-local",
+  "source": "docs/APP-READINESS.md",
+  "apps": [
+    { "legacy_app": "Evals", "readiness": "ready-local", "blocked_by": "none", "next_contract": "credential renewal policy", "first_local_proof": "make run-local-loops" },
+    { "legacy_app": "Aegis", "readiness": "ready-local", "blocked_by": "none", "next_contract": "known-pattern remediation policy", "first_local_proof": "make run-local-loops" },
+    { "legacy_app": "Charter", "readiness": "ready-local", "blocked_by": "none", "next_contract": "audit pack projection", "first_local_proof": "make run-local-loops" },
+    { "legacy_app": "Twin", "readiness": "declared-local", "blocked_by": "text grounding before voice or action", "next_contract": "Twin response contract", "first_local_proof": "make twin-grounding-check" },
+    { "legacy_app": "Concierge", "readiness": "ready-local", "blocked_by": "none", "next_contract": "query expansion over Pages and Message domains", "first_local_proof": "make verify-budget" },
+    { "legacy_app": "Observatory", "readiness": "ready-local", "blocked_by": "none", "next_contract": "operator status view over readiness and threats", "first_local_proof": "make verify-budget" },
+    { "legacy_app": "Pages", "readiness": "local-read-only-projection", "blocked_by": "writes, rich editing, and storage remain blocked", "next_contract": "generated/routes/pages-readonly-route-contract.json", "first_local_proof": "make pages-message-check" },
+    { "legacy_app": "Message", "readiness": "local-read-only-projection", "blocked_by": "writes, realtime fanout, and hot-path LLM calls remain blocked", "next_contract": "generated/routes/message-readonly-route-contract.json", "first_local_proof": "make pages-message-check" },
+    { "legacy_app": "Start", "readiness": "local-first-run-readiness", "blocked_by": "none", "next_contract": "generated/response-schemas/v2-fresh-install-readiness-response.schema.json", "first_local_proof": "make v2-install-check" },
+    { "legacy_app": "MDx", "readiness": "local-product-shell", "blocked_by": "write and provider authority remain governed by each module contract", "next_contract": "apps/mdx/scripts/smoke-check.mjs", "first_local_proof": "make ui-app-check" },
+    { "legacy_app": "Product", "readiness": "local-blocked-at-human-ratification", "blocked_by": "human product ratification is required before direction, budget, worker spawn, or build handoff", "next_contract": "generated/loops/mdx-local-loops.json", "first_local_proof": "make run-local-loops" },
+    { "legacy_app": "Strategy", "readiness": "local-read-only-ratification", "blocked_by": "read-only human ratification surface before guided synthesis runtime", "next_contract": "generated/strategy/strategy-ratification-surface.json", "first_local_proof": "make strategy-ratification-check" },
+    { "legacy_app": "Forge", "readiness": "local-blocked-at-delegation", "blocked_by": "Talent authorization, worker lifecycle, CI, and human ratification evidence before worker spawn or ship", "next_contract": "generated/product/forge-admission-contract.json", "first_local_proof": "make local-forge-session-proof-check" },
+    { "legacy_app": "Talent", "readiness": "local-receipt-runtime-boundary", "blocked_by": "live worker execution remains blocked until provider turn-on evidence exists", "next_contract": "generated/workers/live-execution-gate.json", "first_local_proof": "make run-local-loops" },
+    { "legacy_app": "Pulse", "readiness": "contract-later", "blocked_by": "OpenTelemetry observed evidence", "next_contract": "generated/status/mdx-local-status.json", "first_local_proof": "make live-turn-on-check" }
+  ],
+  "rules": [
+    "every app names readiness blocker next contract and first local proof",
+    "runtime-ready requires a local proof",
+    "blocked apps cannot add runtime code before their next contract is green"
+  ]
+}

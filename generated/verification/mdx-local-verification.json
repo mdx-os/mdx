@@ -1,0 +1,45 @@
+{
+  "name": "mdx-public-verification",
+  "mode": "public",
+  "rules": [
+    "Run checks from a clean worktree.",
+    "Do not treat declared external paths as observed evidence."
+  ],
+  "commands": [
+    {
+      "name": "setup-path-check",
+      "command": "make setup-path-check",
+      "scope": "one-command local setup contract"
+    },
+    {
+      "name": "web-build",
+      "command": "make web-build",
+      "scope": "web production build"
+    },
+    {
+      "name": "web-smoke",
+      "command": "make web-smoke",
+      "scope": "web route and governed-write smoke"
+    },
+    {
+      "name": "rust-check",
+      "command": "make rust-check",
+      "scope": "Rust workspace and all targets"
+    },
+    {
+      "name": "macos-check",
+      "command": "make macos-check",
+      "scope": "macOS Swift package tests"
+    },
+    {
+      "name": "ios-build-check",
+      "command": "make ios-build-check",
+      "scope": "iOS simulator build"
+    },
+    {
+      "name": "security-audit",
+      "command": "make security-audit",
+      "scope": "repository security scanners"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "mdx-marketplace-flagship-contract",
+  "contract_version": 1,
+  "product_role": "capability_control_plane",
+  "primary_object": "pack",
+  "primary_verb": "apply",
+  "thesis": "Find a pack for the job, understand the change, apply it at the right scope, and use it without losing the work.",
+  "control_layers": ["available", "installed", "connected", "authorized", "enabled", "applicable", "executable"],
+  "source_lanes": ["mdx", "company", "team", "personal", "quarantine"],
+  "supported_apps": ["twin", "forge", "pages", "message"],
+  "required_routes": {
+    "catalog": "/marketplace/packs.json",
+    "for_you": "/marketplace/for-you.json",
+    "installed": "/marketplace/installed-packs/projection.json",
+    "impact": "/marketplace/impact/projection.json",
+    "review": "/marketplace/review-queue.json",
+    "apply": "/marketplace/installs.json",
+    "lifecycle": "/marketplace/pack-actions.json",
+    "trial": "/marketplace/pack-trials.json",
+    "use": "/marketplace/pack-uses.json",
+    "proposals": "/marketplace/pack-proposals/projection.json"
+  },
+  "apply_and_return": {
+    "required": true,
+    "inputs": ["return_to", "origin_surface", "origin_object_id", "application_targets"],
+    "rule": "After apply or request, restore the originating object and show the new affordance or held next step."
+  },
+  "lifecycle": {
+    "states": ["not_installed", "installed", "setup_required", "ready", "disabled", "update_available", "held", "removed"],
+    "actions": ["install", "configure", "connect", "authorize", "enable", "disable", "update", "rollback", "rescope", "remove", "try", "use", "request", "propose"],
+    "permission_expansion_requires_review": true,
+    "rollback_required": true,
+    "disable_without_remove_required": true
+  },
+  "measurement": {
+    "events": ["recommended", "detail_opened", "applied", "requested", "first_use", "used", "accepted", "rejected", "disabled", "rolled_back", "removed"],
+    "success_metrics": ["apply_to_first_use", "time_to_first_use", "accepted_outcome_rate", "repeat_use_7d", "repeat_use_30d", "rollback_rate"],
+    "sensitive_content_recorded": false
+  },
+  "authority": {
+    "marketplace_is_execution_authority": false,
+    "capability_execution_allowed_by_install": false,
+    "secret_access_allowed_by_install": false,
+    "inherited_agent_permissions_allowed_by_install": false,
+    "production_write_allowed_by_install": false,
+    "community_execution_requires_stronger_isolation": true
+  },
+  "proof": {
+    "web_native_parity_required": true,
+    "cross_app_consequence_required": true,
+    "responsive_proof_required": true,
+    "accessibility_proof_required": true,
+    "screenshot_proof_required": true,
+    "lifecycle_e2e_required": true
+  }
+}

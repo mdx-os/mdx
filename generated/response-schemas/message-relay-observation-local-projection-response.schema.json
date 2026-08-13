@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageRelayObservationLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "projection_route", "observation_count", "local_websocket_fanout_allowed", "production_delivery_allowed", "production_write_allowed", "observations"],
+  "properties": {
+    "name": { "const": "mdx-message-relay-observation-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/messages/relay-observations.json" },
+    "projection_route": { "const": "/messages/relay-observations/projection.json" },
+    "observation_count": { "type": "integer", "minimum": 0 },
+    "local_websocket_fanout_allowed": { "type": "boolean" },
+    "production_delivery_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "observations": { "type": "array" }
+  }
+}

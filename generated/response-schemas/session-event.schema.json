@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/session-event.schema.json",
+  "title": "SessionEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "session_id", "session_version", "sequence", "tenant_id", "target", "kind", "safe_summary", "evidence_refs", "occurred_at", "redaction_status", "contains_secret_values", "grants_authority"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "minLength": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "session_version": { "type": "integer", "minimum": 1 },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "target": { "$ref": "execution-target.schema.json" },
+    "kind": { "enum": ["accepted", "started", "progress", "needs_user", "checkpointed", "handed_off", "review_ready", "completed", "failed", "stopped", "refused"] },
+    "command_id": { "type": ["string", "null"] },
+    "receipt_id": { "type": ["string", "null"] },
+    "safe_summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "evidence_refs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "redaction_status": { "enum": ["not_required", "redacted", "withheld"] },
+    "contains_secret_values": { "const": false },
+    "grants_authority": { "const": false }
+  }
+}

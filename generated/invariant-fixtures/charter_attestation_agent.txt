@@ -1,0 +1,7 @@
+policy_required=true
+receipt_required=true
+policy_decision_receipt_kind=loop.action.policy_decided
+declared_receipt_kinds=loop.triggered,charter.obligation.checked,charter.evidence.attested,charter.exception.reviewed,loop.adjustment.recorded
+consequential_receipt_kinds=loop.triggered,charter.obligation.checked,charter.evidence.attested,charter.exception.reviewed,loop.adjustment.recorded
+local_loop_budget=loop_id:charter_attestation_agent,max_runtime_ms:250,max_receipts:10,max_policy_decisions:5,required_transitions:5,max_outbox_events:1,max_credentials:0,max_memory_records:0,max_charter_records:1
+transitions=TRIGGER,ACTION,OUTCOME,SIGNAL,ADJUSTMENT

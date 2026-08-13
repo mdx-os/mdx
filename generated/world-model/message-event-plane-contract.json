@@ -1,0 +1,52 @@
+{
+  "name": "mdx-message-event-plane-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-EVENT-PLANE-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "domain": "message_events",
+  "source_contract": "generated/world-model/pages-message-contract.json",
+  "storage_owner": "World Model",
+  "required_fields": [
+    "tenant_id",
+    "thread_id",
+    "message_id",
+    "actor_id",
+    "actor_type",
+    "actor_role",
+    "content_type",
+    "content_payload",
+    "receipt_id",
+    "source_receipt_kind",
+    "outbox_topic",
+    "created_at",
+    "sequence"
+  ],
+  "event_types": [
+    "message.thread.created",
+    "message.agent.posted",
+    "message.human.posted",
+    "message.worker.posted",
+    "message.pipeline.posted",
+    "message.system.posted",
+    "message.receipt.linked"
+  ],
+  "performance_rails": [
+    "Message hot path must not synchronously call an LLM",
+    "Message writes append events before fanout",
+    "Realtime fanout waits for tenant isolation and sequence checks"
+  ],
+  "forbidden_paths": [
+    "slack_clone_ui_before_event_plane",
+    "message_without_receipt",
+    "message_without_actor",
+    "cross_tenant_thread_visibility",
+    "synchronous_llm_on_hot_path"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Message starts as an append-only event plane, not a chat UI",
+    "Every agent message links to a receipt or outbox topic",
+    "Threads and channels are projections over ordered events",
+    "Sub-20ms user-facing paths cannot wait on model inference"
+  ]
+}

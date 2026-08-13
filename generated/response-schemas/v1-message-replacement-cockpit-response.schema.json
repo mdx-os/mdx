@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1MessageReplacementCockpitResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "production_write_allowed", "production_cutover_allowed", "realtime_broadcast_allowed", "presence_mutation_allowed", "typing_state_allowed", "websocket_fanout_allowed", "production_delivery_allowed", "service_role_fanout_allowed", "service_role_runtime_allowed", "provider_call_allowed", "live_provider_turn_on_allowed", "governed_route_count", "served_route_count", "receipt_count", "projection_match_count", "required_evidence_version", "proof_check", "route_check", "cockpit", "message_realtime_control", "message_shadow_compare", "provider_turn_on_rehearsal", "cutover_blockers", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-message-replacement-cockpit" },
+    "route": { "const": "/v1/message-replacement-cockpit.json" },
+    "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_REALTIME_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "realtime_broadcast_allowed": { "const": false },
+    "presence_mutation_allowed": { "const": false },
+    "typing_state_allowed": { "const": false },
+    "websocket_fanout_allowed": { "const": false },
+    "production_delivery_allowed": { "const": false },
+    "service_role_fanout_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "live_provider_turn_on_allowed": { "const": false },
+    "governed_route_count": { "const": 7 },
+    "served_route_count": { "const": 15 },
+    "receipt_count": { "const": 7 },
+    "projection_match_count": { "const": 7 },
+    "required_evidence_version": { "const": 2 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-message-replacement-cockpit-route-check" },
+    "cockpit": {
+      "type": "object",
+      "required": ["name", "status", "route", "governed_route_count", "served_route_count", "receipt_count", "projection_match_count", "ui_handoff", "message_capabilities", "served_routes", "replacement_readiness", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_message_replacement_cockpit" },
+        "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_REALTIME_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/message-replacement-cockpit.json" },
+        "governed_route_count": { "const": 7 },
+        "served_route_count": { "const": 15 },
+        "receipt_count": { "const": 7 },
+        "projection_match_count": { "const": 7 },
+        "ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_governed_local_writes", "safe_to_wire_realtime_provider_actions", "production_authority_allowed"],
+          "properties": {
+            "status": { "const": "MESSAGE_REPLACEMENT_COCKPIT_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_governed_local_writes": { "const": true },
+            "safe_to_wire_realtime_provider_actions": { "const": false },
+            "production_authority_allowed": { "const": false }
+          }
+        },
+        "message_capabilities": {
+          "type": "array",
+          "minItems": 7,
+          "allOf": [
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "thread_append" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "fanout_request" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "presence_request" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "realtime_cutover_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "delivery_replay" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "subscription_isolation" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "service_role_fanout_refusal" } } } }
+          ]
+        },
+        "served_routes": {
+          "type": "array",
+          "minItems": 15,
+          "allOf": [
+            { "contains": { "const": "POST /messages/thread-messages.json" } },
+            { "contains": { "const": "POST /messages/fanout-requests.json" } },
+            { "contains": { "const": "POST /messages/presence-requests.json" } },
+            { "contains": { "const": "POST /messages/realtime-cutover-preflights.json" } },
+            { "contains": { "const": "POST /messages/delivery-replay-batches.json" } },
+            { "contains": { "const": "POST /messages/subscription-isolation-checks.json" } },
+            { "contains": { "const": "POST /messages/service-role-fanout-refusals.json" } }
+          ]
+        },
+        "replacement_readiness": {
+          "type": "object",
+          "required": ["locally_replayable", "append_fanout_presence_chain_recorded", "delivery_replay_recorded", "subscription_isolation_recorded", "service_role_fanout_refusal_recorded", "local_message_projection_first_class", "realtime_boundary_proven", "production_read_shadow_required", "realtime_provider_turn_on_required", "human_acceptance_required", "cutover_green_allowed"],
+          "properties": {
+            "locally_replayable": { "const": true },
+            "append_fanout_presence_chain_recorded": { "const": true },
+            "delivery_replay_recorded": { "const": true },
+            "subscription_isolation_recorded": { "const": true },
+            "service_role_fanout_refusal_recorded": { "const": true },
+            "local_message_projection_first_class": { "const": true },
+            "realtime_boundary_proven": { "const": true },
+            "production_read_shadow_required": { "const": true },
+            "realtime_provider_turn_on_required": { "const": true },
+            "human_acceptance_required": { "const": true },
+            "cutover_green_allowed": { "const": false }
+          }
+        },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "message_realtime_control": {
+      "type": "object",
+      "required": ["name", "status", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_message_realtime_cutover_control" },
+        "status": { "const": "CHECK_BOUND_LOCAL_REALTIME_NOT_PRODUCTION_FANOUT" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "message_shadow_compare": {
+      "type": "object",
+      "required": ["name", "status", "expected_route_count", "expected_receipt_count", "required_evidence_summary", "replacement_readiness", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_message_shadow_compare" },
+        "status": { "const": "LOCAL_HTTP_SHADOW_COMPARE" },
+        "expected_route_count": { "const": 15 },
+        "expected_receipt_count": { "const": 7 },
+        "required_evidence_summary": { "type": "object" },
+        "replacement_readiness": { "type": "object" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "provider_turn_on_rehearsal": {
+      "type": "object",
+      "required": ["name", "external_provider_call_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "v1_provider_turn_on_rehearsal_control" },
+        "external_provider_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "cutover_green_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "cutover_green_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "proof_index_route": {
+      "type": "object",
+      "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "route": { "const": "/v1/replacement-proof-index.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["realtime_broadcast_allowed", "presence_mutation_allowed", "typing_state_allowed", "websocket_fanout_allowed", "production_delivery_allowed", "service_role_fanout_allowed", "service_role_runtime_allowed", "provider_call_allowed", "live_provider_turn_on_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "realtime_broadcast_allowed": { "const": false },
+        "presence_mutation_allowed": { "const": false },
+        "typing_state_allowed": { "const": false },
+        "websocket_fanout_allowed": { "const": false },
+        "production_delivery_allowed": { "const": false },
+        "service_role_fanout_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "live_provider_turn_on_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

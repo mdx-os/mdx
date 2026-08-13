@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeQueueProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "source_projection", "source_receipt_kinds", "durable_backend", "live_durability_observed", "queued_job_count", "human_summary", "jobs", "read_only", "writes_allowed", "execution_allowed", "deployment_authority_granted", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-runtime-queue-projection" },
+    "status": { "const": "OK" },
+    "source_projection": { "type": "string", "minLength": 1 },
+    "source_receipt_kinds": { "type": "array", "items": { "type": "string" } },
+    "durable_backend": { "const": "local_ledger" },
+    "live_durability_observed": { "const": false },
+    "queued_job_count": { "type": "integer", "minimum": 0 },
+    "human_summary": { "type": "string", "minLength": 1 },
+    "jobs": { "type": "array", "items": { "type": "object" } },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

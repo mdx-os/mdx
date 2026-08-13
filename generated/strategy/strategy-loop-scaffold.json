@@ -1,0 +1,19 @@
+{
+  "name": "mdx-strategy-loop-scaffold",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-SCAFFOLD.md",
+  "future_loop_id": "strategy_synthesis_agent",
+  "declared_loop": false,
+  "status": "SCAFFOLD-ONLY",
+  "autonomy_ceiling": "GUIDED",
+  "human_ratification_required": true,
+  "allowed_actions": ["synthesize_options", "stage_scenario", "prepare_budget_request", "record_human_ratification"],
+  "forbidden_actions": ["set_company_direction", "allocate_live_budget", "spawn_worker", "production_deploy"],
+  "required_future_receipts": ["strategy.options.synthesized", "strategy.ratification.recorded", "treasury.reserve.requested"],
+  "required_checks_before_runtime": ["make strategy-scaffold-check", "make vision-check", "make treasury-check"],
+  "rules": [
+    "strategy is guided not autonomous direction setting",
+    "budget allocation requires human ratification and Treasury authority",
+    "this scaffold is not a local loop runtime"
+  ]
+}

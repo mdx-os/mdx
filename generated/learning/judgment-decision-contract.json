@@ -1,0 +1,57 @@
+{
+  "name": "mdx-learning-judgment-decision-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define Learn's accountable judgment write: record promote, reject, or supersede decisions while keeping memory writes and adaptation blocked.",
+  "writes_route": "/learning/judgment-decisions.json",
+  "projection_route": "/learning/judgment-decisions/projection.json",
+  "receipt_kind": "learning.judgment.decided",
+  "required_fields": [
+    "judgment_decision_id",
+    "judgment_id",
+    "promotion_id",
+    "actor_id",
+    "decision",
+    "rationale",
+    "evidence_refs",
+    "memory_queue_state",
+    "judgment_decision_receipt_id",
+    "policy_decision_id"
+  ],
+  "allowed_decisions": [
+    {
+      "id": "promote_candidate",
+      "meaning": "Record that the candidate may move to memory review, without writing memory."
+    },
+    {
+      "id": "reject_candidate",
+      "meaning": "Record that the candidate should not become memory."
+    },
+    {
+      "id": "supersede_candidate",
+      "meaning": "Record that a newer or better lesson should replace the candidate."
+    }
+  ],
+  "memory_queue_states": [
+    "ready_for_memory",
+    "rejected_no_memory",
+    "superseded_no_memory"
+  ],
+  "v0_boundaries": {
+    "records_judgment": true,
+    "opens_memory_queue": true,
+    "writes_memory": false,
+    "refreshes_generated_artifacts": false,
+    "applies_adaptation": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make local-smoke"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "mdx-human-edge-read-surface-matrix",
+  "mode": "deterministic-local",
+  "source": "docs/HUMAN-EDGE-READ-SURFACE-MATRIX.md",
+  "surfaces": [
+    { "id": "observatory", "route": "/observatory.json", "source_boundary": "generated/read-model-snapshots/observatory.json", "response_schema_path": "generated/response-schemas/observatory-read-model.schema.json", "allowed_human_job": "evidence_review", "forbidden_human_job": "routine_loop_operation", "first_proof": "make ui-app-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "concierge", "route": "/concierge.json", "source_boundary": "generated/read-model-snapshots/concierge.json", "response_schema_path": "generated/response-schemas/concierge-read-model.schema.json", "allowed_human_job": "grounded_question_answering", "forbidden_human_job": "shadow_status_tracking", "first_proof": "make ui-app-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "twin", "route": "/twin.json", "source_boundary": "generated/companions/twin-text-grounding-contract.json", "response_schema_path": "generated/response-schemas/twin-text-response.schema.json", "allowed_human_job": "advisory_reflection", "forbidden_human_job": "unbounded_agent_control", "first_proof": "make twin-grounding-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "forge", "route": "/forge/runs/projection.json", "source_boundary": "generated/response-schemas/forge-review-packet-response.schema.json", "response_schema_path": "generated/response-schemas/forge-review-packet-response.schema.json", "allowed_human_job": "evidence_review", "forbidden_human_job": "ungoverned_write_authority", "first_proof": "make ui-app-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "strategy", "route": "/strategy.json", "source_boundary": "generated/strategy/strategy-ratification-surface.json", "response_schema_path": "generated/response-schemas/strategy-ratification-response.schema.json", "allowed_human_job": "strategy_ratification", "forbidden_human_job": "autonomous_direction_setting", "first_proof": "make strategy-ratification-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "product", "route": "/product.json", "source_boundary": "generated/product/ratification-contract.json", "response_schema_path": "generated/response-schemas/product-ratification-response.schema.json", "allowed_human_job": "product_ratification", "forbidden_human_job": "product_ratification_bypass", "first_proof": "make product-ratification-check", "receipt_evidence_required": true, "writes_allowed": false },
+    { "id": "readiness", "route": "generated:/readiness", "source_boundary": "generated/apps/mdx-app-readiness.json", "response_schema_path": "generated/apps/mdx-app-readiness.json", "allowed_human_job": "constraint_setting", "forbidden_human_job": "planned_behavior_before_contract", "first_proof": "make app-readiness-check", "receipt_evidence_required": false, "writes_allowed": false },
+    { "id": "status", "route": "/status.json", "source_boundary": "generated/status/mdx-local-status.json", "response_schema_path": "generated/status/mdx-local-status.json", "allowed_human_job": "trust_inspection", "forbidden_human_job": "manual_provider_flip", "first_proof": "make live-turn-on-check", "receipt_evidence_required": false, "writes_allowed": false },
+    { "id": "threats", "route": "generated:/threats", "source_boundary": "generated/security/mdx-threat-model.json", "response_schema_path": "generated/security/mdx-threat-model.json", "allowed_human_job": "intervention", "forbidden_human_job": "unreviewed_sensitive_boundary", "first_proof": "make threat-model-check", "receipt_evidence_required": false, "writes_allowed": false }
+  ],
+  "rules": [
+    "human-edge read surfaces are read-only until write gates are separately proven",
+    "receipt-backed surfaces must return or cite receipt ids",
+    "Concierge and Twin must cite the same receipt ids when answering from the same evidence packet",
+    "future write routes must stay explicit until the route and response schema land"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LocalActivationSummaryResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "mode", "status", "complete", "observed_at", "evidence_file", "summary_file", "git", "counts", "slices", "ui_smoke", "served_ui", "dev_stack", "dogfood", "next_commands"],
+  "properties": {
+    "name": { "const": "mdx-local-activation-summary" },
+    "mode": { "const": "local-only-ignored" },
+    "status": { "const": "OK" },
+    "complete": { "type": "boolean" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "evidence_file": { "const": ".mdx-local/evidence-index.json" },
+    "summary_file": { "const": ".mdx-local/activation-summary.json" },
+    "git": {
+      "type": "object",
+      "required": ["revision", "branch", "dirty"],
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string", "minLength": 1 },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": ["runtime_loops", "http_routes", "api_index_routes", "auth_session_checks", "receipt_backed_routes", "ui_smoke_apps", "served_ui_apps", "dev_stack_apps"],
+      "properties": {
+        "runtime_loops": { "type": "integer", "minimum": 0 },
+        "http_routes": { "type": "integer", "minimum": 0 },
+        "api_index_routes": { "type": "integer", "minimum": 0 },
+        "auth_session_checks": { "type": "integer", "minimum": 0 },
+        "receipt_backed_routes": { "type": "integer", "minimum": 0 },
+        "ui_smoke_apps": { "type": "integer", "minimum": 3 },
+        "served_ui_apps": { "type": "integer", "minimum": 4 },
+        "dev_stack_apps": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "slices": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["name", "status", "revision", "dirty"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "minLength": 1 },
+          "revision": { "type": ["string", "null"] },
+          "dirty": { "type": ["boolean", "null"] }
+        }
+      },
+      "contains": {
+        "type": "object",
+        "required": ["name"],
+        "properties": { "name": { "const": "auth_session_check" } }
+      }
+    },
+    "next_commands": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "type": "string" },
+      "contains": { "const": "make operational-proof" }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinToolExecutionRefusalLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "refusal_count", "live_provider_call_allowed", "production_memory_write_allowed", "tool_execution_allowed", "hidden_service_role_allowed", "provider_call_allowed", "worker_spawn_allowed", "production_write_allowed", "refusals"],
+  "properties": {
+    "name": { "const": "mdx-twin-tool-execution-refusal-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/twin/tool-execution-refusals.json" },
+    "refusal_count": { "type": "integer", "minimum": 0 },
+    "live_provider_call_allowed": { "const": false },
+    "production_memory_write_allowed": { "const": false },
+    "tool_execution_allowed": { "const": false },
+    "hidden_service_role_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "refusals": { "type": "array", "items": { "$ref": "#/$defs/refusal" } }
+  },
+  "$defs": {
+    "refusal": {
+      "type": "object",
+      "required": ["session_id", "source_draft_receipt_id", "refusal_receipt_id", "refused_capability", "terminal_state", "live_provider_call_allowed", "production_memory_write_allowed", "tool_execution_allowed", "hidden_service_role_allowed", "provider_call_allowed", "worker_spawn_allowed", "production_write_allowed"],
+      "properties": {
+        "session_id": { "type": "string" },
+        "source_draft_receipt_id": { "type": "string" },
+        "refusal_receipt_id": { "type": "string" },
+        "refused_capability": { "const": "tool_execution" },
+        "terminal_state": { "const": "TWIN_TOOL_EXECUTION_REFUSED_LOCAL_ONLY" },
+        "live_provider_call_allowed": { "const": false },
+        "production_memory_write_allowed": { "const": false },
+        "tool_execution_allowed": { "const": false },
+        "hidden_service_role_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  }
+}

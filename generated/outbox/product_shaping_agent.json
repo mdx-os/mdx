@@ -1,0 +1,7 @@
+{
+  "loop": "product_shaping_agent",
+  "agent": "product_shaping_agent",
+  "topics": [
+    { "name": "observatory.product_handoff_blocked", "source_receipt_kind": "product.handoff.requested", "delivery": "local_only" }
+  ]
+}

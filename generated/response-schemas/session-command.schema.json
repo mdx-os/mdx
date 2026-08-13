@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/session-command.schema.json",
+  "title": "SessionCommand",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "command_id", "idempotency_key", "session_id", "expected_session_version", "tenant_id", "actor_user_id", "actor_device_id", "target", "kind", "payload", "issued_at", "expires_at", "user_presence", "delegation_envelope_ref", "grants_execution_authority"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "command_id": { "type": "string", "minLength": 1 },
+    "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 200 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "expected_session_version": { "type": "integer", "minimum": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "actor_user_id": { "type": "string", "minLength": 1 },
+    "actor_device_id": { "type": "string", "minLength": 1 },
+    "target": { "$ref": "execution-target.schema.json" },
+    "kind": { "enum": ["start_build", "follow_up", "pause", "resume", "stop", "answer_question", "record_decision", "request_handoff", "request_changes", "approve_and_open_pr"] },
+    "payload": { "type": "object" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "user_presence": { "enum": ["not_required", "device_unlocked", "biometric_verified"] },
+    "delegation_envelope_ref": { "type": "string", "minLength": 1 },
+    "grants_execution_authority": { "const": false }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/worker-spawn-request.schema.json",
+  "title": "MDx Worker Spawn Request",
+  "type": "object",
+  "required": [
+    "worker_template_id",
+    "parent_id",
+    "sponsor_chain_authority_receipt_id",
+    "human_sponsor_chain",
+    "worker_lease_authority_receipt_id",
+    "scope",
+    "expires_at",
+    "budget_authority_receipt_id",
+    "budget",
+    "tool_allowlist_authority_receipt_id",
+    "tool_allowlist",
+    "credential_check_receipt_id",
+    "requested_receipt_kind"
+  ],
+  "properties": {
+    "worker_template_id": { "type": "string" },
+    "parent_id": { "type": "string" },
+    "sponsor_chain_authority_receipt_id": { "type": "string", "minLength": 1 },
+    "human_sponsor_chain": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "worker_lease_authority_receipt_id": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string", "minLength": 1 },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "budget_authority_receipt_id": { "type": "string", "minLength": 1 },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_runtime_ms", "max_tool_calls"],
+      "properties": {
+        "max_runtime_ms": { "type": "integer", "minimum": 1 },
+        "max_tool_calls": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "tool_allowlist": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "tool_allowlist_authority_receipt_id": { "type": "string", "minLength": 1 },
+    "credential_check_receipt_id": { "type": "string", "minLength": 1 },
+    "requested_receipt_kind": { "type": "string", "const": "worker.spawn_requested" }
+  },
+  "additionalProperties": false
+}

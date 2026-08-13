@@ -1,0 +1,7 @@
+{
+  "loop": "charter_attestation_agent",
+  "agent": "charter_attestation_agent",
+  "topics": [
+    { "name": "observatory.charter_attestation_ready", "source_receipt_kind": "charter.evidence.attested", "delivery": "local_only" }
+  ]
+}

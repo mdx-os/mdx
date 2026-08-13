@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2AlphaEnvContractResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "secret_values_recorded",
+    "provider_secret_values_recorded",
+    "production_write_allowed",
+    "production_cutover_allowed",
+    "deployment_authority_allowed",
+    "service_role_runtime_allowed",
+    "browser_service_role_allowed",
+    "local_dev_ready",
+    "provider_connected_local_ready",
+    "real_login_allowed_now",
+    "cloud_deployment_allowed_now",
+    "proof_check",
+    "route_check",
+    "env_summary",
+    "env_contract",
+    "activation_profiles",
+    "secret_policy",
+    "ui_handoff",
+    "blocked_authority",
+    "upstream_packets",
+    "source_routes",
+    "next_commands",
+    "git",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-alpha-env-contract" },
+    "mode": { "const": "alpha-env-and-secret-readiness" },
+    "status": { "const": "ALPHA_ENV_CONTRACT_READY_LOCAL_ONLY" },
+    "route": { "const": "/v2/alpha-env-contract.json" },
+    "read_only": { "const": true },
+    "secret_values_recorded": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "browser_service_role_allowed": { "const": false },
+    "local_dev_ready": { "const": true },
+    "provider_connected_local_ready": { "type": "boolean" },
+    "real_login_allowed_now": { "const": false },
+    "cloud_deployment_allowed_now": { "const": false },
+    "proof_check": { "const": "make v2-alpha-env-contract" },
+    "route_check": { "const": "make v2-alpha-env-contract-route-check" },
+    "env_summary": {
+      "type": "object",
+      "required": ["env_var_count", "present_env_var_count", "secret_env_var_count", "secret_value_recorded_count", "llm_provider_env_var_count", "auth_profile_count", "provider_profile_count", "deployment_profile_count"],
+      "properties": {
+        "env_var_count": { "type": "integer", "minimum": 30 },
+        "present_env_var_count": { "type": "integer", "minimum": 0 },
+        "secret_env_var_count": { "type": "integer", "minimum": 10 },
+        "secret_value_recorded_count": { "const": 0 },
+        "llm_provider_env_var_count": { "type": "integer", "minimum": 6 },
+        "auth_profile_count": { "const": 6 },
+        "provider_profile_count": { "const": 6 },
+        "deployment_profile_count": { "const": 6 }
+      }
+    },
+    "env_contract": {
+      "type": "array",
+      "minItems": 30,
+      "items": {
+        "type": "object",
+        "required": ["name", "present", "secret", "category", "required_for", "value_recorded", "secret_value_recorded"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2 },
+          "present": { "type": "boolean" },
+          "secret": { "type": "boolean" },
+          "category": { "type": "string", "minLength": 2 },
+          "required_for": { "type": "array", "items": { "type": "string" } },
+          "value_recorded": { "const": false },
+          "secret_value_recorded": { "const": false }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "OPENAI_API_KEY" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "ANTHROPIC_API_KEY" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "XAI_API_KEY" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "GEMINI_API_KEY" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "MISTRAL_API_KEY" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "MDX_MESSAGE_RELAY_JWT_SECRET" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "MDX_MICROSOFT_CLIENT_ID" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "MDX_SUPABASE_URL" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "AWS_REGION" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "GCP_PROJECT_ID" } } } }
+      ]
+    },
+    "activation_profiles": {
+      "type": "array",
+      "minItems": 6,
+      "allOf": [
+        { "contains": { "type": "object", "required": ["id", "status", "allowed_now"], "properties": { "id": { "const": "local_dev" }, "status": { "const": "READY" }, "allowed_now": { "const": true } } } },
+        { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "provider_connected_local" } } } },
+        { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "personal_render_supabase" } } } },
+        { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "enterprise_aws_eks_rds" } } } },
+        { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "gcp_gke_cloudsql" } } } },
+        { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "self_hosted_kubernetes" } } } }
+      ]
+    },
+    "secret_policy": {
+      "type": "object",
+      "required": ["committed_env_files_allowed", "env_value_recording_allowed", "provider_output_recording_allowed", "browser_service_role_allowed", "required_history_scan"],
+      "properties": {
+        "committed_env_files_allowed": { "const": false },
+        "env_value_recording_allowed": { "const": false },
+        "provider_output_recording_allowed": { "const": false },
+        "browser_service_role_allowed": { "const": false },
+        "required_history_scan": { "const": "make secret-history-check" }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["env_presence_as_provider_authority_allowed", "env_presence_as_login_authority_allowed", "provider_call_without_turn_on_receipt_allowed", "oauth_login_without_tenant_policy_allowed", "service_role_to_browser_allowed", "cloud_deploy_without_plan_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "env_presence_as_provider_authority_allowed": { "const": false },
+        "env_presence_as_login_authority_allowed": { "const": false },
+        "provider_call_without_turn_on_receipt_allowed": { "const": false },
+        "oauth_login_without_tenant_policy_allowed": { "const": false },
+        "service_role_to_browser_allowed": { "const": false },
+        "cloud_deploy_without_plan_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "upstream_packets": {
+      "type": "object",
+      "required": ["auth_provider_profiles", "provider_turn_on_matrix", "provider_connected_local", "deployment_plan"],
+      "properties": {
+        "auth_provider_profiles": { "const": ".mdx-local/auth/auth-provider-profiles.json" },
+        "provider_turn_on_matrix": { "const": ".mdx-local/v2-provider-turn-on-matrix.json" },
+        "provider_connected_local": { "const": ".mdx-local/v2-provider-connected-local.json" },
+        "deployment_plan": { "const": ".mdx-local/v2-deployment-plan.json" }
+      }
+    },
+    "source_routes": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "/auth/provider-profiles.json" } },
+        { "contains": { "const": "/v2/provider-turn-on-matrix.json" } },
+        { "contains": { "const": "/v2/provider-connected-local.json" } },
+        { "contains": { "const": "/v2/deployment-plan.json" } },
+        { "contains": { "const": "/v2/alpha-env-contract.json" } }
+      ]
+    },
+    "evidence_file": { "const": ".mdx-local/v2-alpha-env-contract.json" }
+  }
+}

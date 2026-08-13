@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ReadShadowReplacementCockpitResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "service_role_runtime_allowed", "credential_export_allowed", "production_write_allowed", "production_cutover_allowed", "write_mirror_allowed", "dual_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "read_shadow_control_count", "approval_control_count", "surface_count", "query_count", "required_shadow_compare_count", "required_local_projection_count", "required_evidence_version", "proof_check", "route_check", "cockpit", "preflight", "approval_request_control", "approval_decision_control", "handoff", "query_manifest", "read_shadow_dry_run", "evidence_packet_template", "acceptance_evidence_control", "cutover_blockers", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-read-shadow-replacement-cockpit" },
+    "route": { "const": "/v1/read-shadow-replacement-cockpit.json" },
+    "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_READ_SHADOW_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "credential_export_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "dual_write_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "read_shadow_control_count": { "const": 8 },
+    "approval_control_count": { "const": 2 },
+    "surface_count": { "const": 6 },
+    "query_count": { "const": 12 },
+    "required_shadow_compare_count": { "const": 5 },
+    "required_local_projection_count": { "const": 2 },
+    "required_evidence_version": { "const": 1 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-read-shadow-replacement-cockpit-route-check" },
+    "cockpit": {
+      "type": "object",
+      "required": ["name", "status", "route", "read_shadow_control_count", "approval_control_count", "surface_count", "query_count", "required_shadow_compare_count", "ui_handoff", "read_shadow_capabilities", "served_routes", "required_existing_checks", "replacement_readiness", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_read_shadow_replacement_cockpit" },
+        "status": { "const": "APP_REPLACEMENT_HANDOFF_READY_READ_SHADOW_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/read-shadow-replacement-cockpit.json" },
+        "read_shadow_control_count": { "const": 8 },
+        "approval_control_count": { "const": 2 },
+        "surface_count": { "const": 6 },
+        "query_count": { "const": 12 },
+        "required_shadow_compare_count": { "const": 5 },
+        "ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_local_approval_projections", "safe_to_wire_live_read_actions", "safe_to_wire_row_payload_actions", "safe_to_wire_service_role_actions", "safe_to_wire_credential_export_actions", "safe_to_wire_write_mirror_actions", "safe_to_wire_production_write_actions", "safe_to_wire_cutover_actions", "production_authority_allowed"],
+          "properties": {
+            "status": { "const": "READ_SHADOW_REPLACEMENT_COCKPIT_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_local_approval_projections": { "const": true },
+            "safe_to_wire_live_read_actions": { "const": false },
+            "safe_to_wire_row_payload_actions": { "const": false },
+            "safe_to_wire_service_role_actions": { "const": false },
+            "safe_to_wire_credential_export_actions": { "const": false },
+            "safe_to_wire_write_mirror_actions": { "const": false },
+            "safe_to_wire_production_write_actions": { "const": false },
+            "safe_to_wire_cutover_actions": { "const": false },
+            "production_authority_allowed": { "const": false }
+          }
+        },
+        "read_shadow_capabilities": {
+          "type": "array",
+          "minItems": 8,
+          "allOf": [
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "production_read_shadow_preflight" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "approval_request_control" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "approval_decision_control" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "production_read_shadow_handoff" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "query_manifest" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "read_shadow_dry_run" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "evidence_packet_template" } } } },
+            { "contains": { "type": "object", "required": ["id"], "properties": { "id": { "const": "acceptance_evidence_control" } } } }
+          ]
+        },
+        "served_routes": {
+          "type": "array",
+          "minItems": 5,
+          "allOf": [
+            { "contains": { "const": "GET /v1/read-shadow-replacement-cockpit.json" } },
+            { "contains": { "const": "GET /v1/read-shadow-dry-run.json" } },
+            { "contains": { "const": "GET /v1/shadow-authority-handoff.json" } },
+            { "contains": { "const": "GET /v1/cutover-authority-evidence.json" } },
+            { "contains": { "const": "GET /v1/replacement-proof-index.json" } }
+          ]
+        },
+        "required_existing_checks": { "type": "array", "minItems": 10 },
+        "replacement_readiness": {
+          "type": "object",
+          "required": ["locally_replayable", "preflight_bound", "approval_request_projection_bound", "approval_decision_projection_bound", "query_manifest_bound", "dry_run_route_bound", "evidence_packet_template_bound", "acceptance_evidence_bound", "local_shadow_compare_count", "metadata_only_query_shapes_ready", "human_approval_required", "production_read_shadow_evidence_required", "row_payload_review_required", "live_read_allowed", "row_payload_allowed", "service_role_runtime_allowed", "credential_export_allowed", "production_write_allowed", "production_cutover_allowed", "cutover_green_allowed"],
+          "properties": {
+            "locally_replayable": { "const": true },
+            "preflight_bound": { "const": true },
+            "approval_request_projection_bound": { "const": true },
+            "approval_decision_projection_bound": { "const": true },
+            "query_manifest_bound": { "const": true },
+            "dry_run_route_bound": { "const": true },
+            "evidence_packet_template_bound": { "const": true },
+            "acceptance_evidence_bound": { "const": true },
+            "local_shadow_compare_count": { "const": 5 },
+            "metadata_only_query_shapes_ready": { "const": true },
+            "human_approval_required": { "const": true },
+            "production_read_shadow_evidence_required": { "const": true },
+            "row_payload_review_required": { "const": false },
+            "live_read_allowed": { "const": false },
+            "row_payload_allowed": { "const": false },
+            "service_role_runtime_allowed": { "const": false },
+            "credential_export_allowed": { "const": false },
+            "production_write_allowed": { "const": false },
+            "production_cutover_allowed": { "const": false },
+            "cutover_green_allowed": { "const": false }
+          }
+        },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "preflight": { "type": "object", "required": ["name", "live_read_allowed", "row_payload_allowed", "service_role_runtime_allowed", "credential_export_allowed"], "properties": { "name": { "const": "v1_production_read_shadow_preflight" }, "live_read_allowed": { "const": false }, "row_payload_allowed": { "const": false }, "service_role_runtime_allowed": { "const": false }, "credential_export_allowed": { "const": false } } },
+    "approval_request_control": { "type": "object", "required": ["name", "write_route", "projection_route", "required_receipt_kind", "forbidden_receipt_kind"], "properties": { "name": { "const": "v1_read_shadow_approval_request_control" }, "write_route": { "const": "/v1/read-shadow-approval-requests.json" }, "projection_route": { "const": "/v1/read-shadow-approval-requests/projection.json" }, "required_receipt_kind": { "const": "v1.read_shadow.approval.requested" }, "forbidden_receipt_kind": { "const": "v1.read_shadow.approved" } } },
+    "approval_decision_control": { "type": "object", "required": ["name", "write_route", "projection_route", "required_receipt_kind"], "properties": { "name": { "const": "v1_read_shadow_approval_decision_control" }, "write_route": { "const": "/v1/read-shadow-approval-decisions.json" }, "projection_route": { "const": "/v1/read-shadow-approval-decisions/projection.json" }, "required_receipt_kind": { "const": "v1.read_shadow.approval.decision.recorded" } } },
+    "handoff": { "type": "object", "required": ["name", "live_read_allowed", "row_payload_allowed", "service_role_runtime_allowed", "credential_export_allowed", "production_write_allowed", "production_cutover_allowed"], "properties": { "name": { "const": "v1_production_read_shadow_handoff" }, "live_read_allowed": { "const": false }, "row_payload_allowed": { "const": false }, "service_role_runtime_allowed": { "const": false }, "credential_export_allowed": { "const": false }, "production_write_allowed": { "const": false }, "production_cutover_allowed": { "const": false } } },
+    "query_manifest": { "type": "object", "required": ["name", "status", "surfaces", "blocked_authority"], "properties": { "name": { "const": "v1_production_read_shadow_query_manifest" }, "status": { "const": "QUERY_MANIFEST_DECLARED_NOT_EXECUTED" }, "surfaces": { "type": "array", "minItems": 6 }, "blocked_authority": { "type": "object" } } },
+    "read_shadow_dry_run": { "type": "object", "required": ["name", "route", "live_read_allowed", "row_payload_allowed"], "properties": { "name": { "const": "mdx-v1-read-shadow-dry-run" }, "route": { "const": "/v1/read-shadow-dry-run.json" }, "live_read_allowed": { "const": false }, "row_payload_allowed": { "const": false } } },
+    "evidence_packet_template": { "type": "object", "required": ["name", "status", "blocked_authority"], "properties": { "name": { "const": "v1_production_read_shadow_evidence_packet" }, "status": { "const": "TEMPLATE_DECLARED_NOT_EXECUTED" }, "blocked_authority": { "type": "object" } } },
+    "acceptance_evidence_control": { "type": "object", "required": ["name", "status", "production_read_observed", "human_acceptance_granted", "production_write_allowed", "production_cutover_allowed"], "properties": { "name": { "const": "v1_read_shadow_acceptance_evidence_control" }, "status": { "const": "LOCAL_ACCEPTANCE_EVIDENCE_RECORDED_PRODUCTION_READ_BLOCKED" }, "production_read_observed": { "const": false }, "human_acceptance_granted": { "const": false }, "production_write_allowed": { "const": false }, "production_cutover_allowed": { "const": false } } },
+    "cutover_blockers": { "type": "object", "required": ["name", "cutover_green_allowed", "production_write_allowed", "production_cutover_allowed"], "properties": { "name": { "const": "v1_cutover_blocker_index" }, "cutover_green_allowed": { "const": false }, "production_write_allowed": { "const": false }, "production_cutover_allowed": { "const": false } } },
+    "proof_index_route": { "type": "object", "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"], "properties": { "route": { "const": "/v1/replacement-proof-index.json" }, "proof_check": { "const": "make v1-replacement-proof" }, "production_write_allowed": { "const": false }, "production_cutover_allowed": { "const": false } } },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "service_role_runtime_allowed", "credential_export_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "production_cutover_allowed", "provider_call_allowed", "worker_spawn_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "credential_export_allowed": { "const": false },
+        "write_mirror_allowed": { "const": false },
+        "dual_write_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false }
+      }
+    }
+  }
+}

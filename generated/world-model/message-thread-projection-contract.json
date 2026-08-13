@@ -1,0 +1,27 @@
+{
+  "name": "mdx-message-thread-projection-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-THREAD-PROJECTION-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "domain": "message_thread_projections",
+  "source_contract": "generated/world-model/message-event-plane-contract.json",
+  "projection_owner": "World Model",
+  "projection_shapes": [
+    { "id": "thread_summary", "required_fields": ["tenant_id", "thread_id", "channel_id", "latest_message_id", "latest_receipt_id", "message_count", "sequence_high_watermark", "threads.messages.actor_id", "threads.messages.actor_display_name", "threads.messages.actor_role", "threads.messages.message_receipt_kind", "threads.messages.content_type", "threads.messages.body", "threads.messages.content_payload", "threads.messages.source_receipt_kind"] },
+    { "id": "channel_timeline", "required_fields": ["tenant_id", "channel_id", "thread_ids", "sequence_high_watermark", "updated_at", "messages.actor_id", "messages.actor_display_name", "messages.actor_role", "messages.message_receipt_kind", "messages.content_type", "messages.body", "messages.content_payload", "messages.source_receipt_kind"] }
+  ],
+  "read_surfaces": ["observatory", "concierge", "future_message_surface"],
+  "forbidden_paths": [
+    "thread_projection_without_event_plane",
+    "thread_projection_without_sequence",
+    "channel_timeline_without_tenant",
+    "presence_before_ordering"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Threads and channels are projections over ordered message events",
+    "Projection reads may be fast but must remain rebuildable from the event plane",
+    "Presence typing indicators and realtime fanout wait until ordering and tenant rails are green",
+    "Message UI reads projections instead of owning message truth"
+  ]
+}

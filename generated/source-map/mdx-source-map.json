@@ -1,0 +1,40 @@
+{
+  "name": "mdx-public-source-map",
+  "mode": "public",
+  "rules": [
+    "Source entries describe files present in the public repository.",
+    "Generated contracts remain inspectable and reviewable."
+  ],
+  "entries": [
+    {
+      "domain": "product host",
+      "source": "apps/mdx-host/src",
+      "generated": "apps/mdx-host/build",
+      "check": "make web-build web-smoke"
+    },
+    {
+      "domain": "runtime routes",
+      "source": "crates/mdx-core/src/http_routes.rs",
+      "generated": "generated/routes/mdx-local-routes.json",
+      "check": "make rust-check"
+    },
+    {
+      "domain": "security posture",
+      "source": "docs/SECURITY-POSTURE.md",
+      "generated": "generated/security/mdx-security-posture.json",
+      "check": "make security-audit"
+    },
+    {
+      "domain": "Twin companions",
+      "source": "companions/twin",
+      "generated": "generated/companions/twin-text-grounding-contract.json",
+      "check": "make web-smoke"
+    },
+    {
+      "domain": "native apps",
+      "source": "apps/mdx-operator-macos, apps/mdx-operator-ios, apps/mdx-operator-shared",
+      "generated": "native application bundles",
+      "check": "make macos-check && make ios-build-check"
+    }
+  ]
+}

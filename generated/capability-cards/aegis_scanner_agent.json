@@ -1,0 +1,7 @@
+{
+  "agent": "aegis_scanner_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["run_deterministic_local_scan", "classify_local_finding", "write_charter_evidence", "plan_remediation"],
+  "forbidden_actions": ["live_scan_without_adapter", "external_network_scan", "production_deploy", "live_spend", "bypass_policy"]
+}

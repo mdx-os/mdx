@@ -1,0 +1,163 @@
+{
+  "name": "mdx-learning-ledger-v0",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "READ_ONLY_V0",
+  "purpose": "Seed the Learn product surface with the governed learning objects MDx can review before live outcome records exist.",
+  "summary": {
+    "signals": 5,
+    "candidate_lessons": 6,
+    "promoted_memories": 1,
+    "adaptation_proposals": 3,
+    "runtime_behavior_changes": 0
+  },
+  "learning_signals": [
+    {
+      "id": "signal_adaptation_gap",
+      "surface": "MDx",
+      "title": "Adaptation is the open gap",
+      "status": "needs proof",
+      "owner": "Learning Loop",
+      "recency": "contract v0",
+      "line": "MDx already collects traces and evaluations, but changed behavior must wait for a governed promotion lane.",
+      "evidence": ["docs/MDX-LEARNING-LOOP.md", "generated/learning/mdx-learning-loop-contract.json"]
+    },
+    {
+      "id": "signal_forge_first_path",
+      "surface": "Forge",
+      "title": "Forge is the first path to close",
+      "status": "next slice",
+      "owner": "Forge",
+      "recency": "contract v0",
+      "line": "A completed Forge run should produce an outcome record that can be evaluated, judged, promoted, and cited by the next casting.",
+      "evidence": ["docs/MDX-LEARNING-LOOP.md", "apps/mdx-host/src/routes/forge/+page.svelte"]
+    },
+    {
+      "id": "signal_eval_weighting",
+      "surface": "Quality",
+      "title": "Private checks need weighting",
+      "status": "needs calibration",
+      "owner": "Quality",
+      "recency": "contract v0",
+      "line": "Checks exist, but the learning loop needs explicit weight for outcome, trust, risk, cost, and latency.",
+      "evidence": ["generated/verification/mdx-local-verification.json", "docs/MDX-LEARNING-LOOP.md"]
+    },
+    {
+      "id": "signal_memory_lane",
+      "surface": "Pages",
+      "title": "Lessons need one promotion lane",
+      "status": "needs decision",
+      "owner": "Pages",
+      "recency": "contract v0",
+      "line": "Lessons can appear in docs, Pages, generated artifacts, and handoffs. Behavior should change only after one reviewable promotion path wins.",
+      "evidence": ["docs/MDX-LEARNING-LOOP.md", "generated/source-map/mdx-source-map.json"]
+    },
+    {
+      "id": "signal_model_sovereignty",
+      "surface": "Models",
+      "title": "Lessons must survive model swaps",
+      "status": "governance rule",
+      "owner": "Harness",
+      "recency": "contract v0",
+      "line": "A lesson that only lives in provider behavior or prompt memory is not MDx memory.",
+      "evidence": ["docs/MDX-LEARNING-LOOP.md"]
+    }
+  ],
+  "candidate_lessons": [
+    {
+      "id": "lesson_compose_seam_fix_location",
+      "title": "Verify the fix location before composing an intent",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "Three self-fix attempts ended no_change because the composed intent inherited a misdiagnosed fix location from an earlier attempt's guess. Attempt history is context, not authority: the compose seam must verify the fix location against the current file before handing an intent to a builder. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 night.",
+      "next_step": "Verify the target seam in the compose flow instead of reusing a prior attempt's stub.",
+      "authority": "review only"
+    },
+    {
+      "id": "lesson_no_change_is_a_verdict",
+      "title": "Respect a no_change verdict, then investigate it",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "A run that reads the real file and declines to build on a wrong premise is doing its job: three consecutive no_change verdicts on the same intent located our own misdiagnosis. Treat no_change as a verdict to respect and investigate, not a failure to retry harder. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 night.",
+      "next_step": "Investigate the premise after a no_change verdict before re-running the same intent.",
+      "authority": "review only"
+    },
+    {
+      "id": "lesson_rust_proof_baseline_wall",
+      "title": "Prove the Rust check baseline before spending the budget",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "Two correctly aimed attempts each burned 60 turns with the selected proof failing throughout and no files changed: cargo test -p mdx-server may not run green from a fresh Forge worktree, so the worker chased a baseline it could not reach. Verify the selected proof runs green in the worktree, and account for Rust check cost in the turn budget, before the loop spends turns on edits. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 late.",
+      "next_step": "Verify the proof baseline inside a fresh Forge worktree and account for Rust check cost in the turn budget.",
+      "authority": "review only"
+    },
+    {
+      "id": "lesson_proof_selection_matches_language",
+      "title": "Select the proof by the language of the diff",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "The proof harness selected pnpm test for a Rust diff on mdx-self, so a real one-file fix could not prove itself and the run honestly declared it could not proceed. Proof selection must follow the language of the diff, not the repo default; Rust-aware proof selection landed as the fix. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 S4 first proof attempt.",
+      "next_step": "Keep Rust-aware proof selection covered by the sim smoke for mdx-self scoped runs.",
+      "authority": "review only"
+    },
+    {
+      "id": "lesson_every_refusal_receipted",
+      "title": "Every refusal carries a receipt",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "A governance-correct refusal on /forge/runs.json returned an empty receipt id, and the bug reproduced itself on the very request submitted to fix it. The fix was confirmed by its own instrument when later run refusals carried a live refusal receipt id. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 smoke and Run One.",
+      "next_step": "Keep the refusal-receipt gate in the sim smoke so receiptless refusals cannot return.",
+      "authority": "review only"
+    },
+    {
+      "id": "lesson_aim_fixes_at_the_true_seam",
+      "title": "Aim the fix at the owning seam, right-sized",
+      "surface": "Forge",
+      "state": "candidate",
+      "lesson": "The first draft targeted the load simulator, but the real fix is a deterministic model provider mode in the model gateway, env-gated and simulation-safe. When attempts stall, right-size the ask and move it to the owning lane with the receipts attached instead of re-aiming the same intent. Source: docs/sim/MDX-SIM-LEARNING-LOG.md, 2026-07-02 night and late.",
+      "next_step": "Scope a kernel work item for the deterministic provider mode in the model gateway.",
+      "authority": "review only"
+    }
+  ],
+  "promoted_memory": [
+    {
+      "id": "memory_learning_loop_order",
+      "title": "Learning loop order is fixed",
+      "surface": "MDx",
+      "state": "promoted contract",
+      "line": "Intent, context, execution, trace, evaluation, judgment, memory, adaptation, and next intent are the required order.",
+      "evidence": ["docs/MDX-LEARNING-LOOP.md", "generated/learning/mdx-learning-loop-contract.json"]
+    }
+  ],
+  "adaptation_queue": [
+    {
+      "id": "adapt_forge_casting",
+      "title": "Let prior Forge outcomes shape the next casting",
+      "surface": "Forge",
+      "state": "blocked until outcome records exist",
+      "blocked_authority": ["no automatic model routing", "no silent fleet changes"],
+      "safe_next": "Capture outcome records and require the next casting to cite promoted lessons."
+    },
+    {
+      "id": "adapt_eval_selection",
+      "title": "Choose checks from prior risk patterns",
+      "surface": "Quality",
+      "state": "blocked until lessons are promoted",
+      "blocked_authority": ["no hidden check policy changes"],
+      "safe_next": "Record which checks mattered on completed work."
+    },
+    {
+      "id": "adapt_review_depth",
+      "title": "Adjust review depth from trust and risk",
+      "surface": "Product",
+      "state": "blocked until judgment records exist",
+      "blocked_authority": ["no reduced human review without approval"],
+      "safe_next": "Track overrides, revisions, and rejected outcomes."
+    }
+  ],
+  "model_worker_track_record": {
+    "status": "waiting for governed traces",
+    "line": "No model or worker scorecard changes are active in v0. Track records begin when outcome records connect models, workers, checks, and human judgment."
+  },
+  "checks": ["make learning-loop-check", "make ui-product-surface-check", "make ui-build-check"]
+}

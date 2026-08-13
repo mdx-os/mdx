@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/companion.schema.json",
+  "title": "MDx Companion Declaration",
+  "type": "object",
+  "required": [
+    "id",
+    "population",
+    "role",
+    "runtime_status",
+    "autonomy_ceiling",
+    "receipt_evidence_required",
+    "allowed_surfaces",
+    "grounding_sources",
+    "forbidden_actions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "population": {
+      "type": "string",
+      "const": "companion"
+    },
+    "role": {
+      "enum": [
+        "advisor",
+        "coach",
+        "architect",
+        "problem_solver",
+        "compliance"
+      ]
+    },
+    "runtime_status": {
+      "type": "string",
+      "const": "PENDING-LIVE-RUN"
+    },
+    "autonomy_ceiling": {
+      "type": "string",
+      "const": "READ_ONLY_GROUNDED"
+    },
+    "receipt_evidence_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "allowed_surfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "grounding_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "school": {
+      "type": "string",
+      "description": "The academy this companion's substrate comes from: the provider family, the way people come from universities."
+    },
+    "background": {
+      "type": "string",
+      "description": "The substrate's working style: reasoning-heavy, balanced-reasoning, fast-cheap, long-context."
+    },
+    "role_title": {
+      "type": "string",
+      "description": "The role as a person would say it on a team page."
+    },
+    "assignment": {
+      "type": "string",
+      "description": "What this companion is currently on."
+    },
+    "bio": {
+      "type": "string",
+      "description": "One line of who they are, in people language."
+    }
+  },
+  "additionalProperties": false
+}

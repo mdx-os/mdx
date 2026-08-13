@@ -1,0 +1,574 @@
+@font-face {
+  font-family: "DM Sans";
+  src: url("../../assets/ui/fonts/dm-sans/dm-sans-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../../assets/ui/fonts/satoshi/satoshi-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../../assets/ui/fonts/satoshi/satoshi-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../../assets/ui/fonts/satoshi/satoshi-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("../../assets/ui/fonts/satoshi/satoshi-900.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../../assets/ui/fonts/jetbrains-mono/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --mdx-font-ui: "DM Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", sans-serif;
+  --mdx-font-body: var(--mdx-font-ui);
+  --mdx-font-display: "Satoshi", "DM Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, "Segoe UI", sans-serif;
+  --mdx-font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  --mdx-surface-base: #0c0c0e;
+  --mdx-surface-raised: #151518;
+  --mdx-surface-overlay: #1d1d21;
+  --mdx-surface-sunken: #08080a;
+  --mdx-bg: #0c0c0e;
+  --mdx-bg-rgb: 12, 12, 14;
+  --mdx-surface: #151518;
+  --mdx-surface-rgb: 21, 21, 24;
+  --mdx-surface-raised-rgb: 21, 21, 24;
+  --mdx-border-subtle: rgba(255, 255, 255, 0.07);
+  --mdx-border-default: rgba(255, 255, 255, 0.10);
+  --mdx-border-strong: rgba(255, 255, 255, 0.18);
+  --mdx-border: var(--mdx-border-default);
+  --mdx-border-soft: var(--mdx-border-subtle);
+  --mdx-border-chip: var(--mdx-border-strong);
+  --mdx-text-primary: #f5f5f7;
+  --mdx-text-secondary: #a7a7b0;
+  --mdx-text-tertiary: #87878f;
+  --mdx-text-muted: #87878f;
+  --mdx-text-faint: #3a3a3e;
+  --mdx-text-caption: var(--mdx-text-muted);
+  --mdx-nav-text: #dce5ee;
+  --mdx-primary-on-blue: #061019;
+  --mdx-accent-primary: #5b78f0;
+  --mdx-accent-primary-hover: #7e98f5;
+  --mdx-accent-success: #34d399;
+  --mdx-accent-warning: #fbbf24;
+  --mdx-accent-error: #fb7185;
+  --mdx-accent-info: #22d3ee;
+  --mdx-accent-purple: #a78bfa;
+  --mdx-tone-ok-text: var(--mdx-accent-success);
+  --mdx-tone-warn-text: var(--mdx-accent-warning);
+  --mdx-tone-danger-text: var(--mdx-accent-error);
+  --mdx-focus-blue: var(--mdx-accent-primary);
+  --mdx-focus-blue-rgb: 91, 120, 240;
+  --mdx-success-green: var(--mdx-accent-success);
+  --mdx-success-green-rgb: 52, 211, 153;
+  --mdx-warning-amber: var(--mdx-accent-warning);
+  --mdx-warning-amber-rgb: 251, 191, 36;
+  --mdx-danger-red: var(--mdx-accent-error);
+  --mdx-danger-red-rgb: 251, 113, 133;
+  --mdx-evidence-cyan: var(--mdx-accent-info);
+  --mdx-evidence-cyan-rgb: 34, 211, 238;
+  --mdx-brand-surface: #101720;
+  --mdx-space-xs: 4px;
+  --mdx-space-sm: 8px;
+  --mdx-space-md: 12px;
+  --mdx-space-lg: 16px;
+  --mdx-space-xl: 24px;
+  --mdx-space-xxl: 32px;
+  --mdx-radius-sm: 5px;
+  --mdx-radius-md: 8px;
+  --mdx-radius-lg: 11px;
+  --mdx-radius-xl: 14px;
+  --mdx-radius-full: 9999px;
+  --mdx-radius-control: var(--mdx-radius-lg);
+  --mdx-radius-panel: var(--mdx-radius-lg);
+  --mdx-radius-pill: var(--mdx-radius-full);
+  --mdx-text-xs: 0.75rem;
+  --mdx-text-sm: 0.75rem;
+  --mdx-text-base: 0.8rem;
+  --mdx-text-md: 0.9rem;
+  --mdx-text-lg: 1.05rem;
+  --mdx-text-xl: 1.4rem;
+  --mdx-text-2xl: 2rem;
+  --mdx-text-3xl: 3rem;
+  --mdx-app-twin: #5b78f0;
+  --mdx-app-message: #22d3ee;
+  --mdx-app-observatory: #fb7185;
+  --mdx-app-pages: #fbbf24;
+  --mdx-app-forge: #f59e0b;
+  --mdx-app-accent-twin: var(--mdx-app-twin);
+  --mdx-app-accent-forge: var(--mdx-app-forge);
+  --mdx-app-accent-message: var(--mdx-app-message);
+  --mdx-app-accent-observatory: var(--mdx-app-observatory);
+  --mdx-app-accent-pages: var(--mdx-app-pages);
+  --mdx-app-accent-strategy: var(--mdx-accent-purple);
+  --mdx-shadow-panel: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --mdx-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.24);
+  --mdx-edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --mdx-code-keyword: #c792ea;
+  --mdx-code-string: #95d6a4;
+  --mdx-code-comment: #6a6a73;
+  --mdx-code-number: #f7a36b;
+  --mdx-code-type: #82c2f5;
+  --mdx-code-fn: #82aaff;
+  --mdx-code-value: #f7a36b;
+  --mdx-diff-add-bg: rgba(74, 222, 128, 0.10);
+  --mdx-diff-add-gutter: #34d399;
+  --mdx-diff-del-bg: rgba(251, 113, 133, 0.10);
+  --mdx-diff-del-gutter: #fb7185;
+  --mdx-motion-fast: 120ms;
+  --mdx-motion-base: 200ms;
+  --mdx-motion-slow: 320ms;
+  --mdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --mdx-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --mdx-transition-fast: 150ms ease;
+  --mdx-transition-normal: 200ms ease;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --mdx-surface-base: #fafafa;
+  --mdx-surface-raised: #ffffff;
+  --mdx-surface-overlay: #f4f4f5;
+  --mdx-surface-sunken: #f0f0f2;
+  --mdx-bg: #fafafa;
+  --mdx-bg-rgb: 250, 250, 250;
+  --mdx-surface: #ffffff;
+  --mdx-surface-rgb: 255, 255, 255;
+  --mdx-surface-raised-rgb: 255, 255, 255;
+  --mdx-border-subtle: rgba(0, 0, 0, 0.06);
+  --mdx-border-default: #e4e4e7;
+  --mdx-border-strong: rgba(0, 0, 0, 0.16);
+  --mdx-border: var(--mdx-border-default);
+  --mdx-border-soft: var(--mdx-border-subtle);
+  --mdx-border-chip: var(--mdx-border-strong);
+  --mdx-text-primary: #18181b;
+  --mdx-text-secondary: #52525b;
+  --mdx-text-tertiary: #71717a;
+  --mdx-text-muted: #71717a;
+  --mdx-text-faint: #d4d4d8;
+  --mdx-text-caption: var(--mdx-text-muted);
+  --mdx-nav-text: #1d2939;
+  --mdx-primary-on-blue: #ffffff;
+  --mdx-tone-ok-text: #047857;
+  --mdx-tone-warn-text: #b45309;
+  --mdx-tone-danger-text: #be123c;
+  --mdx-brand-surface: #eaf2ff;
+  --mdx-shadow-panel: 0 20px 80px rgba(12, 17, 29, 0.08);
+  --mdx-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 12px rgba(16, 24, 40, 0.05);
+  --mdx-edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mdx-code-keyword: #8250df;
+  --mdx-code-string: #0a7d4f;
+  --mdx-code-comment: #8a8a93;
+  --mdx-code-number: #b5530a;
+  --mdx-code-type: #0b69c7;
+  --mdx-code-fn: #1f5fd0;
+  --mdx-code-value: #b5530a;
+  --mdx-diff-add-bg: rgba(4, 120, 87, 0.09);
+  --mdx-diff-add-gutter: #047857;
+  --mdx-diff-del-bg: rgba(190, 18, 60, 0.09);
+  --mdx-diff-del-gutter: #be123c;
+  --mdx-motion-fast: 120ms;
+  --mdx-motion-base: 200ms;
+  --mdx-motion-slow: 320ms;
+  --mdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --mdx-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --mdx-transition-fast: 150ms ease;
+  --mdx-transition-normal: 200ms ease;
+}
+
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) {
+    color-scheme: light;
+    --mdx-surface-base: #fafafa;
+    --mdx-surface-raised: #ffffff;
+    --mdx-surface-overlay: #f4f4f5;
+    --mdx-surface-sunken: #f0f0f2;
+    --mdx-bg: #fafafa;
+    --mdx-bg-rgb: 250, 250, 250;
+    --mdx-surface: #ffffff;
+    --mdx-surface-rgb: 255, 255, 255;
+    --mdx-surface-raised-rgb: 255, 255, 255;
+    --mdx-border-subtle: rgba(0, 0, 0, 0.06);
+    --mdx-border-default: #e4e4e7;
+    --mdx-border-strong: rgba(0, 0, 0, 0.16);
+    --mdx-border: var(--mdx-border-default);
+    --mdx-border-soft: var(--mdx-border-subtle);
+    --mdx-border-chip: var(--mdx-border-strong);
+    --mdx-text-primary: #18181b;
+    --mdx-text-secondary: #52525b;
+    --mdx-text-tertiary: #71717a;
+    --mdx-text-muted: #71717a;
+    --mdx-text-faint: #d4d4d8;
+    --mdx-text-caption: var(--mdx-text-muted);
+    --mdx-nav-text: #1d2939;
+    --mdx-primary-on-blue: #ffffff;
+    --mdx-tone-ok-text: #047857;
+    --mdx-tone-warn-text: #b45309;
+    --mdx-tone-danger-text: #be123c;
+    --mdx-brand-surface: #eaf2ff;
+    --mdx-shadow-panel: 0 20px 80px rgba(12, 17, 29, 0.08);
+    --mdx-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 12px rgba(16, 24, 40, 0.05);
+    --mdx-edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --mdx-code-keyword: #8250df;
+    --mdx-code-string: #0a7d4f;
+    --mdx-code-comment: #8a8a93;
+    --mdx-code-number: #b5530a;
+    --mdx-code-type: #0b69c7;
+    --mdx-code-fn: #1f5fd0;
+    --mdx-code-value: #b5530a;
+    --mdx-diff-add-bg: rgba(4, 120, 87, 0.09);
+    --mdx-diff-add-gutter: #047857;
+    --mdx-diff-del-bg: rgba(190, 18, 60, 0.09);
+    --mdx-diff-del-gutter: #be123c;
+    --mdx-motion-fast: 120ms;
+    --mdx-motion-base: 200ms;
+    --mdx-motion-slow: 320ms;
+    --mdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --mdx-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --mdx-transition-fast: 150ms ease;
+    --mdx-transition-normal: 200ms ease;
+  }
+}
+
+/* Apple-grade text rendering: grayscale antialiasing so type is crisp and
+   light rather than heavy/fringed, plus a comfortable default line-height so
+   text breathes. Set once at the root for every surface. */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+
+/* Links ease their color change rather than snapping - one small calm cue. */
+a {
+  transition: color var(--mdx-motion-fast) var(--mdx-ease);
+}
+
+/* Page enter: each surface settles in with a gentle fade. Opacity only (no
+   transform) so it never creates a containing block that would break a sticky
+   or fixed composer. Re-runs on every route change for a calm transition.
+   Disabled under reduced-motion below. */
+@keyframes mdx-page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mdx-page {
+  animation: mdx-page-enter var(--mdx-motion-base) var(--mdx-ease) both;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mdx-focus-blue);
+  outline-offset: 2px;
+  transition: outline-color var(--mdx-motion-fast) var(--mdx-ease);
+}
+
+/* Shared surface recipes. One page header, one button vocabulary, one badge,
+   one sibling switcher. Surfaces adopt these classes instead of redrawing
+   their own; per-surface styles may extend but not redefine them. */
+
+.mdx-page-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.mdx-page-head .mdx-crumb {
+  font-size: 12.5px;
+  color: var(--mdx-text-muted);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.mdx-page-head .mdx-crumb:hover {
+  color: var(--mdx-text-primary);
+}
+
+.mdx-page-head h1 {
+  margin: 0;
+  font-family: var(--mdx-font-display);
+  font-size: clamp(26px, 2.5vw, 32px);
+  line-height: 1.15;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--mdx-text-primary);
+}
+
+.mdx-page-head .mdx-page-sub {
+  margin: 0;
+  max-width: 620px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--mdx-text-muted);
+}
+
+.mdx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1px solid var(--mdx-border-default);
+  border-radius: var(--mdx-radius-control);
+  background: transparent;
+  font-family: var(--mdx-font-ui);
+  font-size: 13.5px;
+  font-weight: 550;
+  color: var(--mdx-text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--mdx-motion-fast) var(--mdx-ease), border-color var(--mdx-motion-fast) var(--mdx-ease), color var(--mdx-motion-fast) var(--mdx-ease), transform var(--mdx-motion-fast) var(--mdx-ease), box-shadow var(--mdx-motion-fast) var(--mdx-ease);
+}
+
+.mdx-btn:hover {
+  background: var(--mdx-surface-raised);
+  border-color: var(--mdx-border-strong);
+}
+
+.mdx-btn:active {
+  transform: translateY(0.5px);
+}
+
+.mdx-btn.primary {
+  border-color: transparent;
+  background: var(--mdx-accent-primary);
+  color: var(--mdx-primary-on-blue);
+  box-shadow: var(--mdx-edge-highlight), 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(var(--mdx-focus-blue-rgb), 0.22);
+}
+
+.mdx-btn.primary:hover {
+  border-color: transparent;
+  background: var(--mdx-accent-primary-hover);
+  box-shadow: var(--mdx-edge-highlight), 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 14px rgba(var(--mdx-focus-blue-rgb), 0.30);
+}
+
+/* Secondary: a subtle filled action for the second-rank verb, so a surface
+   does not reach for the one accent primary more than once. */
+.mdx-btn.secondary {
+  border-color: var(--mdx-border-subtle);
+  background: var(--mdx-surface-raised);
+  color: var(--mdx-text-primary);
+}
+
+.mdx-btn.secondary:hover {
+  background: var(--mdx-surface-overlay);
+  border-color: var(--mdx-border-default);
+}
+
+.mdx-btn.small {
+  padding: 7px 12px;
+  font-size: 12.5px;
+}
+
+/* Disabled reads as a distinct, unmistakably-off state - a muted neutral fill,
+   never a faded accent. A pale-blue primary that "looks disabled but is not"
+   was the design panel's standing complaint; this kills the ambiguity. */
+.mdx-btn:disabled,
+.mdx-btn[aria-disabled="true"],
+.mdx-btn.primary:disabled,
+.mdx-btn.primary[aria-disabled="true"],
+.mdx-btn.secondary:disabled,
+.mdx-btn.secondary[aria-disabled="true"] {
+  background: var(--mdx-surface-overlay);
+  border-color: var(--mdx-border-subtle);
+  color: var(--mdx-text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.mdx-btn:disabled:hover,
+.mdx-btn[aria-disabled="true"]:hover,
+.mdx-btn.primary:disabled:hover,
+.mdx-btn.primary[aria-disabled="true"]:hover,
+.mdx-btn.secondary:disabled:hover,
+.mdx-btn.secondary[aria-disabled="true"]:hover {
+  background: var(--mdx-surface-overlay);
+  border-color: var(--mdx-border-subtle);
+}
+
+.mdx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border: 1px solid var(--mdx-border-subtle);
+  border-radius: var(--mdx-radius-full);
+  background: var(--mdx-surface-raised);
+  font-size: var(--mdx-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--mdx-text-secondary);
+  white-space: nowrap;
+}
+
+.mdx-badge[data-tone="ok"] {
+  color: var(--mdx-tone-ok-text);
+  border-color: rgba(var(--mdx-success-green-rgb), 0.3);
+  background: rgba(var(--mdx-success-green-rgb), 0.08);
+}
+
+.mdx-badge[data-tone="warn"] {
+  color: var(--mdx-tone-warn-text);
+  border-color: rgba(var(--mdx-warning-amber-rgb), 0.3);
+  background: rgba(var(--mdx-warning-amber-rgb), 0.08);
+}
+
+.mdx-badge[data-tone="danger"] {
+  color: var(--mdx-tone-danger-text);
+  border-color: rgba(var(--mdx-danger-red-rgb), 0.3);
+  background: rgba(var(--mdx-danger-red-rgb), 0.08);
+}
+
+.mdx-badge[data-tone="neutral"] {
+  color: var(--mdx-text-secondary);
+}
+
+.mdx-badge[data-tone="bydesign"] {
+  color: var(--mdx-text-muted);
+  border-style: dashed;
+  background: transparent;
+}
+
+.mdx-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--mdx-border-subtle);
+  border-radius: var(--mdx-radius-control);
+  background: var(--mdx-surface-sunken);
+  width: fit-content;
+}
+
+.mdx-segmented a,
+.mdx-segmented button {
+  padding: 5px 13px;
+  border: 0;
+  border-radius: calc(var(--mdx-radius-control) - 3px);
+  background: transparent;
+  font-family: var(--mdx-font-ui);
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--mdx-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--mdx-motion-fast) var(--mdx-ease), background var(--mdx-motion-fast) var(--mdx-ease);
+}
+
+.mdx-segmented a:hover,
+.mdx-segmented button:hover {
+  color: var(--mdx-text-primary);
+}
+
+.mdx-segmented a.active,
+.mdx-segmented button.active,
+.mdx-segmented [aria-current="page"] {
+  background: var(--mdx-surface-raised);
+  color: var(--mdx-text-primary);
+  box-shadow: var(--mdx-edge-highlight), 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+/* Card: containment by border and a one-step surface, not a drop shadow.
+   Two densities - comfortable for primary content, dense for list rows.
+   The top edge-highlight is the dark-mode "raised" cue (invisible on light). */
+.mdx-card {
+  border: 1px solid var(--mdx-border-subtle);
+  border-radius: var(--mdx-radius-lg);
+  background: var(--mdx-surface-raised);
+  box-shadow: var(--mdx-edge-highlight), var(--mdx-shadow-card);
+  padding: var(--mdx-space-xl);
+}
+
+.mdx-card.dense {
+  padding: var(--mdx-space-lg);
+  border-radius: var(--mdx-radius-md);
+}
+
+/* Elevation utility - the Apple-grade depth, restrained and consistent. A
+   container card adds this class to float on a hairline border + a whisper of
+   shadow; inner rows stay flat so depth means "this is a distinct surface,"
+   not decoration. One definition, every surface, so elevation never drifts. */
+.mdx-elevated {
+  box-shadow: var(--mdx-edge-highlight), var(--mdx-shadow-card);
+}
+
+/* Empty state: a quiet sentence and the one governed verb, never a wall of
+   help text. Receipts/learn-more belong in a <details> below. */
+.mdx-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  color: var(--mdx-text-muted);
+}
+
+.mdx-empty p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--mdx-text-secondary);
+}
+
+/* Skeleton: a placeholder shaped like the real content so nothing jumps in.
+   Use blocks sized to the layout, not a spinner, for content regions. */
+.mdx-skeleton {
+  border-radius: var(--mdx-radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--mdx-surface-raised) 0%,
+    var(--mdx-surface-overlay) 50%,
+    var(--mdx-surface-raised) 100%
+  );
+  background-size: 200% 100%;
+  animation: mdx-skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes mdx-skeleton-sweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Motion discipline: enter is opacity + a small lift, nothing bounces or
+   spins, and reduced-motion turns it all off. */
+@media (prefers-reduced-motion: reduce) {
+  .mdx-skeleton {
+    animation: none;
+  }
+  .mdx-page {
+    animation: none;
+  }
+}

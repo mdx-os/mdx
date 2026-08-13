@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ShadowAuthorityHandoffResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "service_role_runtime_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed", "read_shadow_control_count", "write_shadow_control_count", "handoff_route_count", "authority_request_count", "proof_check", "route_check", "handoff", "read_shadow_preflight", "read_shadow_query_manifest", "read_shadow_dry_run", "read_shadow_evidence_packet", "write_shadow_policy", "write_shadow_dry_run", "cutover_authority_evidence", "proof_index_route", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-shadow-authority-handoff" },
+    "route": { "const": "/v1/shadow-authority-handoff.json" },
+    "status": { "const": "HANDOFF_READY_LIVE_AUTHORITY_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "dual_write_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "patch_application_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "read_shadow_control_count": { "const": 8 },
+    "write_shadow_control_count": { "const": 5 },
+    "handoff_route_count": { "const": 6 },
+    "authority_request_count": { "const": 3 },
+    "proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-shadow-authority-handoff-route-check" },
+    "handoff": {
+      "type": "object",
+      "required": ["name", "status", "route", "read_shadow_control_count", "write_shadow_control_count", "handoff_route_count", "authority_request_count", "claude_ui_handoff", "read_shadow_handoff", "write_shadow_handoff", "handoff_routes", "authority_requests", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_shadow_authority_handoff" },
+        "status": { "const": "HANDOFF_READY_LIVE_AUTHORITY_BLOCKED" },
+        "route": { "const": "/v1/shadow-authority-handoff.json" },
+        "read_shadow_control_count": { "const": 8 },
+        "write_shadow_control_count": { "const": 5 },
+        "handoff_route_count": { "const": 6 },
+        "authority_request_count": { "const": 3 },
+        "claude_ui_handoff": {
+          "type": "object",
+          "required": ["status", "safe_to_wire_read_only", "safe_to_wire_approval_actions", "production_authority_allowed"],
+          "properties": {
+            "status": { "const": "SHADOW_HANDOFF_PANEL_READY_LOCAL_ONLY" },
+            "safe_to_wire_read_only": { "const": true },
+            "safe_to_wire_approval_actions": { "const": false },
+            "production_authority_allowed": { "const": false }
+          }
+        },
+        "read_shadow_handoff": {
+          "type": "object",
+          "required": ["status", "human_approval_granted", "production_read_observed", "row_payload_observed", "controls", "routes", "missing_authority"],
+          "properties": {
+            "status": { "const": "PRODUCTION_READ_SHADOW_READY_FOR_HUMAN_REVIEW_NOT_EXECUTED" },
+            "human_approval_granted": { "const": false },
+            "production_read_observed": { "const": false },
+            "row_payload_observed": { "const": false },
+            "controls": { "type": "array", "minItems": 8 },
+            "routes": { "type": "array", "minItems": 3 },
+            "missing_authority": { "type": "array", "minItems": 3 }
+          }
+        },
+        "write_shadow_handoff": {
+          "type": "object",
+          "required": ["status", "human_approval_granted", "write_mirror_observed", "dual_write_observed", "production_write_observed", "controls", "routes", "missing_authority"],
+          "properties": {
+            "status": { "const": "WRITE_SHADOW_READY_FOR_HUMAN_REVIEW_MIRROR_NOT_EXECUTED" },
+            "human_approval_granted": { "const": false },
+            "write_mirror_observed": { "const": false },
+            "dual_write_observed": { "const": false },
+            "production_write_observed": { "const": false },
+            "controls": { "type": "array", "minItems": 5 },
+            "routes": { "type": "array", "minItems": 3 },
+            "missing_authority": { "type": "array", "minItems": 3 }
+          }
+        },
+        "handoff_routes": { "type": "array", "minItems": 6 },
+        "authority_requests": { "type": "array", "minItems": 3 },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "read_shadow_preflight": {
+      "type": "object",
+      "required": ["name", "human_approval_required", "live_read_allowed", "row_payload_allowed"],
+      "properties": {
+        "name": { "const": "v1_production_read_shadow_preflight" },
+        "human_approval_required": { "const": true },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false }
+      }
+    },
+    "read_shadow_query_manifest": {
+      "type": "object",
+      "required": ["name", "surfaces", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_production_read_shadow_query_manifest" },
+        "surfaces": { "type": "array", "minItems": 6 },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "read_shadow_dry_run": {
+      "type": "object",
+      "required": ["name", "route", "live_read_allowed", "row_payload_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "mdx-v1-read-shadow-dry-run" },
+        "route": { "const": "/v1/read-shadow-dry-run.json" },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "read_shadow_evidence_packet": {
+      "type": "object",
+      "required": ["name", "status", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_production_read_shadow_evidence_packet" },
+        "status": { "const": "TEMPLATE_DECLARED_NOT_EXECUTED" },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "write_shadow_policy": {
+      "type": "object",
+      "required": ["name", "write_mirror_allowed", "production_write_allowed", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_write_shadow_mirror_policy_control" },
+        "write_mirror_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "blocked_authority": { "type": "object" }
+      }
+    },
+    "write_shadow_dry_run": {
+      "type": "object",
+      "required": ["name", "route", "write_mirror_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "name": { "const": "mdx-v1-write-shadow-dry-run" },
+        "route": { "const": "/v1/write-shadow-dry-run.json" },
+        "write_mirror_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "cutover_authority_evidence": {
+      "type": "object",
+      "required": ["name", "production_write_allowed", "production_cutover_allowed", "authority_request_count"],
+      "properties": {
+        "name": { "const": "v1_cutover_authority_evidence" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "authority_request_count": { "const": 6 }
+      }
+    },
+    "proof_index_route": {
+      "type": "object",
+      "required": ["route", "proof_check", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "route": { "const": "/v1/replacement-proof-index.json" },
+        "proof_check": { "const": "make v1-replacement-proof" },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "dual_write_allowed", "production_write_allowed", "service_role_runtime_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "write_mirror_allowed": { "const": false },
+        "dual_write_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "patch_application_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

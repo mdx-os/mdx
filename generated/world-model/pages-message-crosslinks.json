@@ -1,0 +1,24 @@
+{
+  "name": "mdx-pages-message-crosslinks",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-MESSAGE-CROSSLINKS.md",
+  "status": "CONTRACT-NEXT",
+  "depends_on": [
+    "generated/world-model/pages-lifecycle-scenarios.json",
+    "generated/world-model/message-event-scenarios.json"
+  ],
+  "links": [
+    { "id": "evals_page_to_agent_thread", "document_id": "page_evidence_evals_runner", "thread_id": "thread_evals_runner_evidence", "required_receipts": ["pages.document.cited", "message.receipt.linked"], "visibility": "tenant_only" }
+  ],
+  "blocked": [
+    { "id": "message_thread_without_page_citation", "missing": "pages.document.cited", "blocked_by": "message_without_receipt" },
+    { "id": "page_thread_cross_tenant_link", "visibility": "cross_tenant", "blocked_by": "cross_tenant_thread_visibility" },
+    { "id": "uncited_agent_discussion", "missing": "message.receipt.linked", "blocked_by": "agent_message_without_outbox_topic" }
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Message threads may cite Pages documents only through receipt-backed crosslinks",
+    "Pages documents do not own communication truth and Message threads do not own document truth",
+    "Crosslinks keep knowledge and communication queryable through the World Model"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "evals_runner_agent",
+  "loop": "evals_runner_agent",
+  "tools": [
+    { "name": "local_eval_suite_runner", "risk": "LOW", "policy_required": true, "receipt_required": true },
+    { "name": "deterministic_model_gateway", "risk": "LOW", "policy_required": true, "receipt_required": true },
+    { "name": "credential_authority", "risk": "MEDIUM", "policy_required": true, "receipt_required": true }
+  ]
+}

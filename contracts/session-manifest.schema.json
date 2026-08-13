@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/session-manifest.schema.json",
+  "title": "MDx Session Manifest",
+  "type": "object",
+  "required": ["goal", "commands", "receipts", "pending_live_run"],
+  "properties": {
+    "goal": { "type": "string" },
+    "commands": { "type": "array", "items": { "type": "string" } },
+    "receipts": { "type": "array", "items": { "type": "string" } },
+    "pending_live_run": { "type": "array", "items": { "type": "string" } }
+  }
+}
+

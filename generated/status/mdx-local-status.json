@@ -1,0 +1,13 @@
+{
+  "name": "mdx-native local",
+  "migrations": 44,
+  "mode": "deterministic-local",
+  "live_substrate": [
+    { "substrate": "postgres", "local_adapter": "PostgresStorage when DATABASE_URL and observed migrations are supplied", "live_adapter": "PostgresStorage", "status": "LIVE-LOCAL", "turn_on_signal": "production Postgres connection approval remains before production live", "blocking_rails": ["production-database-url", "production-credential-approval", "production-backup-policy"], "first_local_proof": "DATABASE_URL=postgres://mdx:mdx@localhost:5432/mdx make local-full-check" },
+    { "substrate": "temporal", "local_adapter": "LocalLoopRunner", "live_adapter": "TemporalLoopRunner", "status": "PENDING-LIVE-RUN", "turn_on_signal": "durable workflow execution is observed", "blocking_rails": ["loop-runner-boundary", "workflow-observed", "provider-turn-on-evidence"], "first_local_proof": "make live-turn-on-check" },
+    { "substrate": "tensorzero", "local_adapter": "DeterministicModelGateway", "live_adapter": "TensorZeroModelGateway", "status": "PENDING-LIVE-RUN", "turn_on_signal": "live model gateway calls are observed", "blocking_rails": ["model-gateway-boundary", "inference-observed", "provider-turn-on-evidence"], "first_local_proof": "make live-turn-on-check" },
+    { "substrate": "mem0", "local_adapter": "InMemoryProvider", "live_adapter": "Mem0MemoryProvider", "status": "PENDING-LIVE-RUN", "turn_on_signal": "live memory writes pass through the consolidation gate", "blocking_rails": ["memory-provider-boundary", "consolidation-gate", "provider-turn-on-evidence"], "first_local_proof": "make live-turn-on-check" },
+    { "substrate": "opentelemetry", "local_adapter": "LocalTraceExporter", "live_adapter": "OpenTelemetryExporter", "status": "PENDING-LIVE-RUN", "turn_on_signal": "live trace export is observed", "blocking_rails": ["observability-exporter-boundary", "trace-export-observed", "provider-turn-on-evidence"], "first_local_proof": "make live-turn-on-check" },
+    { "substrate": "render", "local_adapter": "local process", "live_adapter": "render.yaml", "status": "PENDING-LIVE-RUN", "turn_on_signal": "human-approved Render deployment succeeds", "blocking_rails": ["render-blueprint", "human-approval", "provider-turn-on-evidence"], "first_local_proof": "make live-turn-on-check" }
+  ]
+}

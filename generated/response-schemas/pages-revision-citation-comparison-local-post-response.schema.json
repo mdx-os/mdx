@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesRevisionCitationComparisonLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "comparison_id", "comparison_receipt_id", "policy_decision_id", "source_search_preflight_receipt_id", "document_id", "revision_id", "citation_handle", "v1_revision_key", "revision_citation_comparison_proven", "attachment_access_policy_proven", "public_visibility_allowed", "search_indexing_allowed", "embedding_provider_call_allowed", "live_substrate_required", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-pages-revision-citation-comparison-local-post" },
+    "status": { "const": "PAGES_REVISION_CITATION_COMPARISON_RECORDED_SEARCH_BLOCKED" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/revision-citation-comparisons.json" },
+    "projection_route": { "const": "/pages/revision-citation-comparisons/projection.json" },
+    "comparison_id": { "type": "string", "minLength": 1 },
+    "comparison_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "source_search_preflight_receipt_id": { "type": "string", "minLength": 1 },
+    "document_id": { "type": "string", "minLength": 1 },
+    "revision_id": { "type": "string", "minLength": 1 },
+    "citation_handle": { "type": "string", "minLength": 1 },
+    "v1_revision_key": { "type": "string", "minLength": 1 },
+    "revision_citation_comparison_proven": { "const": true },
+    "attachment_access_policy_proven": { "const": true },
+    "public_visibility_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "embedding_provider_call_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

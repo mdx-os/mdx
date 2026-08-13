@@ -1,0 +1,367 @@
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ActorAdmission<'a> {
+    pub tenant_id: &'a str,
+    pub actor_id: &'a str,
+    pub actor_role: &'a str,
+    pub policy_decision_id: &'a str,
+    pub receipt_intent: &'a str,
+    pub source_route: &'a str,
+    pub request_id: &'a str,
+    pub requested_tenant_id: &'a str,
+    pub requested_actor_role: &'a str,
+    pub service_role_claimed: bool,
+    pub user_metadata_authorization_claimed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ActorAdmissionReport {
+    pub status: &'static str,
+    pub tenant_id: String,
+    pub actor_id: String,
+    pub actor_role: String,
+    pub source_route: String,
+    pub policy_decision_id: String,
+    pub receipt_intent: String,
+    pub request_id: String,
+    pub hidden_privilege_bypass_allowed: bool,
+    pub production_write_allowed: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ActorAdmissionError {
+    Missing(&'static str),
+    SourceRouteMismatch(String),
+    ServiceRoleBypass,
+    RoleEscalationWithoutPolicy,
+    TenantSwitchWithoutPolicy,
+    UserMetadataAuthorization,
+}
+
+impl ActorAdmissionError {
+    pub fn message(&self) -> String {
+        match self {
+            Self::Missing(field) => format!("actor admission missing {field}"),
+            Self::SourceRouteMismatch(route) => {
+                format!("actor admission source route {route} is not governed")
+            }
+            Self::ServiceRoleBypass => "actor admission refuses service-role shortcut".to_string(),
+            Self::RoleEscalationWithoutPolicy => {
+                "actor admission refuses role escalation without policy".to_string()
+            }
+            Self::TenantSwitchWithoutPolicy => {
+                "actor admission refuses tenant switch without policy".to_string()
+            }
+            Self::UserMetadataAuthorization => {
+                "actor admission refuses user_metadata authorization".to_string()
+            }
+        }
+    }
+}
+
+pub const GOVERNED_WRITE_ROUTES: &[&str] = &[
+    "/models/connect.json",
+    "/models/catalog.json",
+    "/models/test.json",
+    "/models/inferences.json",
+    "/models/adaptive/evaluations.json",
+    "/models/adaptive/promotions.json",
+    "/models/outcomes.json",
+    "/models/connections.json",
+    "/models/deployments.json",
+    "/models/policies.json",
+    "/models/routes/resolve.json",
+    "/memory/lifecycle-actions.json",
+    "/memory/lifecycle-evaluations.json",
+    "/memory/consolidation-ratifications.json",
+    "/memory/brain-eval-runs.json",
+    "/memory/topology-validations.json",
+    "/memory/beta-readiness-runs.json",
+    "/twin/artifact-contexts.json",
+    "/twin/artifacts/liteparse-parses.json",
+    "/twin/artifacts/pages-drafts.json",
+    "/twin/artifacts/downloads.json",
+    "/twin/artifacts/deletions.json",
+    "/twin/office/generated-artifacts.json",
+    "/twin/office/downloads.json",
+    "/twin/session-stream",
+    "/twin/session-drafts.json",
+    "/twin/model-gateway-provider-observations.json",
+    "/twin/provider-call-refusals.json",
+    "/twin/production-memory-refusals.json",
+    "/twin/tool-execution-refusals.json",
+    "/twin/agent-mode-preflights.json",
+    "/twin/hook-preflights.json",
+    "/twin/skill-preflights.json",
+    "/twin/connector-preflights.json",
+    "/twin/agent-handoff-preflights.json",
+    "/twin/capabilities.json",
+    "/twin/skill-proposal-events.json",
+    "/twin/guard-preflight.json",
+    "/forge/intake-plan-requests.json",
+    "/forge/build-requests.json",
+    "/forge/build-approvals.json",
+    "/forge/workflow-plan-proofs.json",
+    "/forge/worker-authority-requests.json",
+    "/forge/talent-authorizations.json",
+    "/forge/worker-credential-checks.json",
+    "/forge/worker-spawn-preflights.json",
+    "/forge/ci-evidence-preflights.json",
+    "/forge/human-ratification-preflights.json",
+    "/forge/deployment-preflights.json",
+    "/forge/outcome-signals.json",
+    "/forge/long-horizon-missions.json",
+    "/forge/long-horizon-mission-checkpoints.json",
+    "/forge/long-horizon-mission-launches.json",
+    "/forge/work-classifications.json",
+    "/forge/fleet-eval-dry-runs.json",
+    "/forge/fleet-eval-results.json",
+    "/forge/fleet-eval-results/from-run.json",
+    "/forge/fleet-eval-results/principal-reviews.json",
+    "/forge/machine-league/fleet-casts.json",
+    "/forge/machine-league/fleet-runs.json",
+    "/forge/machine-league/fleet-runs/arbitrations.json",
+    "/forge/machine-league/face-offs.json",
+    "/forge/machine-league/closed-runner-clearances.json",
+    "/forge/machine-league/runtime-smokes.json",
+    "/forge/machine-league/codex-trials.json",
+    "/forge/machine-league/gemini-trials.json",
+    "/forge/machine-league/grok-build-trials.json",
+    "/forge/machine-league/claude-code-trials.json",
+    "/forge/machine-league/opencode-trials.json",
+    "/forge/machine-league/cline-trials.json",
+    "/forge/machine-league/goose-trials.json",
+    "/forge/machine-league/native-trials.json",
+    "/forge/machine-league/pairwise-comparisons.json",
+    "/forge/machine-league/distillation-notes.json",
+    "/forge/machine-league/native-improvement-loops.json",
+    "/forge/fleet-eval-live-run-approvals.json",
+    "/forge/model-providers.json",
+    "/forge/semantic-queries.json",
+    "/forge/candidate-selections.json",
+    "/forge/pr-handoffs.json",
+    "/forge/repo-onboarding-packet.json",
+    "/forge/repo-task-scout.json",
+    "/forge/source-host-readiness.json",
+    "/forge/source-host-pr-drafts.json",
+    "/forge/source-host-live-deliveries.json",
+    "/autonomy/envelopes.json",
+    "/autonomy/envelopes/revocations.json",
+    "/forge/repo-connections.json",
+    "/forge/self-delivery/merges.json",
+    "/forge/self-delivery/convergences.json",
+    "/forge/repo-indexes.json",
+    "/forge/repo-readiness.json",
+    "/forge/repo-standards-packet.json",
+    "/forge/ship-decisions.json",
+    "/dxr/forge-runs/{run_id}/controls.json",
+    "/marketplace/installs.json",
+    "/marketplace/approvals.json",
+    "/marketplace/reviews.json",
+    "/marketplace/revocations.json",
+    "/marketplace/try-safely.json",
+    "/marketplace/import-candidates.json",
+    "/marketplace/pack-actions.json",
+    "/marketplace/pack-trials.json",
+    "/marketplace/pack-uses.json",
+    "/marketplace/skill-drafts.json",
+    "/marketplace/skill-ratifications.json",
+    "/marketplace/capability-execution-grants.json",
+    "/marketplace/capability-execution-grants/revocations.json",
+    "/marketplace/capability-executions.json",
+    "/messages/thread-messages.json",
+    "/messages/action-requests.json",
+    "/messages/action-verdicts.json",
+    "/messages/fanout-requests.json",
+    "/messages/presence-requests.json",
+    "/messages/realtime-cutover-preflights.json",
+    "/messages/delivery-replay-batches.json",
+    "/messages/subscription-isolation-checks.json",
+    "/messages/service-role-fanout-refusals.json",
+    "/messages/relay-observations.json",
+    "/messages/controls.json",
+    "/messages/channels.json",
+    "/messages/channel-updates.json",
+    "/messages/channel-members.json",
+    "/messages/channel-member-removals.json",
+    "/messages/bridge-posts.json",
+    "/pages/publications.json",
+    "/studio/runs.json",
+    "/studio/runs/{run_id}/open.json",
+    "/studio/runs/{run_id}/pause.json",
+    "/studio/runs/{run_id}/steering.json",
+    "/studio/runs/{run_id}/resume.json",
+    "/studio/runs/{run_id}/land.json",
+    "/studio/runs/{run_id}/presence.json",
+    "/install/owner-claims.json",
+    "/install/model-connect.json",
+    "/install/track-choices.json",
+    "/install/first-run-profiles.json",
+    "/activation/profile.json",
+    "/activation/model-setup.json",
+    "/activation/forge-workspace.json",
+    "/activation/starter-workspace.json",
+    "/activation/first-proof.json",
+    "/activation/first-mission/start.json",
+    "/forge/playground-repo.json",
+    "/pages/edit-drafts.json",
+    "/pages/approval-requests.json",
+    "/pages/approval-decisions/approve.json",
+    "/pages/approval-decisions/reject.json",
+    "/pages/context-sources.json",
+    "/pages/context-sources/trust-decisions.json",
+    "/pages/search-preflights.json",
+    "/pages/revision-citation-comparisons.json",
+    "/pages/publication-visibility-checks.json",
+    "/pages/embedding-provider-refusals.json",
+    "/pages/stewardship.json",
+    "/auth/tenant-policy-preflights.json",
+    "/auth/invite-requests.json",
+    "/auth/invite-redemptions.json",
+    "/auth/role-assignments.json",
+    "/auth/session-controls.json",
+    "/mobile/devices.json",
+    "/mobile/hosts.json",
+    "/mobile/pairing-challenges.json",
+    "/mobile/pairings.json",
+    "/mobile/device-revocations.json",
+    "/mobile/host-revocations.json",
+    "/mobile/relay-credentials.json",
+    "/mobile/session-commands.json",
+    "/mobile/push-registrations.json",
+    "/mobile/account-deletion-requests.json",
+    "/mobile/cloud/github-installation-sessions.json",
+    "/mobile/cloud/github-installations.json",
+    "/mobile/cloud/repository-connections.json",
+    "/mobile/cloud/environments.json",
+    "/v1/read-shadow-approval-requests.json",
+    "/v1/read-shadow-approval-decisions.json",
+    "/v1/write-mirror-approval-requests.json",
+    "/v1/write-mirror-approval-decisions.json",
+    "/feedback/captures.json",
+    "/feedback/autonomy-runs.json",
+    "/telemetry/app-health.json",
+    "/telemetry/self-heal-scan.json",
+    "/beta/enrollments.json",
+    "/beta/telemetry-events.json",
+    "/product/bet-drafts.json",
+    "/product/bet-conditions.json",
+    "/product/bet-condition-updates.json",
+    "/product/bet-resolutions.json",
+    "/product/work-items.json",
+    "/product/work-item-moves.json",
+    "/forge/runs.json",
+    "/forge/builder-loops/tick.json",
+    "/forge/run-diff.json",
+    "/forge/review-packet.json",
+    "/forge/review-panel.json",
+    "/forge/run-ship-decisions.json",
+    "/forge/run-controls.json",
+    "/changelog/entries.json",
+    "/connectors/items.json",
+    "/connectors/items/deletions.json",
+    "/forge/fleet-plans.json",
+    "/forge/fleet-plan-ratifications.json",
+    "/forge/fleet-runs.json",
+    "/forge/run-revisions.json",
+    "/forge/browser-audits.json",
+    "/forge/repos.json",
+    "/forge/local-folder-dialog.json",
+    "/forge/dev-seed.json",
+    "/product/triage-entries.json",
+    "/product/triage-verdicts.json",
+    "/strategy/conditions.json",
+    "/strategy/condition-updates.json",
+    "/strategy/proposal-resolutions.json",
+    "/strategy/direction-proposals.json",
+    "/strategy/our-direction.json",
+    "/strategy/ratification-decisions.json",
+    "/product/ratification-decisions.json",
+    "/audit/evidence-checkpoints.json",
+    "/audit/evidence-anchors.json",
+    "/learning/evidence-requests.json",
+    "/learning/judgment-decisions.json",
+    "/learning/candidate-rejections.json",
+    "/learning/implicit-signals.json",
+    "/learning/memory-promotions.json",
+    "/learning/memory-activations.json",
+    "/learning/memory-supersedes.json",
+    "/learning/adaptation-grants.json",
+    "/learning/adaptation-supersedes.json",
+    "/learning/fixture-graduations.json",
+    "/run-loop/{loop_id}",
+];
+
+pub fn admit_local_actor_for_governed_write(
+    admission: ActorAdmission<'_>,
+) -> Result<ActorAdmissionReport, ActorAdmissionError> {
+    for (field, value) in [
+        ("tenant_id", admission.tenant_id),
+        ("actor_id", admission.actor_id),
+        ("actor_role", admission.actor_role),
+        ("policy_decision_id", admission.policy_decision_id),
+        ("receipt_intent", admission.receipt_intent),
+        ("source_route", admission.source_route),
+        ("request_id", admission.request_id),
+    ] {
+        if value.trim().is_empty() {
+            return Err(ActorAdmissionError::Missing(field));
+        }
+    }
+    if !GOVERNED_WRITE_ROUTES.contains(&admission.source_route) {
+        return Err(ActorAdmissionError::SourceRouteMismatch(
+            admission.source_route.to_string(),
+        ));
+    }
+    if admission.service_role_claimed {
+        return Err(ActorAdmissionError::ServiceRoleBypass);
+    }
+    if admission.user_metadata_authorization_claimed {
+        return Err(ActorAdmissionError::UserMetadataAuthorization);
+    }
+    if !admission.requested_tenant_id.trim().is_empty()
+        && admission.requested_tenant_id != admission.tenant_id
+    {
+        return Err(ActorAdmissionError::TenantSwitchWithoutPolicy);
+    }
+    if !admission.requested_actor_role.trim().is_empty()
+        && admission.requested_actor_role != admission.actor_role
+    {
+        return Err(ActorAdmissionError::RoleEscalationWithoutPolicy);
+    }
+
+    Ok(ActorAdmissionReport {
+        status: "LOCAL_ACTOR_ADMITTED",
+        tenant_id: admission.tenant_id.to_string(),
+        actor_id: admission.actor_id.to_string(),
+        actor_role: admission.actor_role.to_string(),
+        source_route: admission.source_route.to_string(),
+        policy_decision_id: admission.policy_decision_id.to_string(),
+        receipt_intent: admission.receipt_intent.to_string(),
+        request_id: admission.request_id.to_string(),
+        hidden_privilege_bypass_allowed: false,
+        production_write_allowed: false,
+    })
+}
+
+pub fn admit_local_route_actor(
+    tenant_id: &str,
+    actor_id: &str,
+    actor_role: &str,
+    source_route: &str,
+    receipt_intent: &str,
+    request_id: &str,
+) -> Result<ActorAdmissionReport, ActorAdmissionError> {
+    admit_local_actor_for_governed_write(ActorAdmission {
+        tenant_id,
+        actor_id,
+        actor_role,
+        policy_decision_id: "policy-local-actor-admission",
+        receipt_intent,
+        source_route,
+        request_id,
+        requested_tenant_id: tenant_id,
+        requested_actor_role: actor_role,
+        service_role_claimed: false,
+        user_metadata_authorization_claimed: false,
+    })
+}

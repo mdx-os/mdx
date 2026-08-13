@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthSessionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "source", "status", "local_route", "local_session", "session_fields", "roles", "actor_admission", "forbidden_until_live_gate", "required_controls", "rules"],
+  "properties": {
+    "name": { "const": "mdx-auth-session-boundary" },
+    "source": { "const": "docs/AUTH-SESSION.md" },
+    "status": { "const": "deterministic-local-stub" },
+    "local_route": { "const": "/local/auth-session.json" },
+    "local_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_id", "user_id", "role", "issued_at", "expires_at"],
+      "properties": {
+        "tenant_id": { "const": "local_tenant" },
+        "user_id": { "const": "local_user" },
+        "role": { "const": "owner" },
+        "issued_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "session_fields": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string" },
+      "allOf": [
+        { "contains": { "const": "tenant_id" } },
+        { "contains": { "const": "user_id" } },
+        { "contains": { "const": "role" } },
+        { "contains": { "const": "issued_at" } },
+        { "contains": { "const": "expires_at" } }
+      ]
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "type": "string" },
+      "contains": { "const": "owner" }
+    },
+    "actor_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "scope", "required_fields", "accepted_local_fixture", "governed_routes", "refusal_cases", "hidden_privilege_bypass_allowed", "production_write_allowed"],
+      "properties": {
+        "status": { "const": "LOCAL-ACTOR-ADMISSION-DECLARED" },
+        "scope": { "const": "governed_write_commands" },
+        "required_fields": {
+          "type": "array",
+          "minItems": 7,
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "const": "tenant_id" } },
+            { "contains": { "const": "actor_id" } },
+            { "contains": { "const": "actor_role" } },
+            { "contains": { "const": "policy_decision_id" } },
+            { "contains": { "const": "receipt_intent" } },
+            { "contains": { "const": "source_route" } },
+            { "contains": { "const": "request_id" } }
+          ]
+        },
+        "accepted_local_fixture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tenant_id", "actor_id", "actor_role", "policy_decision_id", "receipt_intent", "source_route", "request_id"],
+          "properties": {
+            "tenant_id": { "const": "local_tenant" },
+            "actor_id": { "const": "local_user" },
+            "actor_role": { "const": "owner" },
+            "policy_decision_id": { "type": "string" },
+            "receipt_intent": { "const": "governed_local_write" },
+            "source_route": { "const": "/twin/session-drafts.json" },
+            "request_id": { "type": "string" }
+          }
+        },
+        "governed_routes": {
+          "type": "array",
+          "minItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["route", "method", "status"],
+            "properties": {
+              "route": { "type": "string" },
+              "method": { "const": "POST" },
+              "status": { "type": "string" }
+            }
+          },
+          "allOf": [
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/twin/session-drafts.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/forge/intake-plan-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/forge/build-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/forge/build-approvals.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/messages/thread-messages.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/messages/fanout-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/messages/presence-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/messages/realtime-cutover-preflights.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/pages/publications.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/pages/edit-drafts.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/pages/approval-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/pages/search-preflights.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/auth/tenant-policy-preflights.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/auth/invite-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/auth/role-assignments.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/v1/read-shadow-approval-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/v1/read-shadow-approval-decisions.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/v1/write-mirror-approval-requests.json" } } } },
+            { "contains": { "type": "object", "required": ["route"], "properties": { "route": { "const": "/v1/write-mirror-approval-decisions.json" } } } }
+          ]
+        },
+        "refusal_cases": {
+          "type": "array",
+          "minItems": 9,
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "const": "missing_tenant" } },
+            { "contains": { "const": "missing_actor" } },
+            { "contains": { "const": "missing_policy_decision" } },
+            { "contains": { "const": "missing_receipt_intent" } },
+            { "contains": { "const": "source_route_mismatch" } },
+            { "contains": { "const": "service_role_bypass" } },
+            { "contains": { "const": "user_metadata_authorization" } },
+            { "contains": { "const": "role_escalation_without_policy" } },
+            { "contains": { "const": "tenant_switch_without_policy" } }
+          ]
+        },
+        "hidden_privilege_bypass_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "forbidden_until_live_gate": {
+      "type": "array",
+      "minItems": 6,
+      "items": { "type": "string" },
+      "allOf": [
+        { "contains": { "const": "session_write_cookie" } },
+        { "contains": { "const": "service_role_bypass" } }
+      ]
+    },
+    "required_controls": {
+      "type": "array",
+      "minItems": 9,
+      "items": { "type": "string" },
+      "allOf": [
+        { "contains": { "const": "receipt_required_for_mutation" } },
+        { "contains": { "const": "actor_admission_required_for_mutation" } },
+        { "contains": { "const": "source_route_required_for_mutation" } },
+        { "contains": { "const": "hidden_privilege_denial_required" } }
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "type": "string" },
+      "contains": { "const": "no UI mutation exists without policy decision and Ledger receipt" }
+    }
+  }
+}

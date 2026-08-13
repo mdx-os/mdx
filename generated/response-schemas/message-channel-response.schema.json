@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageChannelResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["surface", "projection", "tenant_id", "thread_id", "channel_id", "name", "thread_ids", "thread_count", "message_count", "participant_count", "latest_receipt_id", "sequence_high_watermark", "updated_at", "messages", "source_event_ids", "receipt_ids", "writes_allowed", "receipt_backed", "llm_allowed_on_hot_path"],
+  "properties": {
+    "surface": { "const": "message" }, "projection": { "const": "channel_timeline" }, "tenant_id": { "type": "string" }, "thread_id": { "type": "string" }, "channel_id": { "type": "string" }, "name": { "type": "string" },
+    "thread_ids": { "type": "array", "items": { "type": "string" } }, "thread_count": { "type": "integer", "minimum": 0 }, "message_count": { "type": "integer", "minimum": 0 }, "participant_count": { "type": "integer", "minimum": 0 }, "latest_receipt_id": { "type": ["string", "null"] }, "sequence_high_watermark": { "type": "integer", "minimum": 0 }, "updated_at": { "type": "string" },
+    "messages": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["message_id", "thread_id", "channel_id", "actor_id", "actor_type", "actor_display_name", "actor_role", "body", "receipt_id", "source_receipt_kind", "loop_id", "trace_id", "source_event_id", "sequence", "created_at", "writes_allowed", "receipt_backed"], "properties": { "message_id": { "type": "string" }, "thread_id": { "type": "string" }, "channel_id": { "type": "string" }, "actor_id": { "type": "string" }, "actor_type": { "type": "string", "enum": ["agent", "human", "system"] }, "actor_display_name": { "type": "string" }, "actor_role": { "type": "string" }, "body": { "type": "string", "minLength": 1 }, "receipt_id": { "type": "string" }, "source_receipt_kind": { "type": "string" }, "loop_id": { "type": "string" }, "trace_id": { "type": "string" }, "source_event_id": { "type": "string" }, "sequence": { "type": "integer", "minimum": 1 }, "created_at": { "type": "string" }, "writes_allowed": { "const": false }, "receipt_backed": { "const": true } } } },
+    "source_event_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "writes_allowed": { "const": false },
+    "receipt_backed": { "const": true },
+    "llm_allowed_on_hot_path": { "const": false }
+  }
+}

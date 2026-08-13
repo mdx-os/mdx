@@ -1,0 +1,20 @@
+{
+  "name": "mdx-pages-lifecycle-contract",
+  "contract_version": 1,
+  "human_line": "A page's state is the last thing that truly happened to it - and the timeline a reader sees IS the receipt chain, never a parallel status field that could drift.",
+  "derivation": "projection over the kernel's own receipts",
+  "receipt_kinds": {
+    "pages.edit.draft.saved": "draft",
+    "pages.approval.requested": "in_review",
+    "pages.approval.decision.recorded": "approved when decision_outcome is approved, needs_work otherwise",
+    "pages.document.published": "published"
+  },
+  "state_values": ["draft", "in_review", "approved", "needs_work", "published"],
+  "charter_corpus": "declared onboarding pages are published by charter, with their attestations counted as evidence",
+  "declared_not_built_states": {
+    "deprecated": "awaits its own governed write contract - never faked",
+    "archived": "awaits its own governed write contract - never faked"
+  },
+  "projection_route": "/pages/lifecycle/projection.json",
+  "surface": "the reader renders the chain as a quiet timeline with each step's receipt one glance away"
+}

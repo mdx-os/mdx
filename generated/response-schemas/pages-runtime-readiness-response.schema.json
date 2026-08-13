@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesRuntimeReadinessResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "tenant_id", "mode", "read_only", "writes_allowed", "receipt_backed", "document_projection", "knowledge_search", "lifecycle", "knowledge_evidence", "required_receipts", "source_routes", "blocked_authority", "ui_handoff", "source_contracts"],
+  "properties": {
+    "name": { "const": "mdx-pages-runtime-readiness" },
+    "route": { "const": "/pages/runtime-readiness.json" },
+    "status": { "enum": ["LOCAL-PAGES-RUNTIME-MISSING-LIFECYCLE-EVIDENCE", "LOCAL-PAGES-RUNTIME-MISSING-KNOWLEDGE-EVIDENCE", "LIVE-LOCAL-PAGES-RUNTIME-READY-PRODUCTION-BLOCKED"] },
+    "tenant_id": { "const": "tenant_local" },
+    "mode": { "const": "live-local-governed-readiness" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "receipt_backed": { "const": true },
+    "document_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "document_count", "body_route", "body_document_count", "body_ref_allowlisted", "standalone_store_allowed"],
+      "properties": {
+        "route": { "const": "/pages.json" },
+        "document_count": { "type": "integer", "minimum": 1 },
+        "body_route": { "const": "/pages/{document_id}/body" },
+        "body_document_count": { "type": "integer", "minimum": 1 },
+        "body_ref_allowlisted": { "const": true },
+        "standalone_store_allowed": { "const": false }
+      }
+    },
+    "knowledge_search": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "local_search_ready", "search_mode", "vector_store_adapter_allowed", "embedding_provider_turn_on_observed", "search_indexing_allowed"],
+      "properties": {
+        "route": { "const": "/pages/search.json" },
+        "local_search_ready": { "const": true },
+        "search_mode": { "const": "local_lexical_allowlisted_pages_corpus" },
+        "vector_store_adapter_allowed": { "const": false },
+        "embedding_provider_turn_on_observed": { "const": false },
+        "search_indexing_allowed": { "const": false }
+      }
+    },
+    "lifecycle": { "$ref": "#/$defs/lifecycle" },
+    "knowledge_evidence": { "$ref": "#/$defs/knowledge_evidence" },
+    "required_receipts": {
+      "type": "object",
+      "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/receipt_ref" }, { "type": "null" }] },
+      "required": ["pages.document.published", "pages.edit.draft.saved", "pages.approval.requested", "pages.approval.decision.recorded", "pages.search.preflighted", "pages.revision_citation.compared", "pages.publication.visibility.checked", "pages.embedding_provider.refused"]
+    },
+    "source_routes": { "type": "array", "items": { "type": "string" }, "minItems": 20 },
+    "blocked_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_visibility_allowed", "production_visibility_allowed", "search_indexing_allowed", "embedding_provider_call_allowed", "vector_store_adapter_allowed", "rich_editor_allowed", "standalone_store_allowed", "unsafe_document_access_allowed", "production_publish_allowed", "production_write_allowed"],
+      "properties": {
+        "public_visibility_allowed": { "const": false },
+        "production_visibility_allowed": { "const": false },
+        "search_indexing_allowed": { "const": false },
+        "embedding_provider_call_allowed": { "const": false },
+        "vector_store_adapter_allowed": { "const": false },
+        "rich_editor_allowed": { "const": false },
+        "standalone_store_allowed": { "const": false },
+        "unsafe_document_access_allowed": { "const": false },
+        "production_publish_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_show_pages_runtime_ready", "must_show_body_route", "must_show_local_lexical_search", "must_show_human_decision_receipts", "must_show_embedding_provider_blocked", "must_not_claim_public_visibility", "must_not_claim_vector_search", "must_not_claim_production_publish"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Pages module" },
+        "safe_to_show_pages_runtime_ready": { "type": "boolean" },
+        "must_show_body_route": { "const": true },
+        "must_show_local_lexical_search": { "const": true },
+        "must_show_human_decision_receipts": { "const": true },
+        "must_show_embedding_provider_blocked": { "const": true },
+        "must_not_claim_public_visibility": { "const": true },
+        "must_not_claim_vector_search": { "const": true },
+        "must_not_claim_production_publish": { "const": true }
+      }
+    },
+    "source_contracts": { "type": "array", "items": { "type": "string" }, "minItems": 5 }
+  },
+  "$defs": {
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publication_count", "edit_draft_count", "approval_request_count", "approval_decision_count", "lifecycle_ready"],
+      "properties": {
+        "publication_count": { "type": "integer", "minimum": 0 },
+        "edit_draft_count": { "type": "integer", "minimum": 0 },
+        "approval_request_count": { "type": "integer", "minimum": 0 },
+        "approval_decision_count": { "type": "integer", "minimum": 0 },
+        "lifecycle_ready": { "type": "boolean" }
+      }
+    },
+    "knowledge_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["search_preflight_count", "revision_citation_comparison_count", "publication_visibility_check_count", "embedding_provider_refusal_count", "knowledge_evidence_ready"],
+      "properties": {
+        "search_preflight_count": { "type": "integer", "minimum": 0 },
+        "revision_citation_comparison_count": { "type": "integer", "minimum": 0 },
+        "publication_visibility_check_count": { "type": "integer", "minimum": 0 },
+        "embedding_provider_refusal_count": { "type": "integer", "minimum": 0 },
+        "knowledge_evidence_ready": { "type": "boolean" }
+      }
+    },
+    "receipt_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_id", "policy_decision_id", "terminal_state"],
+      "properties": {
+        "receipt_id": { "type": "string", "minLength": 1 },
+        "policy_decision_id": { "type": "string" },
+        "terminal_state": { "type": "string" }
+      }
+    }
+  }
+}

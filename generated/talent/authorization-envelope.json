@@ -1,0 +1,16 @@
+{
+  "name": "mdx-talent-authorization-envelope",
+  "mode": "deterministic-local",
+  "runtime_status": "DECLARED-LOCAL-AUTHORITY",
+  "future_loop_runner_id": "talent_autonomy_agent",
+  "required_receipt_kind": "talent.authorization.recorded",
+  "required_receipt_order": ["talent.sponsor_chain.authorized", "talent.worker_lease.authorized", "talent.budget.authorized", "talent.tool_allowlist.authorized", "talent.authorization.recorded", "worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_fields": ["parent_loop_id", "requested_by_loop_id", "sponsor_chain_authority_receipt_id", "human_sponsor_chain", "worker_lease_authority_receipt_id", "scope", "expires_at", "budget_authority_receipt_id", "budget_limit", "tool_allowlist_authority_receipt_id", "tool_allowlist", "eval_credential_id", "credential_check_policy", "handoff_required", "requested_receipt_kind"],
+  "depends_on": ["generated/talent/provisioning-boundary.json", "generated/talent/sponsor-chain-authority.json", "generated/talent/worker-lease-authority.json", "generated/talent/budget-authority.json", "generated/talent/tool-allowlist.json", "generated/talent/worker-credential-gate.json", "generated/workers/credential-check-contract.json", "generated/workers/spawn-request-contract.json", "generated/workers/handoff-evidence-contract.json", "generated/workers/retirement-receipt-contract.json"],
+  "forbidden_paths": ["direct_worker_spawn", "authorization_without_sponsor_chain_authority", "authorization_without_worker_lease_authority", "authorization_without_budget", "authorization_without_budget_authority", "authorization_without_scope", "authorization_without_expiry", "authorization_without_tool_allowlist", "authorization_without_tool_allowlist_authority", "authorization_without_human_sponsor_chain", "queryable_output_without_handoff"],
+  "rules": [
+    "Talent sponsor chain, worker lease, budget, and tool allowlist authority must be recorded before authorization, credential check, and spawn receipts",
+    "Forge and Talent must cite the same authorization envelope for delegated worker jobs",
+    "Worker output remains non-queryable until worker handoff evidence is recorded"
+  ]
+}

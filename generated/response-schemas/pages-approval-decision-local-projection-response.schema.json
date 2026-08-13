@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesApprovalDecisionLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "receipt_kind", "auth_session_route", "writes_route", "approve_route", "reject_route", "decision_count", "human_decision_recorded", "public_visibility_allowed", "search_indexing_allowed", "embedding_provider_allowed", "rich_editor_allowed", "standalone_store_allowed", "live_substrate_required", "production_publish_allowed", "production_write_allowed", "decisions"],
+  "properties": {
+    "name": { "const": "mdx-pages-approval-decision-local-projection" },
+    "status": { "const": "OK" },
+    "receipt_kind": { "const": "pages.approval.decision.recorded" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/pages/approval-decisions.json" },
+    "approve_route": { "const": "/pages/approval-decisions/approve.json" },
+    "reject_route": { "const": "/pages/approval-decisions/reject.json" },
+    "decision_count": { "type": "integer", "minimum": 0 },
+    "human_decision_recorded": { "type": "boolean" },
+    "public_visibility_allowed": { "const": false },
+    "search_indexing_allowed": { "const": false },
+    "embedding_provider_allowed": { "const": false },
+    "rich_editor_allowed": { "const": false },
+    "standalone_store_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_publish_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "decisions": { "type": "array" }
+  }
+}

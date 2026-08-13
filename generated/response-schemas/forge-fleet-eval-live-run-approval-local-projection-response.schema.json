@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeFleetEvalLiveRunApprovalLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "writes_route", "provider_preflight_route", "scoreboard_route", "approval_count", "live_provider_calls_allowed", "approval_grants_execution_authority", "adapter_execution_allowed", "production_write_allowed", "approvals"],
+  "properties": {
+    "name": { "const": "mdx-forge-fleet-eval-live-run-approval-local-projection" },
+    "status": { "const": "OK" },
+    "route": { "const": "/forge/fleet-eval-live-run-approvals/projection.json" },
+    "writes_route": { "const": "/forge/fleet-eval-live-run-approvals.json" },
+    "provider_preflight_route": { "const": "/forge/fleet-eval-provider-preflight.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "approval_count": { "type": "integer", "minimum": 0 },
+    "live_provider_calls_allowed": { "const": false },
+    "approval_grants_execution_authority": { "const": false },
+    "adapter_execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "approvals": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["approval_id", "approval_receipt_id", "policy_decision_id", "provider_allowlist", "max_spend_cents", "max_tasks", "max_parallel_agents", "artifact_retention_policy", "redaction_policy", "stop_conditions", "provider_credentials_required", "live_provider_calls_allowed", "approval_grants_execution_authority", "adapter_execution_allowed", "production_write_allowed", "blocked_reason"], "properties": { "approval_id": { "type": "string", "minLength": 1 }, "approval_receipt_id": { "type": "string", "minLength": 1 }, "policy_decision_id": { "type": "string" }, "provider_allowlist": { "type": "string", "minLength": 1 }, "max_spend_cents": { "type": "integer", "minimum": 1 }, "max_tasks": { "type": "integer", "minimum": 1, "maximum": 15 }, "max_parallel_agents": { "type": "integer", "minimum": 1, "maximum": 32 }, "artifact_retention_policy": { "type": "string", "minLength": 1 }, "redaction_policy": { "const": "mdx_context_redaction_required" }, "stop_conditions": { "type": "string", "minLength": 1 }, "provider_credentials_required": { "const": true }, "live_provider_calls_allowed": { "const": false }, "approval_grants_execution_authority": { "const": false }, "adapter_execution_allowed": { "const": false }, "production_write_allowed": { "const": false }, "blocked_reason": { "const": "approval_recorded_waiting_for_credentials_and_live_adapter" } } } }
+  }
+}

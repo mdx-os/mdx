@@ -1,0 +1,25 @@
+{
+  "name": "mdx-pages-lifecycle-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-LIFECYCLE-SCENARIOS.md",
+  "contract": "generated/world-model/pages-projection-contract.json",
+  "status": "SCENARIO-PROOF",
+  "allowed": [
+    { "id": "project_cited_evidence_page", "event": "pages.document.projected", "required_receipts": ["pages.document.projected", "pages.document.cited"], "visibility": "tenant_only" },
+    { "id": "revise_cited_evidence_page", "event": "pages.document.revised", "required_receipts": ["pages.document.revised", "pages.document.cited"], "visibility": "tenant_only" }
+  ],
+  "blocked": [
+    { "id": "missing_projection_receipt_blocks_page", "missing": "pages.document.projected", "blocked_by": "document_mutation_without_receipt" },
+    { "id": "missing_citation_blocks_page", "missing": "pages.document.cited", "blocked_by": "pages_documents_require_receipt_backed_provenance" },
+    { "id": "cross_tenant_revision_blocks_page", "visibility": "cross_tenant", "blocked_by": "cross_tenant_document_visibility" },
+    { "id": "shadow_store_revision_blocks_page", "attempted_action": "write_shadow_pages_store", "blocked_by": "standalone_pages_database" }
+  ],
+  "read_surface_symmetry": "generated/read-surfaces/pages-read-surface-symmetry-proof.json",
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Pages lifecycle events are projections over receipts, not standalone document writes",
+    "Projection and revision both require citation receipts before read surfaces can answer",
+    "Cross-tenant visibility and shadow stores fail closed",
+    "Richer editing waits until lifecycle receipts and read-surface symmetry stay green"
+  ]
+}

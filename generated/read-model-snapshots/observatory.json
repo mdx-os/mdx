@@ -1,0 +1,13 @@
+{
+  "surface": "observatory",
+  "latest_run": { "loop_id": "evals_runner_agent", "status": "COMPLETED" },
+  "receipt_ids": ["evals_runner_agent_receipt_000005", "evals_runner_agent_receipt_000006", "evals_runner_agent_receipt_000009", "evals_runner_agent_receipt_000010", "evals_runner_agent_receipt_000013", "evals_runner_agent_receipt_000014", "evals_runner_agent_receipt_000018", "evals_runner_agent_receipt_000019", "evals_runner_agent_receipt_000023", "evals_runner_agent_receipt_000024", "evals_runner_agent_receipt_000043", "evals_runner_agent_receipt_000044", "evals_runner_agent_receipt_000047", "evals_runner_agent_receipt_000048"],
+  "receipt_count": 14,
+  "policy_decision_count": 7,
+  "eval_verdict_count": 1,
+  "credential_count": 1,
+  "charter_record_count": 1,
+  "memory_record_count": 1,
+  "role_modes": ["Leader", "Regulator", "Risk", "Advisor", "Member", "Engineer", "Operator", "Product"],
+  "declared_sources": ["ledger_entries", "loop_runs", "policy_decisions", "eval_verdicts", "agent_credentials", "charter_records", "memory_records"]
+}

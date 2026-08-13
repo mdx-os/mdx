@@ -1,0 +1,29 @@
+{
+  "name": "mdx-message-readonly-route-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-READONLY-ROUTE-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "depends_on": [
+    "generated/world-model/message-event-plane-contract.json",
+    "generated/world-model/message-thread-projection-contract.json"
+  ],
+  "routes": [
+    { "method": "GET", "local_path": "/messages/threads.json", "source": "thread_summary", "response_schema_path": "generated/response-schemas/message-thread-list-response.schema.json", "writes_allowed": false, "receipt_backed": true },
+    { "method": "GET", "local_path": "/messages/channels/{channel_id}.json", "source": "channel_timeline", "response_schema_path": "generated/response-schemas/message-channel-response.schema.json", "writes_allowed": false, "receipt_backed": true }
+  ],
+  "required_response_fields": ["tenant_id", "thread_id", "channel_id", "sequence_high_watermark", "latest_receipt_id", "source_event_ids", "threads.messages", "messages", "actor_id", "actor_display_name", "body", "source_receipt_kind"],
+  "forbidden_paths": [
+    "message_route_without_projection",
+    "message_route_without_sequence",
+    "message_route_cross_tenant_visibility",
+    "message_write_route_before_auth_policy_receipts",
+    "realtime_route_before_ordering"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Message routes read thread and channel projections only",
+    "Message routes do not own message truth or append events",
+    "Message write routes wait for auth session policy receipts and threat rails",
+    "Realtime routes wait for ordering tenant and hot-path latency rails"
+  ]
+}

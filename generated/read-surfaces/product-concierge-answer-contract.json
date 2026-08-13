@@ -1,0 +1,50 @@
+{
+  "name": "mdx-product-concierge-answer-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-CONCIERGE-ANSWER-CONTRACT.md",
+  "status": "DECLARED-LOCAL-READ-SURFACE",
+  "surface": "concierge",
+  "depends_on": [
+    "generated/product/ratification-contract.json",
+    "generated/product/forge-admission-contract.json",
+    "generated/product/forge-admission-scenarios.json",
+    "generated/response-schemas/product-ratification-response.schema.json",
+    "generated/read-surfaces/human-edge-read-surface-matrix.json",
+    "generated/read-model-snapshots/concierge.json"
+  ],
+  "answer_shapes": [
+    {
+      "id": "product_ratification_summary_answer",
+      "question": "What blocks Product handoff before human ratification?",
+      "answer": "Product may shape a local bet and explain required evidence, but Strategy staging, live budget, worker spawn, Forge handoff, and product shipping remain blocked until Product ratification plus policy, Treasury, Talent, Forge, and CI evidence exist.",
+      "required_citations": ["generated/product/ratification-contract.json", "generated/response-schemas/product-ratification-response.schema.json", "generated/read-surfaces/human-edge-read-surface-matrix.json"],
+      "blocked_actions": ["stage_strategy_option", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "ship_product_change"],
+      "allowed": true
+    },
+    {
+      "id": "product_forge_admission_readiness_answer",
+      "question": "Can this Product bet move to Forge build?",
+      "answer": "Concierge may summarize whether the Product to Forge admission chain is complete, but the actual build request stays blocked until Product ratification, Strategy ratification, Treasury reserve, Talent request, Forge workflow, and CI evidence are all receipt-backed.",
+      "required_citations": ["generated/product/forge-admission-contract.json", "generated/product/forge-admission-scenarios.json", "generated/read-surfaces/handoff-chain-symmetry-proof.json"],
+      "blocked_actions": ["request_forge_build", "delegate_worker", "bypass_ci", "ship_product_change", "production_deploy"],
+      "allowed": true
+    }
+  ],
+  "blocked_answer_shapes": [
+    { "id": "answer_that_ratifies_product", "blocked_by": "product_ratification_receipt_required" },
+    { "id": "answer_that_allocates_budget", "blocked_by": "treasury_authority_required" },
+    { "id": "answer_that_spawns_worker", "blocked_by": "talent_authority_required" },
+    { "id": "answer_that_hands_off_to_forge", "blocked_by": "product_ratification_receipt_required" },
+    { "id": "answer_that_requests_forge_build", "blocked_by": "forge_admission_receipt_required" },
+    { "id": "answer_that_bypasses_ci", "blocked_by": "ci_evidence_required" },
+    { "id": "answer_that_ships_product_change", "blocked_by": "forge_ship_and_deploy_authority_required" }
+  ],
+  "required_response_fields": ["answer", "required_citations", "blocked_actions", "receipt_ids"],
+  "first_local_proof": "make product-ratification-check",
+  "rules": [
+    "Concierge may summarize Product ratification blockers but cannot ratify for the human",
+    "Concierge may summarize Forge admission readiness but cannot request the build",
+    "Every Product answer cites source contracts and receipt ids",
+    "Concierge must not turn Product questions into direction, budget, worker, Forge, or ship actions"
+  ]
+}

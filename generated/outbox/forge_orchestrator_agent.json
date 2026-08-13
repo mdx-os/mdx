@@ -1,0 +1,7 @@
+{
+  "loop": "forge_orchestrator_agent",
+  "agent": "forge_orchestrator_agent",
+  "topics": [
+    { "name": "observatory.forge_delegation_blocked", "source_receipt_kind": "forge.delegation.requested", "delivery": "local_only" }
+  ]
+}

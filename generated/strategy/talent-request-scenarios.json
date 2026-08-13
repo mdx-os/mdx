@@ -1,0 +1,27 @@
+{
+  "name": "mdx-strategy-talent-request-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-TALENT-REQUEST-SCENARIOS.md",
+  "contract": "generated/strategy/talent-request-contract.json",
+  "allowed": [
+    {
+      "id": "request_talent_planning_with_full_authority_chain",
+      "requires": ["product.ratification.recorded", "strategy.ratification.recorded", "policy.decision.recorded", "human_sponsor", "treasury.reserve.requested", "generated/talent/authorization-envelope.json", "generated/workers/spawn-request-contract.json"],
+      "allows": ["request_talent_planning"]
+    }
+  ],
+  "blocked": [
+    { "id": "missing_product_ratification_blocks_talent_request", "missing": "product.ratification.recorded", "blocks": ["request_talent_planning", "spawn_worker"] },
+    { "id": "missing_strategy_ratification_blocks_talent_request", "missing": "strategy.ratification.recorded", "blocks": ["request_talent_planning", "set_company_direction"] },
+    { "id": "missing_treasury_reserve_blocks_talent_request", "missing": "treasury.reserve.requested", "blocks": ["request_talent_planning", "allocate_worker_budget"] },
+    { "id": "missing_human_sponsor_blocks_talent_request", "missing": "human_sponsor", "blocks": ["request_talent_planning", "grant_tool_access"] },
+    { "id": "missing_talent_authorization_blocks_worker_spawn", "missing": "generated/talent/authorization-envelope.json", "blocks": ["spawn_worker", "live_worker_execution"] },
+    { "id": "missing_worker_spawn_contract_blocks_worker_spawn", "missing": "generated/workers/spawn-request-contract.json", "blocks": ["spawn_worker", "live_worker_execution"] }
+  ],
+  "hard_stops": ["spawn_worker", "grant_tool_access", "allocate_worker_budget", "live_worker_execution", "production_deploy"],
+  "rules": [
+    "one allowed path only requests Talent planning",
+    "Talent planning does not spawn a worker or grant tools",
+    "each blocked path names the missing evidence and forbidden downstream action"
+  ]
+}

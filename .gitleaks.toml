@@ -1,0 +1,13 @@
+[allowlist]
+description = "MDx local state and deterministic fixtures"
+paths = [
+  '''^\.mdx-local/''',
+  '''^audit/runs/''',
+  '''^target/''',
+  '''^node_modules/''',
+  '''^\.svelte-kit/'''
+]
+regexes = [
+  '''idempotency_key["']?\s*[:=]\s*["'][A-Za-z0-9._:-]+["']''',
+  '''idempotency_key\\":\\"[A-Za-z0-9._:-]+\\"'''
+]

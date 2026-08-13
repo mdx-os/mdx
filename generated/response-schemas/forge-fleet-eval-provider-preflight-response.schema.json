@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeFleetEvalProviderPreflightResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "approval_route", "scoreboard_route", "tenant_id", "provider_count", "ready_provider_count", "all_credentials_present", "provider_secret_values_exposed", "provider_secret_values_recorded", "provider_secret_export_allowed", "live_eval_runs_allowed", "approval_required", "requirements"],
+  "properties": {
+    "name": { "const": "mdx-forge-fleet-eval-provider-preflight" },
+    "status": { "enum": ["READY_FOR_LIVE_RUN_APPROVAL", "MISSING_PROVIDER_CREDENTIALS"] },
+    "route": { "const": "/forge/fleet-eval-provider-preflight.json" },
+    "approval_route": { "const": "/forge/fleet-eval-live-run-approvals.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "provider_count": { "const": 8 },
+    "ready_provider_count": { "type": "integer", "minimum": 0, "maximum": 8 },
+    "all_credentials_present": { "type": "boolean" },
+    "provider_secret_values_exposed": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "provider_secret_export_allowed": { "const": false },
+    "live_eval_runs_allowed": { "const": false },
+    "approval_required": { "const": true },
+    "requirements": { "type": "array", "minItems": 8, "maxItems": 8, "items": { "type": "object", "additionalProperties": false, "required": ["provider_family", "profile_id", "required_env_keys", "credentials_present", "secret_value_exposed"], "properties": { "provider_family": { "enum": ["openai", "gemini", "anthropic", "xai", "moonshot", "aws_bedrock"] }, "profile_id": { "type": "string", "minLength": 1 }, "required_env_keys": { "type": "array", "minItems": 1, "items": { "enum": ["OPENAI_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY", "XAI_API_KEY", "MOONSHOT_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION"] } }, "credentials_present": { "type": "boolean" }, "secret_value_exposed": { "const": false } } }, "allOf": [
+      { "contains": { "properties": { "provider_family": { "const": "openai" }, "profile_id": { "const": "codex_openai_cli_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "gemini" }, "profile_id": { "const": "codex_gemini_responses_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "anthropic" }, "profile_id": { "const": "codex_anthropic_responses_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "anthropic" }, "profile_id": { "const": "claude_code_model_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "xai" }, "profile_id": { "const": "codex_xai_responses_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "xai" }, "profile_id": { "const": "xai_grok_build_model_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "moonshot" }, "profile_id": { "const": "kimi_code_k3_model_profile" } }, "required": ["provider_family", "profile_id"] } },
+      { "contains": { "properties": { "provider_family": { "const": "aws_bedrock" }, "profile_id": { "const": "codex_bedrock_responses_profile" } }, "required": ["provider_family", "profile_id"] } }
+    ] }
+  }
+}

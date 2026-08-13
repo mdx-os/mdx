@@ -1,0 +1,19 @@
+{
+  "name": "mdx-harness-transcript-replay",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-TRANSCRIPT-REPLAY.md",
+  "status": "LIVE-LOCAL-AUDIT-REPLAY",
+  "runtime": "mdx_core::HarnessRunTranscript",
+  "plan_only_runner": "mdx_core::LocalHarnessPlanRunner",
+  "plan_only_item_kinds": ["admission", "plan", "write_refusal"],
+  "audit_replay_entrypoint": "mdx_core::HarnessRunTranscript::audit_replay",
+  "exact_reexecution": false,
+  "rules": [
+    "runtime history stays outside the manifest",
+    "audit replay verifies sequence and receipt ids",
+    "audit replay does not rerun tools, providers, workers, or external machines",
+    "exact deterministic re-execution remains blocked until inputs, tools, models, artifacts, environment evidence, and durable transcript storage are sealed"
+  ],
+  "next_gate": "safe_tool_plane_read",
+  "checks": ["make harness-transcript-replay-check", "make harness-local-plan-runner-check", "make harness-run-manifest-check", "make harness-runway-check", "cargo test -p mdx-core", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

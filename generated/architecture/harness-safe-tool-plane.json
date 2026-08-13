@@ -1,0 +1,15 @@
+{
+  "name": "mdx-harness-safe-tool-plane",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-SAFE-TOOL-PLANE.md",
+  "status": "LIVE-LOCAL-READ-SEARCH-LIST-PATCH",
+  "runtime": "mdx_core::LocalHarnessReadToolPlane",
+  "entrypoints": ["mdx_core::LocalHarnessReadToolPlane::read_virtual_artifact", "mdx_core::LocalHarnessReadToolPlane::search_virtual_artifact", "mdx_core::LocalHarnessReadToolPlane::list_virtual_artifacts", "mdx_core::LocalHarnessReadToolPlane::mediate_virtual_patch", "mdx_core::MdxKernel::run_harness_safe_read", "mdx_core::MdxKernel::run_harness_safe_search", "mdx_core::MdxKernel::run_harness_safe_list", "mdx_core::MdxKernel::run_harness_safe_patch"],
+  "receipt_kinds": ["harness.tool.read.allowed", "harness.tool.read.denied", "harness.tool.search.allowed", "harness.tool.search.denied", "harness.tool.list.allowed", "harness.tool.list.denied", "harness.tool.patch.allowed", "harness.tool.patch.denied"],
+  "transcript_item_kinds": ["tool_read", "tool_search", "tool_list", "tool_patch", "tool_denied"],
+  "path_rules": ["relative paths only", "parent traversal denied", "blocked paths checked before allowed read roots", "blocked paths checked before allowed write scope", "allowed read roots required", "explicit allowed write scope required for patch mediation"],
+  "output_rules": ["max_output_bytes required", "max_patch_bytes required for patch mediation", "UTF-8 boundaries preserved", "truncated output is declared", "patch mediation records applied=false"],
+  "forbidden_capabilities": ["no filesystem reads without caller-provided content", "no file writes", "no shell execution", "no git commands", "no patch application", "no browser automation", "no MCP startup", "no network access", "no live model provider calls", "no external machines", "no worker spawn"],
+  "next_gate": "provider_gateway",
+  "checks": ["make harness-safe-tool-plane-check", "make harness-transcript-replay-check", "make harness-local-plan-runner-check", "make harness-run-manifest-check", "make harness-runway-check", "cargo test -p mdx-core", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

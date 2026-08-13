@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthProviderProfilesResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "local_stub_default",
+    "real_login_allowed_now",
+    "production_auth_provider_allowed",
+    "production_auth_cutover_allowed",
+    "production_write_allowed",
+    "service_role_runtime_allowed",
+    "browser_service_role_allowed",
+    "session_cookie_write_allowed",
+    "secret_values_recorded",
+    "proof_check",
+    "route_check",
+    "claim_mapping",
+    "profiles",
+    "env_contract",
+    "relay_auth",
+    "blocked_authority",
+    "source_routes",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-auth-provider-profiles" },
+    "mode": { "const": "auth-provider-profile-readiness" },
+    "status": { "const": "AUTH_PROVIDER_PROFILES_READY_PRODUCTION_AUTH_BLOCKED" },
+    "route": { "const": "/auth/provider-profiles.json" },
+    "read_only": { "const": true },
+    "local_stub_default": { "const": true },
+    "real_login_allowed_now": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "production_auth_cutover_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "browser_service_role_allowed": { "const": false },
+    "session_cookie_write_allowed": { "const": false },
+    "secret_values_recorded": { "const": false },
+    "proof_check": { "const": "make auth-provider-profiles" },
+    "route_check": { "const": "make auth-provider-profiles-route-check" },
+    "claim_mapping": {
+      "type": "object",
+      "required": ["actor_id_claim", "tenant_claim_required", "role_claim_required", "tenant_claim_present", "role_claim_present", "user_metadata_authorization_allowed", "implicit_tenant_inference_allowed"],
+      "properties": {
+        "actor_id_claim": { "const": "sub" },
+        "tenant_claim_required": { "const": true },
+        "role_claim_required": { "const": true },
+        "tenant_claim_present": { "type": "boolean" },
+        "role_claim_present": { "type": "boolean" },
+        "user_metadata_authorization_allowed": { "const": false },
+        "implicit_tenant_inference_allowed": { "const": false }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 6,
+      "allOf": [
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "local_stub" }, "status": { "const": "READY" } } } },
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "supabase_google" }, "status": { "const": "READY_AFTER_ENV_AND_RECEIPTS" } } } },
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "supabase_microsoft" }, "status": { "const": "READY_AFTER_ENV_AND_RECEIPTS" } } } },
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "oidc_google_workspace" }, "status": { "const": "READY_AFTER_ENV_AND_RECEIPTS" } } } },
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "oidc_microsoft_entra" }, "status": { "const": "READY_AFTER_ENV_AND_RECEIPTS" } } } },
+        { "contains": { "type": "object", "required": ["id", "status"], "properties": { "id": { "const": "saml_enterprise" }, "status": { "const": "READY_AFTER_ENV_AND_RECEIPTS" } } } }
+      ]
+    },
+    "env_contract": {
+      "type": "array",
+      "minItems": 18,
+      "items": {
+        "type": "object",
+        "required": ["name", "present", "secret", "value_recorded"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "present": { "type": "boolean" },
+          "secret": { "type": "boolean" },
+          "value_recorded": { "const": false }
+        }
+      }
+    },
+    "relay_auth": {
+      "type": "object",
+      "required": ["jwt_secret_present", "tenant_claim_required", "production_relay_auth_allowed"],
+      "properties": {
+        "jwt_secret_present": { "type": "boolean" },
+        "tenant_claim_required": { "const": true },
+        "production_relay_auth_allowed": { "const": false }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["oauth_sign_in_as_write_authority_allowed", "service_role_shortcut_allowed", "browser_service_role_allowed", "tenant_switch_without_policy_allowed", "role_escalation_without_policy_allowed", "session_cookie_write_allowed", "production_auth_provider_allowed", "production_write_allowed"],
+      "properties": {
+        "oauth_sign_in_as_write_authority_allowed": { "const": false },
+        "service_role_shortcut_allowed": { "const": false },
+        "browser_service_role_allowed": { "const": false },
+        "tenant_switch_without_policy_allowed": { "const": false },
+        "role_escalation_without_policy_allowed": { "const": false },
+        "session_cookie_write_allowed": { "const": false },
+        "production_auth_provider_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "source_routes": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "/local/auth-session.json" } },
+        { "contains": { "const": "/auth/provider-profiles.json" } },
+        { "contains": { "const": "/auth/readiness.json" } }
+      ]
+    },
+    "evidence_file": { "const": ".mdx-local/auth/auth-provider-profiles.json" }
+  }
+}

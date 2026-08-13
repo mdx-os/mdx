@@ -1,0 +1,40 @@
+{
+  "name": "mdx-message-action-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-ACTION-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "request_route": "/messages/action-requests.json",
+  "request_projection_route": "/messages/action-requests/projection.json",
+  "verdict_route": "/messages/action-verdicts.json",
+  "verdict_projection_route": "/messages/action-verdicts/projection.json",
+  "request_receipt_kind": "message.action.requested",
+  "verdict_receipt_kind": "message.action.verdict.recorded",
+  "thread_content_types": ["action_request", "action_response"],
+  "allowed_verdicts": ["approve", "edit", "reject", "respond"],
+  "auth_session_route": "/local/auth-session.json",
+  "authority_boundary": {
+    "execution_allowed": false,
+    "provider_call_allowed": false,
+    "production_write_allowed": false
+  },
+  "supported_deterministic_actions": [
+    {
+      "kind": "pages_draft_approval_request",
+      "applied_receipt_kind": "pages.approval.requested",
+      "terminal_state": "PAGE_APPROVAL_REQUEST_RECORDED_PUBLICATION_BLOCKED"
+    },
+    {
+      "kind": "pages_approval_decision",
+      "applied_receipt_kind": "pages.approval.decision.recorded",
+      "terminal_state": "PAGE_APPROVAL_APPROVED_OR_REJECTED_PUBLICATION_BLOCKED"
+    }
+  ],
+  "rules": [
+    "An action request records first as message.action.requested, then displays as an action_request Message event sourced by that receipt",
+    "A human verdict records as message.action.verdict.recorded, then displays as an action_response Message event sourced by that verdict",
+    "Approve, edit, reject, and respond are recorded verdicts before the deterministic gate evaluates the action payload",
+    "The deterministic gate may apply a known governed state transition; the supported transitions are Pages draft approval request and Pages approval decision",
+    "No verdict executes tools, calls providers, writes production state, spawns workers, or authorizes background work"
+  ],
+  "checks": ["make message-action-check", "cargo test -p mdx-core message_action", "cargo test -p mdx-server message_action"]
+}

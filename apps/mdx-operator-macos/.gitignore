@@ -1,0 +1,3 @@
+# Generated visual-QA captures from script/capture_gallery.sh. These are
+# reviewer artifacts, not source; regenerate them, never commit them.
+.gallery/

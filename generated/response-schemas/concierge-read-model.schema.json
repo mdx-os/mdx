@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConciergeReadModel",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "suite_id",
+    "score",
+    "credential_id",
+    "credential_status",
+    "receipt_ids"
+  ],
+  "properties": {
+    "suite_id": { "type": ["string", "null"] },
+    "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+    "credential_id": { "type": ["string", "null"] },
+    "credential_status": { "type": ["string", "null"] },
+    "receipt_ids": { "type": "array", "items": { "type": "string" } }
+  }
+}

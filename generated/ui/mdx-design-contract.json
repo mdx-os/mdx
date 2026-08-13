@@ -1,0 +1,101 @@
+{
+  "name": "mdx-design-contract",
+  "source": "DESIGN.md",
+  "canonical_doc": "docs/DESIGN.md",
+  "bridge": "docs/HUMAN-UX-BRIDGE.md",
+  "design_dna": "docs/UI-MDX-STACK-DESIGN-DNA.md",
+  "theme_css": "generated/ui/mdx-theme.css",
+  "status": "PENDING-LIVE-RUN",
+  "product_posture": "autonomous_company_os",
+  "visual_posture": "dark_apple_like_operational",
+  "theme_modes": ["system", "dark", "light"],
+  "default_theme_mode": "system",
+  "interface_density": "dense_but_calm",
+  "typography": {
+    "ui": "DM Sans, -apple-system, BlinkMacSystemFont, SF Pro Text, Inter, Segoe UI, sans-serif",
+    "display": "Satoshi, DM Sans, -apple-system, BlinkMacSystemFont, SF Pro Display, Inter, Segoe UI, sans-serif",
+    "mono": "JetBrains Mono, SFMono-Regular, ui-monospace, Menlo, Consolas, monospace"
+  },
+  "font_assets": {
+    "mode": "self_hosted",
+    "public_readiness": "NOT_READY_SATOSHI_APPROVED_FIRST_CANDIDATE",
+    "body": "assets/ui/fonts/dm-sans/dm-sans-latin-wght-normal.woff2",
+    "display": [
+      "assets/ui/fonts/satoshi/satoshi-400.woff2",
+      "assets/ui/fonts/satoshi/satoshi-500.woff2",
+      "assets/ui/fonts/satoshi/satoshi-700.woff2",
+      "assets/ui/fonts/satoshi/satoshi-900.woff2"
+    ],
+    "mono": "assets/ui/fonts/jetbrains-mono/jetbrains-mono-latin-wght-normal.woff2",
+    "remote_font_css_allowed": false
+  },
+  "tokens": {
+    "bg": "#0a0a0b",
+    "surface": "#111113",
+    "surface_raised": "#111113",
+    "surface_overlay": "#1a1a1d",
+    "surface_sunken": "#070708",
+    "border": "#252528",
+    "text_primary": "#f0f0f2",
+    "text_secondary": "#a1a1aa",
+    "text_muted": "#8a8a93",
+    "focus_blue": "#4285F4",
+    "success_green": "#34d399",
+    "warning_amber": "#fbbf24",
+    "danger_red": "#fb7185",
+    "evidence_cyan": "#22d3ee"
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "12px",
+    "lg": "16px",
+    "xl": "24px",
+    "xxl": "32px"
+  },
+  "radii": {
+    "control": "8px",
+    "panel": "8px",
+    "xl": "12px",
+    "pill": "999px"
+  },
+  "font_scale": {
+    "xs": "0.75rem",
+    "sm": "0.75rem",
+    "base": "0.8rem",
+    "md": "0.9rem",
+    "lg": "1.05rem",
+    "xl": "1.4rem",
+    "xxl": "2rem",
+    "caption": "12px",
+    "body": "13px",
+    "body_large": "17px",
+    "title": "28px",
+    "hero_min": "40px",
+    "hero_max": "82px"
+  },
+  "motion": {
+    "posture": "restrained_native",
+    "tokens": {
+      "fast": "120ms",
+      "base": "200ms",
+      "slow": "320ms",
+      "ease": "cubic-bezier(0.2, 0.8, 0.2, 1)"
+    },
+    "allowed": ["hover_feedback", "focus_feedback", "small_state_transition"],
+    "forbidden": ["decorative_motion", "background_orbs", "attention_grabbing_animation"]
+  },
+  "experience_principles": ["immersion_without_marketing_fluff", "status_before_action", "plain_language_before_raw_proof", "receipts_available_on_drilldown", "agents_under_the_hood_humans_at_the_edge", "system_light_dark_from_day_one"],
+  "human_edge_jobs": ["intent_setting", "constraint_setting", "strategy_ratification", "evidence_review", "exception_resolution", "bounded_authority_grant", "trust_inspection", "intervention"],
+  "first_viewport_zones": ["Now", "Needs My Judgment", "Evidence", "Ask"],
+  "raw_proof_rule": "Explain operational meaning first, then expose receipts and generated JSON through raw_proof_drilldown.",
+  "forbidden_patterns": ["marketing_landing_page_as_app_shell", "decorative_gradient_orbs", "nested_cards", "one_note_palette", "ungrounded_claims_in_ui"],
+  "required_patterns": ["declared_sources_visible_to_role", "receipt_backed_claims", "stable_responsive_dimensions", "text_that_fits_its_container", "raw_proof_drilldown", "status_before_action", "human_edge_job_label", "system_dark_light_theme_support"],
+  "component_rules": {
+    "shell": "dark operational console with shared navigation across registered Svelte apps",
+    "status_badge": "honest status language only",
+    "evidence_card": "human summary plus source boundary plus proof command plus optional raw proof",
+    "decision_panel": "allowed only for human-edge jobs and blocked before policy, receipt, and authority gates",
+    "companion_answer": "cite receipt-backed sources before interpretation"
+  }
+}

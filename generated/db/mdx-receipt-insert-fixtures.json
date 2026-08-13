@@ -1,0 +1,18 @@
+{
+  "name": "mdx-receipt-insert-fixtures",
+  "mode": "deterministic-local",
+  "source": "migrations",
+  "receipt_backed_tables": [
+    { "table": "ledger_entries", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO ledger_entries (receipt_id, tenant_id, trace_id, actor_id, loop_id, workflow_id, kind, policy_decision_id, payload, previous_hash, hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" },
+    { "table": "ledger_chain_heads", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO ledger_chain_heads (tenant_id, head_hash, receipt_id) VALUES (?, ?, ?);" },
+    { "table": "world_facts", "receipt_columns": ["source_receipt_id"], "insert_sql_fixture": "INSERT INTO world_facts (fact_id, tenant_id, source_receipt_id, subject, predicate, object) VALUES (?, ?, ?, ?, ?, ?);" },
+    { "table": "memory_records", "receipt_columns": ["source_receipt_id"], "insert_sql_fixture": "INSERT INTO memory_records (memory_id, tenant_id, source_receipt_id, consolidation_decision, content) VALUES (?, ?, ?, ?, ?);" },
+    { "table": "loop_transitions", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO loop_transitions (transition_id, tenant_id, run_id, transition, policy_decision_id, receipt_id) VALUES (?, ?, ?, ?, ?, ?);" },
+    { "table": "policy_decisions", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO policy_decisions (policy_decision_id, tenant_id, actor_id, action, outcome, reason, receipt_id) VALUES (?, ?, ?, ?, ?, ?, ?);" },
+    { "table": "eval_verdicts", "receipt_columns": ["trace_receipt_id"], "insert_sql_fixture": "INSERT INTO eval_verdicts (eval_verdict_id, tenant_id, actor_id, suite_id, passed, score, trace_receipt_id) VALUES (?, ?, ?, ?, ?, ?, ?);" },
+    { "table": "agent_credentials", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO agent_credentials (credential_id, tenant_id, actor_id, eval_verdict_id, status, receipt_id) VALUES (?, ?, ?, ?, ?, ?);" },
+    { "table": "outbox_events", "receipt_columns": ["source_receipt_id"], "insert_sql_fixture": "INSERT INTO outbox_events (event_id, tenant_id, source_receipt_id, topic, payload) VALUES (?, ?, ?, ?, ?);" },
+    { "table": "treasury_authorizations", "receipt_columns": ["receipt_id"], "insert_sql_fixture": "INSERT INTO treasury_authorizations (treasury_authorization_id, tenant_id, actor_id, policy_decision_id, max_amount_cents, counterparty, purpose, status, receipt_id, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" },
+    { "table": "charter_records", "receipt_columns": ["source_receipt_id", "receipt_id"], "insert_sql_fixture": "INSERT INTO charter_records (charter_record_id, tenant_id, source_receipt_id, obligation, evidence, receipt_id) VALUES (?, ?, ?, ?, ?, ?);" }
+  ]
+}

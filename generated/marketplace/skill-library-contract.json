@@ -1,0 +1,41 @@
+{
+  "name": "mdx-marketplace-skill-library-contract",
+  "contract_version": 1,
+  "human_line": "Turn a run your team already proved into a reusable procedure your agents can lean on - drafted from the trajectory, promoted by a person, cited like a lesson.",
+  "promotion_target": "procedural_memory",
+  "why": "Executable skill libraries are the largest compounding mechanism in the agent-memory literature (Voyager, AWM, ReasoningBank). MDx ships the governed, receipted version: every step of the promotion carries a hash-chained receipt.",
+  "states": ["drafted", "ratified", "declined"],
+  "writes": [
+    {
+      "kind": "marketplace.skill.drafted",
+      "route": "/marketplace/skill-drafts.json",
+      "projection_route": "/marketplace/skill-drafts/projection.json",
+      "action": "draft_marketplace_skill",
+      "requires": "a proven-green source run: a forge.run.event run_finished stamped RUN_FINISHED_DONE whose run also emitted a check_passed event",
+      "procedure": "assembled deterministically from the run's own trajectory events; a model pass may sharpen the prose only behind a claim guard, with the deterministic floor always stored beside it",
+      "boundary_lock": "a sensitive skill is boundary-locked so reuse never injects it into a run whose applicability does not explicitly name it"
+    },
+    {
+      "kind": "marketplace.skill.ratified",
+      "route": "/marketplace/skill-ratifications.json",
+      "projection_route": "/marketplace/distilled-skills/projection.json",
+      "action": "ratify_marketplace_skill",
+      "requires": "a distinct actor from the drafter, citing the drafted receipt",
+      "effect": "promotes the draft into a distilled_skill origin in the capability registry, carrying the full chain source_run -> draft -> ratification"
+    }
+  ],
+  "provenance_chain_rule": "A ratified skill MUST cite a drafted skill, which MUST cite a proven-green source run. Fail-closed: no orphan skills.",
+  "reuse": {
+    "seam": "crates/mdx-server/src/forge_loop_runner.rs assemble_context",
+    "match_keys": ["work_complexity_tier", "language_pack_id", "intent overlap"],
+    "effect": "a matching ratified distilled procedure is injected into the run context as an available procedure and cited on a run event, exactly like an advisory lesson"
+  },
+  "authority": {
+    "capability_execution_allowed": false,
+    "secret_access_allowed": false,
+    "inherited_agent_permissions_allowed": false,
+    "adaptation_allowed": false,
+    "production_write_allowed": false
+  },
+  "gate": "cargo run -p xtask -- check-marketplace"
+}

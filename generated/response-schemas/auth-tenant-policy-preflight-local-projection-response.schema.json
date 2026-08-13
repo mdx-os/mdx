@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthTenantPolicyPreflightLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "preflight_count", "v1_helper_mapping_recorded", "tenant_membership_policy_recorded", "role_mapping_policy_recorded", "invite_policy_recorded", "approved_model_policy_recorded", "service_role_shortcut_allowed", "user_metadata_authorization_allowed", "implicit_tenant_inference_allowed", "production_role_write_allowed", "production_auth_provider_allowed", "supabase_auth_claim_authority_allowed", "cutover_allowed", "live_substrate_required", "production_write_allowed", "preflights"],
+  "properties": {
+    "name": { "const": "mdx-auth-tenant-policy-preflight-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/auth/tenant-policy-preflights.json" },
+    "preflight_count": { "type": "integer", "minimum": 0 },
+    "v1_helper_mapping_recorded": { "const": true },
+    "tenant_membership_policy_recorded": { "const": true },
+    "role_mapping_policy_recorded": { "const": true },
+    "invite_policy_recorded": { "const": true },
+    "approved_model_policy_recorded": { "const": true },
+    "service_role_shortcut_allowed": { "const": false },
+    "user_metadata_authorization_allowed": { "const": false },
+    "implicit_tenant_inference_allowed": { "const": false },
+    "production_role_write_allowed": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "supabase_auth_claim_authority_allowed": { "const": false },
+    "cutover_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "preflights": { "type": "array" }
+  }
+}

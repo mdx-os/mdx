@@ -1,0 +1,13 @@
+{
+  "name": "mdx-provider-turn-on-evidence",
+  "mode": "deterministic-local",
+  "status_before": "PENDING-LIVE-RUN",
+  "receipts": [
+    { "substrate": "postgres", "adapter": "PostgresStorage", "receipt_kind": "postgres.receipt.write.observed", "status_before": "PENDING-LIVE-RUN", "evidence_required": "durable receipt write and chain-head update observed through PostgresStorage" },
+    { "substrate": "temporal", "adapter": "TemporalLoopRunner", "receipt_kind": "temporal.workflow.observed", "status_before": "PENDING-LIVE-RUN", "evidence_required": "durable workflow execution observed through TemporalLoopRunner" },
+    { "substrate": "tensorzero", "adapter": "TensorZeroModelGateway", "receipt_kind": "tensorzero.inference.observed", "status_before": "PENDING-LIVE-RUN", "evidence_required": "live model call observed through TensorZeroModelGateway" },
+    { "substrate": "mem0", "adapter": "Mem0MemoryProvider", "receipt_kind": "mem0.memory.write.observed", "status_before": "PENDING-LIVE-RUN", "evidence_required": "live memory write observed through the consolidation gate" },
+    { "substrate": "opentelemetry", "adapter": "OpenTelemetryExporter", "receipt_kind": "opentelemetry.trace.exported", "status_before": "PENDING-LIVE-RUN", "evidence_required": "live trace export observed through OpenTelemetryExporter" },
+    { "substrate": "render", "adapter": "render.yaml", "receipt_kind": "render.deployment.observed", "status_before": "PENDING-LIVE-RUN", "evidence_required": "human-approved deployment observed through the Render blueprint" }
+  ]
+}

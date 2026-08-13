@@ -1,0 +1,7 @@
+{
+  "agent": "product_shaping_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["ingest_declared_signal", "shape_product_bet", "request_human_product_handoff", "record_blocked_ratification_boundary"],
+  "forbidden_actions": ["set_company_direction", "allocate_live_budget", "spawn_worker", "production_deploy", "live_spend", "bypass_policy"]
+}

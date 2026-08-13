@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PagesProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "document_id",
+    "title",
+    "body_ref",
+    "author_actor_id",
+    "source_receipt_ids",
+    "charter_evidence_ids",
+    "revision_id",
+    "visibility",
+    "receipt_backed",
+    "world_model_source"
+  ],
+  "properties": {
+    "tenant_id": { "type": "string" },
+    "document_id": { "type": "string" },
+    "title": { "type": "string" },
+    "body_ref": { "type": "string" },
+    "author_actor_id": { "type": "string" },
+    "source_receipt_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "charter_evidence_ids": { "type": "array", "items": { "type": "string" } },
+    "revision_id": { "type": "string" },
+    "visibility": { "const": "tenant_only" },
+    "receipt_backed": { "const": true },
+    "world_model_source": { "type": "string" }
+  }
+}

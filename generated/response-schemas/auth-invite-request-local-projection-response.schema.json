@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthInviteRequestLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "invite_count", "email_delivery_allowed", "role_assignment_allowed", "session_activation_allowed", "service_role_shortcut_allowed", "production_auth_provider_allowed", "live_substrate_required", "production_write_allowed", "invites"],
+  "properties": {
+    "name": { "const": "mdx-auth-invite-request-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/auth/invite-requests.json" },
+    "invite_count": { "type": "integer", "minimum": 0 },
+    "email_delivery_allowed": { "const": false },
+    "role_assignment_allowed": { "const": false },
+    "session_activation_allowed": { "const": false },
+    "service_role_shortcut_allowed": { "const": false },
+    "production_auth_provider_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false },
+    "invites": { "type": "array" }
+  }
+}

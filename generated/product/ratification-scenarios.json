@@ -1,0 +1,24 @@
+{
+  "name": "mdx-product-ratification-scenarios",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-RATIFICATION-SCENARIOS.md",
+  "contract": "generated/product/ratification-contract.json",
+  "allowed": [
+    {
+      "id": "ratify_shaped_bet",
+      "requires": ["product.signal.ingested", "product.bet.shaped", "policy.decision.recorded", "human_sponsor", "product.ratification.recorded"],
+      "allows": ["stage_strategy_option", "request_treasury_reserve", "request_talent_worker_handoff", "request_forge_build_handoff"]
+    }
+  ],
+  "blocked": [
+    { "id": "missing_shaped_bet", "missing": "product.bet.shaped", "blocks": ["product.ratification.recorded", "handoff_to_forge"] },
+    { "id": "missing_policy_decision", "missing": "policy.decision.recorded", "blocks": ["product.ratification.recorded", "allocate_live_budget"] },
+    { "id": "missing_human_sponsor", "missing": "human_sponsor", "blocks": ["product.ratification.recorded", "spawn_worker"] },
+    { "id": "premature_forge_handoff", "missing": "product.ratification.recorded", "blocks": ["handoff_to_forge", "ship_product_change"] }
+  ],
+  "rules": [
+    "one allowed path requires shaped bet, policy decision, human sponsor, and ratification receipt",
+    "each blocked path names the missing evidence and the forbidden downstream action",
+    "scenario changes require make product-ratification-check"
+  ]
+}

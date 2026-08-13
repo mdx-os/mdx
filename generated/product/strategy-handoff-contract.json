@@ -1,0 +1,19 @@
+{
+  "name": "mdx-product-strategy-handoff-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PRODUCT-STRATEGY-HANDOFF-CONTRACT.md",
+  "status": "DECLARED-LOCAL-HANDOFF",
+  "from_loop": "product_shaping_agent",
+  "to_surface": "strategy_ratification",
+  "allowed_handoff": "stage_strategy_option",
+  "required_product_evidence": ["product.signal.ingested", "product.bet.shaped", "policy.decision.recorded", "human_sponsor", "product.ratification.recorded"],
+  "required_strategy_evidence": ["generated/strategy/strategy-ratification-surface.json", "generated/response-schemas/strategy-ratification-response.schema.json", "generated/read-surfaces/human-edge-read-surface-matrix.json"],
+  "handoff_fields": ["source_receipt_ids", "human_sponsor", "scope", "expires_at", "policy_decision_id"],
+  "forbidden_without_ratification": ["set_company_direction", "allocate_live_budget", "spawn_worker", "handoff_to_forge", "ship_product_change", "production_deploy"],
+  "first_local_proof": "make product-ratification-check",
+  "rules": [
+    "Product can stage a Strategy option only after Product ratification is recorded",
+    "Strategy still requires its own human ratification before direction or downstream action",
+    "The handoff carries receipt ids instead of app-local state"
+  ]
+}

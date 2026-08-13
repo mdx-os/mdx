@@ -1,0 +1,35 @@
+id: talent_autonomy_agent
+agent: talent_autonomy_agent
+description: Records bounded Talent authority receipts and a worker spawn request, then blocks before live worker execution.
+policy_required: true
+memory_gate_required: false
+treasury_required_for_economic_actions: true
+transitions:
+  - TRIGGER
+  - ACTION
+  - ACTION
+  - ACTION
+  - ACTION
+  - OUTCOME
+  - SIGNAL
+  - SIGNAL
+  - ADJUSTMENT
+receipt_kinds:
+  - loop.triggered
+  - talent.sponsor_chain.authorized
+  - talent.worker_lease.authorized
+  - talent.budget.authorized
+  - talent.tool_allowlist.authorized
+  - talent.authorization.recorded
+  - worker.credential.checked
+  - worker.spawn_requested
+  - loop.adjustment.recorded
+budget:
+  max_runtime_ms: 250
+  max_receipts: 18
+  max_policy_decisions: 9
+  required_transitions: 9
+  max_outbox_events: 1
+  max_credentials: 0
+  max_memory_records: 0
+  max_charter_records: 0

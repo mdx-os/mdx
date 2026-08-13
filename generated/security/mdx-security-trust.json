@@ -1,0 +1,168 @@
+{
+  "name": "mdx-security-trust",
+  "generated_at": "2026-07-02T16:53:12Z",
+  "current": {
+    "run_id": "local-scanner-final-pass",
+    "generated_at": "2026-07-02T16:53:12Z",
+    "scanners_executed": true,
+    "status": "passed",
+    "posture_score": 100,
+    "findings": {
+      "open": 112,
+      "accepted": 4,
+      "total": 116,
+      "policy_blocked": 0,
+      "by_severity": {
+        "critical": 0,
+        "high": 3,
+        "medium": 12,
+        "low": 2,
+        "info": 97,
+        "warning": 2,
+        "unknown": 0
+      },
+      "by_category": {
+        "dependency": 2,
+        "iac": 6,
+        "rust-unsafe": 97,
+        "sast": 11
+      },
+      "by_policy_status": {
+        "accepted": 4,
+        "informational": 99,
+        "warning": 13
+      }
+    },
+    "missing_required_scanners": [],
+    "scanners": [
+      {
+        "id": "cargo-audit",
+        "category": "dependency",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "cargo-deny",
+        "category": "rust-supply-chain",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "gitleaks",
+        "category": "secrets",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "osv-scanner",
+        "category": "dependency",
+        "required": true,
+        "applies": true,
+        "status": "completed_nonzero"
+      },
+      {
+        "id": "pnpm-audit",
+        "category": "dependency",
+        "required": true,
+        "applies": true,
+        "status": "completed_nonzero"
+      },
+      {
+        "id": "repo-secret-history",
+        "category": "secrets",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "rust-unsafe-inventory",
+        "category": "rust-unsafe",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "semgrep",
+        "category": "sast",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      },
+      {
+        "id": "trivy-fs",
+        "category": "container-iac-dependency",
+        "required": true,
+        "applies": true,
+        "status": "passed"
+      }
+    ],
+    "source_integrity": {
+      "completed": true,
+      "dry_run": false,
+      "raw_outputs_committed": false,
+      "artifact_digests": {
+        "manifest_json": "e7d9bcfbaf19fd4d62f3fa30c14d5473933883e26d4bfd03bc355abfa6ccced7",
+        "scanner_health_json": "41e93054b6ae4f3a21c310534e97e4fac59c1ff8004b0b6456781329e87ff51e",
+        "policy_verdict_json": "1cf89cf1f8228424bc99864cec912640a42e79266141aff8042e09891a33d8cc",
+        "summary_json": "be9f36193149c2cf0014e819443752a0f9d469d61255934012b3e17b58262318"
+      },
+      "signature": {
+        "required": false,
+        "status": "not_configured",
+        "note": "The current scanner loop publishes source artifact digests. Add a signature file before changing this to signed."
+      }
+    }
+  },
+  "baseline": {
+    "run_id": "local-scanner-baseline",
+    "generated_at": "2026-06-17T11:41:02Z",
+    "status": "policy_blocked",
+    "posture_score": 0,
+    "findings_open": 129,
+    "findings_total": 129,
+    "by_severity": {
+      "critical": 0,
+      "high": 50,
+      "medium": 48,
+      "low": 27,
+      "info": 0,
+      "warning": 4,
+      "unknown": 0
+    },
+    "by_category": {
+      "dependency": 53,
+      "iac": 55,
+      "sast": 5,
+      "secrets": 16
+    },
+    "source_integrity": {
+      "completed": true,
+      "dry_run": false,
+      "raw_outputs_committed": false,
+      "artifact_digests": {
+        "manifest_json": "4191b3905221057717ecab702cc9d2276d26962fe7c26b18d7ae54fda0cfa9b9",
+        "scanner_health_json": "f289da5f8bc938af2e9e0a3ec554fabd44b99533c29ab002036dc9aeb1b3ca01",
+        "policy_verdict_json": "ee184b2f0b6592d51457d4ccfea2383e0a0c8ca78a01c9c4ade18a1fafc03fc9",
+        "summary_json": "d13750ae82c6bfbce2c0d096d77e8989d7ffc6b7c82efa613e82eea66253130e"
+      },
+      "signature": {
+        "required": false,
+        "status": "not_configured",
+        "note": "The current scanner loop publishes source artifact digests. Add a signature file before changing this to signed."
+      }
+    }
+  },
+  "trend": {
+    "score_delta": 100,
+    "findings_closed": 13,
+    "findings_delta": -13
+  },
+  "publish_rules": {
+    "dry_run_can_publish_current": false,
+    "planned_scanner_status_can_publish_current": false,
+    "public_payload": "aggregate_counts_scanner_statuses_and_source_digests_only"
+  }
+}

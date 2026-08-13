@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/capability-card.schema.json",
+  "title": "MDx Capability Card",
+  "type": "object",
+  "required": ["agent", "tenant_scope", "autonomy_ceiling", "allowed_actions"],
+  "properties": {
+    "agent": { "type": "string" },
+    "tenant_scope": { "type": "string" },
+    "autonomy_ceiling": { "enum": ["ASSISTED", "GUIDED", "TRUSTED"] },
+    "allowed_actions": { "type": "array", "items": { "type": "string" } }
+  }
+}
+

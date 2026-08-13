@@ -1,0 +1,30 @@
+{
+  "name": "mdx-security-posture",
+  "mode": "deterministic-local",
+  "source": "docs/SECURITY-POSTURE.md",
+  "controls": [
+    { "id": "policy_receipt_path", "control": "Every consequential loop or tool action requires a PDP decision and Ledger receipt.", "check": "make security-check", "evidence": "crates/mdx-core/src/lib.rs" },
+    { "id": "tenant_rls", "control": "Tenant-owned Postgres tables require tenant markers, RLS policies, and policy drop guards.", "check": "make migrate-check", "evidence": "migrations/*.sql" },
+    { "id": "live_substrate_evidence", "control": "Live substrates remain pending or LIVE-LOCAL only after observed provider evidence exists.", "check": "make live-turn-on-check", "evidence": "generated/live-substrates/provider-turn-on-evidence.json" },
+    { "id": "secret_handling", "control": "Deterministic local stubs are allowed; live credentials must not be required for local green.", "check": "make no-fake-green-check", "evidence": "specs/05-operating-principles/03-no-fake-green.md" },
+    { "id": "durable_receipt_storage", "control": "Runtime receipt writes route through StorageProvider::append_receipt and core-owned Postgres projection.", "check": "make security-check", "evidence": "crates/mdx-core/src/lib.rs" },
+    { "id": "generated_security_secret_scan", "control": "Generated security artifacts must stay flat, regular-file-only, JSON-only, and free of credential-looking payloads or private key material.", "check": "make security-check", "evidence": "generated/security/*.json" },
+    { "id": "companion_read_only", "control": "Twin companions remain read-only and receipt-grounded until governed action rails allow tools or workers.", "check": "make twin-grounding-check", "evidence": "companions/twin/*.yaml" },
+    { "id": "worker_bounds", "control": "Ephemeral workers require scope, expiry, budget, tool allowlist, parent, sponsor chain, spawn receipt, and retirement receipt.", "check": "make local-talent-worker-proof-check", "evidence": "workers/templates/bounded-task.yaml" },
+    { "id": "waiver_bounds", "control": "Waivers require owner, reason, scope, expiry, mitigation check, and risk id.", "check": "make waiver-check", "evidence": "docs/WAIVERS.md" }
+  ],
+  "hard_stops": [
+    "no direct action path that skips policy",
+    "no receipt mint outside the storage boundary",
+    "no companion or worker standing authority",
+    "no live substrate status beyond pending without observed provider evidence",
+    "no generated security artifact with credential-looking payloads or private key material",
+    "no nested, symlinked, or non-JSON generated security artifact that can bypass scanning",
+    "no security waiver without expiry and mitigation check"
+  ],
+  "rules": [
+    "security posture changes require make security-posture-check",
+    "runtime security invariant changes require make security-check",
+    "receipt persistence changes require make local-full-check"
+  ]
+}

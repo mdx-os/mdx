@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeLoadProofSummaryResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "status", "source", "source_file", "proof_run", "human_summary", "evidence", "read_only", "writes_allowed", "execution_allowed", "deployment_authority_granted", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-runtime-load-proof-summary" },
+    "status": { "const": "OK" },
+    "source": { "const": "load_proof_evidence_file" },
+    "source_file": { "const": ".mdx-local/load-proof/evidence.json" },
+    "proof_run": { "type": "boolean" },
+    "human_summary": { "type": "string", "minLength": 1 },
+    "next_command": { "type": "string" },
+    "evidence": { "type": ["object", "null"] },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

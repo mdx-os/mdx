@@ -1,0 +1,16 @@
+{
+  "name": "mdx-worker-live-execution-gate",
+  "mode": "deterministic-local",
+  "runtime_status": "LIVE-WORKER-RUNTIME-BLOCKED",
+  "source": "docs/WORKER-LIVE-EXECUTION-GATE.md",
+  "depends_on": ["generated/workers/runtime-boundary.json", "generated/live-substrates/provider-turn-on-evidence.json"],
+  "admission_function": "mdx_core::admit_live_worker_execution",
+  "required_receipts": ["worker.spawn_requested", "worker.handoff.recorded", "worker.retired", "provider.turn_on.observed"],
+  "requested_receipt_kind": "worker.live_execution.authorized",
+  "forbidden_paths": ["live_worker_without_provider_turn_on", "live_worker_without_local_runtime_boundary", "live_worker_without_retirement_receipt"],
+  "rules": [
+    "live worker execution requires provider turn-on evidence",
+    "live workers cannot bypass the receipt-only local runtime boundary",
+    "local receipt runtime remains the only worker path until this gate is satisfied"
+  ]
+}

@@ -1,0 +1,27 @@
+id: product_shaping_agent
+agent: product_shaping_agent
+description: Shapes product bets from declared operating signals, then blocks before human product ratification.
+policy_required: true
+memory_gate_required: false
+treasury_required_for_economic_actions: false
+transitions:
+  - TRIGGER
+  - ACTION
+  - OUTCOME
+  - SIGNAL
+  - ADJUSTMENT
+receipt_kinds:
+  - loop.triggered
+  - product.signal.ingested
+  - product.bet.shaped
+  - product.handoff.requested
+  - loop.adjustment.recorded
+budget:
+  max_runtime_ms: 250
+  max_receipts: 10
+  max_policy_decisions: 5
+  required_transitions: 5
+  max_outbox_events: 1
+  max_credentials: 0
+  max_memory_records: 0
+  max_charter_records: 0

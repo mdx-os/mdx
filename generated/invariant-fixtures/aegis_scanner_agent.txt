@@ -1,0 +1,7 @@
+policy_required=true
+receipt_required=true
+policy_decision_receipt_kind=loop.action.policy_decided
+declared_receipt_kinds=loop.triggered,aegis.scan.ran,aegis.finding.classified,charter.evidence.recorded,aegis.remediation.planned
+consequential_receipt_kinds=loop.triggered,aegis.scan.ran,aegis.finding.classified,charter.evidence.recorded,aegis.remediation.planned
+local_loop_budget=loop_id:aegis_scanner_agent,max_runtime_ms:250,max_receipts:10,max_policy_decisions:5,required_transitions:5,max_outbox_events:0,max_credentials:0,max_memory_records:0,max_charter_records:1
+transitions=TRIGGER,ACTION,OUTCOME,SIGNAL,ADJUSTMENT

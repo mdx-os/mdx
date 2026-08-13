@@ -1,0 +1,30 @@
+{
+  "name": "mdx-pages-edit-draft-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-EDIT-DRAFT-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/pages/edit-drafts.json",
+  "projection_route": "/pages/edit-drafts/projection.json",
+  "required_receipt_kind": "pages.edit.draft.saved",
+  "source_receipt_kind": "pages.document.published",
+  "source_receipt_required": false,
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "draft_id", "document_id", "title", "body_ref", "revision_id"],
+  "optional_fields": ["source_publication_receipt_id"],
+  "authority_boundary": {
+    "rich_editor_allowed": false,
+    "approval_rail_allowed": false,
+    "standalone_store_allowed": false,
+    "production_publish_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "pagesEditDraftUrl",
+    "projection_url_var": "pagesEditDraftProjectionUrl",
+    "handler": "saveGovernedPageEditDraft",
+    "button_class": "pages-save-draft",
+    "aria_label": "Save governed Page edit draft",
+    "fetch_count": 5
+  },
+  "checks": ["make pages-edit-draft-check", "cargo test -p mdx-core pages_edit_draft", "cargo test -p mdx-server pages_edit_draft"]
+}

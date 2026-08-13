@@ -1,0 +1,18 @@
+flowchart TB
+    specs["Canonical Specs and Visuals"] --> codegen["mdx-codegen"]
+    specs --> contracts["Contracts and Declarations"]
+    contracts --> loops["Declared Local Loops"]
+    contracts --> companions["Twin Companions"]
+    contracts --> workers["Ephemeral Worker Template"]
+    codegen --> generated["Generated Artifacts"]
+    generated --> xtask["xtask Gates"]
+    loops --> core["mdx-core Kernel"]
+    companions --> core
+    workers --> core
+    core --> policy["ConstraintEvaluator"]
+    policy --> ledger["Ledger Receipts"]
+    core --> reads["Read Models"]
+    reads --> observatory["Observatory"]
+    reads --> concierge["Concierge"]
+    ledger --> postgres["Postgres Projection"]
+    xtask --> ci["CI and Handoff"]

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1WriteMirrorApprovalRequestLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "approval_request_count", "approval_request_shape_valid", "human_approval_granted", "write_mirror_allowed", "production_write_allowed", "service_role_runtime_allowed", "live_substrate_required", "production_cutover_allowed", "requests"],
+  "properties": {
+    "name": { "const": "mdx-v1-write-mirror-approval-request-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/v1/write-mirror-approval-requests.json" },
+    "approval_request_count": { "type": "integer", "minimum": 0 },
+    "approval_request_shape_valid": { "const": true },
+    "human_approval_granted": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["approval_request_id", "approval_request_receipt_id", "policy_decision_id", "policy_control_name", "requested_scope", "requested_window", "reconciliation_plan", "rollback_owner", "approver_id", "approver_role", "expires_at", "terminal_state", "approval_request_shape_valid", "human_approval_granted", "write_mirror_allowed", "production_write_allowed", "service_role_runtime_allowed", "production_cutover_allowed"],
+        "properties": {
+          "approval_request_id": { "type": "string" },
+          "approval_request_receipt_id": { "type": "string" },
+          "policy_decision_id": { "type": "string" },
+          "policy_control_name": { "const": "v1_write_shadow_mirror_policy_control" },
+          "requested_scope": { "type": "string" },
+          "requested_window": { "type": "string" },
+          "reconciliation_plan": { "type": "string" },
+          "rollback_owner": { "type": "string" },
+          "approver_id": { "type": "string" },
+          "approver_role": { "type": "string" },
+          "expires_at": { "type": "string" },
+          "terminal_state": { "const": "WRITE_MIRROR_APPROVAL_REQUEST_RECORDED_MIRROR_BLOCKED" },
+          "approval_request_shape_valid": { "const": true },
+          "human_approval_granted": { "const": false },
+          "write_mirror_allowed": { "const": false },
+          "production_write_allowed": { "const": false },
+          "service_role_runtime_allowed": { "const": false },
+          "production_cutover_allowed": { "const": false }
+        }
+      }
+    }
+  }
+}

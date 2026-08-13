@@ -1,0 +1,36 @@
+{
+  "name": "mdx-harness-provider-gateway",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-PROVIDER-GATEWAY.md",
+  "status": "LIVE-LOCAL-FAIL-CLOSED",
+  "runtime_primitive": "LocalHarnessProviderGateway",
+  "live_provider_calls_allowed": false,
+  "default_profile": "deterministic_stub",
+  "live_provider_kinds": ["openai_model_gateway", "anthropic_model_gateway", "xai_model_gateway", "gemini_model_gateway", "mistral_model_gateway", "tensorzero_model_gateway"],
+  "provider_adapter_registry": ["OpenAIModelGateway", "AnthropicModelGateway", "XaiModelGateway", "GeminiModelGateway", "MistralModelGateway", "TensorZeroModelGateway"],
+  "enterprise_pack_contracts_required": true,
+  "required_profile_fields": ["profile_id", "provider_kind", "model_id", "allowed_modes", "max_context_tokens", "max_output_tokens", "max_cost_cents", "data_retention", "context_redaction_required", "telemetry_redaction_required", "provider_fail_closed", "policy_profile", "enterprise_pack"],
+  "local_receipt_kinds": ["harness.provider.profile.selected", "harness.provider.profile.denied"],
+  "policy_rules": [
+    "missing or disabled profiles fail closed",
+    "a live profile without an ACCEPTED turn-on observation for exactly its provider denies with live_provider_turn_on_evidence_missing",
+    "an accepted observation for one provider never unlocks another - evidence is per-provider, never global",
+    "an observation-backed live profile is SELECTABLE; selection records provider_connected_observed=true and the turn_on_observation_receipt_id, and still places no call (live_provider_call_allowed=false)",
+    "rejected observations stay visible with their denial reason and unlock nothing",
+    "budget, retention, redaction, and provider fail-closed behavior are policy fields",
+    "enterprise packs may narrow behavior but cannot widen trust boundaries",
+    "enterprise pack contracts are enforced during provider selection",
+    "manifest enterprise pack mismatches fail closed with denied provider receipts",
+    "local enterprise packs cannot enable audit export before observed export proof"
+  ],
+  "turn_on_bridge": {
+    "observation_rail": "POST /twin/model-gateway-provider-observations.json (save_twin_model_gateway_provider_observation_local)",
+    "accepted_receipt_kind": "twin.model_gateway.provider.observed",
+    "acceptance_requires": ["known provider slot", "adapter match", "receipt kind match", "approval_receipt_id", "observed + provider_call_attempted + network_call_attempted", "total_tokens > 0", "credential presence only - no secret values", "no output text recorded", "no production write authority"],
+    "selection_evidence_fields": ["provider_connected_observed", "turn_on_observation_receipt_id", "provider_kind", "model_id", "policy_profile", "max_context_tokens", "max_output_tokens", "max_cost_cents"],
+    "call_authority": "selection is readiness, never call authority - live call execution is the plan-execute loop's own later slice"
+  },
+  "forbidden_capabilities": ["no network access", "no live model provider calls", "no provider secrets in generated artifacts", "no prompt or output text in receipts", "no project-local widening of trust boundaries", "no execution authority from provider selection"],
+  "next_gate": "local_driver_ports",
+  "checks": ["make harness-provider-gateway-check", "make harness-safe-tool-plane-check", "make harness-runway-check", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

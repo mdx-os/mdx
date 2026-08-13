@@ -1,0 +1,27 @@
+id: forge_orchestrator_agent
+agent: forge_orchestrator_agent
+description: Orchestrates Forge stage entry and delegation, then blocks before worker spawn until Talent authority receipts exist.
+policy_required: true
+memory_gate_required: false
+treasury_required_for_economic_actions: true
+transitions:
+  - TRIGGER
+  - ACTION
+  - OUTCOME
+  - SIGNAL
+  - ADJUSTMENT
+receipt_kinds:
+  - loop.triggered
+  - forge.spec.accepted
+  - forge.stage.transition.recorded
+  - forge.delegation.requested
+  - loop.adjustment.recorded
+budget:
+  max_runtime_ms: 250
+  max_receipts: 10
+  max_policy_decisions: 5
+  required_transitions: 5
+  max_outbox_events: 1
+  max_credentials: 0
+  max_memory_records: 0
+  max_charter_records: 0

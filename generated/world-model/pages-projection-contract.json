@@ -1,0 +1,44 @@
+{
+  "name": "mdx-pages-projection-contract",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-PROJECTION-CONTRACT.md",
+  "status": "CONTRACT-NEXT",
+  "projection": {
+    "domain": "pages_evidence_documents",
+    "source_contract": "generated/world-model/pages-message-contract.json",
+    "storage_owner": "World Model",
+    "write_authorities": ["loop_runners", "human_edge_ratification", "future_pages_projection"],
+    "read_surfaces": ["concierge", "observatory", "twin_companions"]
+  },
+  "required_fields": [
+    "tenant_id",
+    "document_id",
+    "title",
+    "body_ref",
+    "author_actor_id",
+    "source_receipt_ids",
+    "charter_evidence_ids",
+    "revision_id",
+    "created_at",
+    "updated_at"
+  ],
+  "required_receipts": [
+    "pages.document.projected",
+    "pages.document.revised",
+    "pages.document.cited"
+  ],
+  "forbidden_paths": [
+    "standalone_pages_database",
+    "uncited_agent_authorship",
+    "rich_editor_before_provenance",
+    "document_mutation_without_receipt",
+    "cross_tenant_document_visibility"
+  ],
+  "first_local_proof": "make pages-message-check",
+  "rules": [
+    "Pages is a projection over the World Model, not a separate source of truth",
+    "Every document and revision cites source receipts before it is queryable",
+    "Read surfaces may cite Pages documents only through receipt-backed provenance",
+    "Rich editing waits until projection, revision, authorship, and visibility rails are green"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "mdx-harness-workflow-runner-driver",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-WORKFLOW-RUNNER.md",
+  "status": "LIVE-LOCAL-CONFORMANCE",
+  "local_default": {
+    "driver_id": "local_workflow_runner",
+    "provider": "LocalLoopRunner",
+    "mode": "local",
+    "status": "LIVE-LOCAL-CONFORMANCE",
+    "workflow_runtime": "in_process_kernel",
+    "workflow_replay_driver": "local_checkpointed_replay",
+    "workflow_admission_policy": "plan_only_authority_blocked",
+    "durable_run_projection": "local_durable_workflow_projection",
+    "temporal_durability_claimed": false,
+    "live_worker_execution_allowed": false,
+    "receipt_driver_field": "workflow_runner_driver",
+    "live_substrate_required": false,
+    "durable_queue_required": false,
+    "worker_spawn_allowed": false,
+    "vendor_swappable": true
+  },
+  "vendor_slots": [
+    {
+      "driver_id": "temporal_workflow_runner",
+      "provider": "TemporalLoopRunner",
+      "mode": "vendor",
+      "status": "PENDING-LIVE-RUN",
+      "workflow_runtime": "durable_queue",
+      "workflow_replay_driver": "temporal_event_history",
+      "workflow_admission_policy": "pending_observed_temporal_execution",
+      "durable_run_projection": "temporal_workflow_history",
+      "temporal_durability_claimed": false,
+      "live_worker_execution_allowed": false,
+      "receipt_driver_field": "workflow_runner_driver",
+      "live_substrate_required": true,
+      "durable_queue_required": true,
+      "worker_spawn_allowed": false,
+      "vendor_swappable": true,
+      "turn_on_evidence": "generated/live-substrates/provider-turn-on-evidence.json"
+    }
+  ],
+  "scale_envelope": {
+    "target_concurrent_engineers": 1000,
+    "peak_parallel_forge_builds": 5000,
+    "tenant_fair_admission": true,
+    "checkpointed_replay_required": true,
+    "reviewer_separation_required": true,
+    "live_worker_execution_allowed": false
+  },
+  "required_receipt_payload": ["workflow_runner_driver", "workflow_runner_provider", "workflow_runtime", "workflow_replay_driver", "workflow_admission_policy", "temporal_durability_claimed", "live_worker_execution_allowed", "policy_decision_id", "receipt_id"],
+  "forbidden_local_capabilities": ["worker_spawn", "shell_execution", "patch_application", "network", "provider_call", "deployment", "temporal_durability_claim"],
+  "conformance_check": "make workflow-runner-driver-check"
+}

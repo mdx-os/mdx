@@ -1,0 +1,5 @@
+{
+  "loop": "charter_attestation_agent",
+  "agent": "charter_attestation_agent",
+  "tests": ["policy_decision_before_charter_check", "receipt_for_each_charter_transition", "attestation_links_obligation_receipt", "charter_record_links_attestation_receipt", "exception_review_links_charter_receipt", "charter_attestation_stays_within_local_budget"]
+}

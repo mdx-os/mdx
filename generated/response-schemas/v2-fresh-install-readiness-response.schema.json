@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2FreshInstallReadinessResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "fresh_install_default",
+    "v1_migration_required",
+    "v1_import_optional",
+    "local_install_ready",
+    "local_full_stack_ready",
+    "governed_local_writes_proven",
+    "governed_write_receipts_required",
+    "provider_connected_local_mode_allowed",
+    "provider_connected_local_mode_requires_turn_on_receipts",
+    "cloud_deployment_ready",
+    "cloud_deployment_plan_required",
+    "production_cutover_allowed",
+    "production_write_allowed",
+    "service_role_runtime_allowed",
+    "deployment_authority_allowed",
+    "proof_check",
+    "local_install_preflight_check",
+    "seeded_tenant_demo_check",
+    "provider_turn_on_check",
+    "seeded_tenant_demo",
+    "provider_turn_on_matrix",
+    "provider_activation_request",
+    "provider_turn_on_decision",
+    "provider_turn_on_drill",
+    "provider_connected_local_mode",
+    "local_install_preflight",
+    "local_evidence",
+    "local_substrates",
+    "optional_provider_turn_on",
+    "install_modes",
+    "blocked_authority",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-fresh-install-readiness" },
+    "mode": { "const": "local-first-fresh-install" },
+    "status": { "enum": ["LOCAL_FIRST_RC_READY_PROVIDER_TURN_ON_OPTIONAL", "NOT_READY"] },
+    "route": { "const": "/v2/fresh-install-readiness.json" },
+    "read_only": { "const": true },
+    "fresh_install_default": { "const": true },
+    "v1_migration_required": { "const": false },
+    "v1_import_optional": { "const": true },
+    "local_install_ready": { "type": "boolean" },
+    "local_full_stack_ready": { "type": "boolean" },
+    "governed_local_writes_proven": { "type": "boolean" },
+    "governed_write_receipts_required": { "const": true },
+    "provider_connected_local_mode_allowed": { "const": true },
+    "provider_connected_local_mode_requires_turn_on_receipts": { "const": true },
+    "cloud_deployment_ready": { "const": false },
+    "cloud_deployment_plan_required": { "const": true },
+    "production_cutover_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "proof_check": { "const": "make v2-fresh-install-proof" },
+    "local_install_preflight_check": { "const": "make v2-local-install-preflight" },
+    "seeded_tenant_demo_check": { "const": "make v2-seeded-tenant-demo" },
+    "provider_turn_on_check": { "const": "make live-turn-on-check" },
+    "seeded_tenant_demo": {
+      "type": "object",
+      "required": ["route", "status", "tenant_id", "role", "demo_flow_count", "receipt_backed_demo_flow_count", "proof_check", "route_check"],
+      "properties": {
+        "route": { "const": "/v2/seeded-tenant-demo.json" },
+        "status": { "const": "SEEDED_TENANT_DEMO_READY" },
+        "tenant_id": { "const": "local_tenant" },
+        "role": { "const": "owner" },
+        "demo_flow_count": { "const": 6 },
+        "receipt_backed_demo_flow_count": { "const": 6 },
+        "proof_check": { "const": "make v2-seeded-tenant-demo" },
+        "route_check": { "const": "make v2-seeded-tenant-demo-route-check" }
+      }
+    },
+    "provider_turn_on_matrix": {
+      "type": "object",
+      "required": ["route", "status", "provider_count", "pending_live_count", "live_external_provider_count", "provider_connected_profile_count", "provider_connected_profiles_env_ready_count", "provider_connected_profiles_ready_for_live_call_count", "proof_check", "route_check"],
+      "properties": {
+        "route": { "const": "/v2/provider-turn-on-matrix.json" },
+        "status": { "const": "LOCAL_PROVIDER_MATRIX_READY" },
+        "provider_count": { "const": 6 },
+        "pending_live_count": { "const": 5 },
+        "live_external_provider_count": { "const": 0 },
+        "provider_connected_profile_count": { "const": 6 },
+        "provider_connected_profiles_env_ready_count": { "type": "integer", "minimum": 0 },
+        "provider_connected_profiles_ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "proof_check": { "const": "make v2-provider-turn-on-matrix" },
+        "route_check": { "const": "make v2-provider-turn-on-matrix-route-check" }
+      }
+    },
+    "provider_activation_request": {
+      "type": "object",
+      "required": ["route", "status", "activation_request_count", "env_ready_request_count", "ready_for_live_call_count", "human_approval_required_count", "provider_call_allowed_now", "live_provider_call_allowed_now", "proof_check", "route_check"],
+      "properties": {
+        "route": { "const": "/v2/provider-activation-request.json" },
+        "status": { "const": "PROVIDER_ACTIVATION_REQUESTS_READY" },
+        "activation_request_count": { "const": 6 },
+        "env_ready_request_count": { "type": "integer", "minimum": 0 },
+    "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "first_provider_turn_on": {
+      "type": "object",
+      "required": ["status", "observed", "provider_connected_local_allowed"],
+      "properties": {
+        "status": { "enum": ["OPENAI_PROVIDER_TURN_ON_OBSERVED", "NOT_OBSERVED"] },
+        "observed": { "type": "boolean" },
+        "provider_connected_local_allowed": { "type": "boolean" }
+      }
+    },
+        "human_approval_required_count": { "const": 6 },
+        "provider_call_allowed_now": { "const": false },
+        "live_provider_call_allowed_now": { "const": false },
+        "proof_check": { "const": "make v2-provider-activation-request" },
+        "route_check": { "const": "make v2-provider-activation-request-route-check" }
+      }
+    },
+    "provider_turn_on_decision": {
+      "type": "object",
+      "required": ["route", "status", "candidate_count", "env_ready_candidate_count", "ready_for_live_call_count", "recommended_first_candidate_id", "recommended_first_action", "provider_call_allowed_now", "live_provider_call_allowed_now", "proof_check", "route_check"],
+      "properties": {
+        "route": { "const": "/v2/provider-turn-on-decision.json" },
+        "status": { "const": "PROVIDER_TURN_ON_DECISION_READY" },
+        "candidate_count": { "const": 6 },
+        "env_ready_candidate_count": { "type": "integer", "minimum": 0 },
+        "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "recommended_first_candidate_id": { "type": "string", "minLength": 1 },
+        "recommended_first_action": { "enum": ["capture_human_approval_and_run_live_turn_on_check", "provide_optional_provider_environment"] },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_provider_call_allowed_now": { "type": "boolean" },
+        "proof_check": { "const": "make v2-provider-turn-on-decision" },
+        "route_check": { "const": "make v2-provider-turn-on-decision-route-check" }
+      }
+    },
+    "provider_turn_on_drill": {
+      "type": "object",
+      "required": ["route", "status", "selected_candidate_id", "selected_substrate", "selected_env_ready", "selected_missing_env_names", "ready_for_live_call_count", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "proof_check", "route_check"],
+      "properties": {
+        "route": { "const": "/v2/provider-turn-on-drill.json" },
+        "status": { "const": "PROVIDER_TURN_ON_DRILL_READY" },
+        "selected_candidate_id": { "type": "string", "minLength": 1 },
+        "selected_substrate": { "type": "string", "minLength": 1 },
+        "selected_env_ready": { "type": "boolean" },
+        "selected_missing_env_names": { "type": "array", "items": { "type": "string" } },
+        "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_provider_call_allowed_now": { "type": "boolean" },
+        "live_network_allowed_now": { "type": "boolean" },
+        "proof_check": { "const": "make v2-provider-turn-on-drill" },
+        "route_check": { "const": "make v2-provider-turn-on-drill-route-check" }
+      }
+    },
+    "provider_connected_local_mode": {
+      "type": "object",
+      "required": ["status", "allowed", "credential_presence_only", "credential_values_recorded", "provider_call_allowed_now", "live_provider_call_allowed_now", "live_network_allowed_now", "requires_turn_on_receipts", "profile_count", "env_ready_profile_count", "ready_for_live_call_count", "llm_profiles", "matrix_route", "activation_request_route", "decision_route", "drill_route", "proof_check"],
+      "properties": {
+        "status": { "enum": ["PROVIDER_CONNECTED_LOCAL_READY", "READY_AFTER_PROVIDER_TURN_ON"] },
+        "allowed": { "const": true },
+        "credential_presence_only": { "const": true },
+        "credential_values_recorded": { "const": false },
+        "provider_call_allowed_now": { "type": "boolean" },
+        "live_provider_call_allowed_now": { "type": "boolean" },
+        "live_network_allowed_now": { "type": "boolean" },
+        "requires_turn_on_receipts": { "const": true },
+        "profile_count": { "const": 6 },
+        "env_ready_profile_count": { "type": "integer", "minimum": 0 },
+        "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "llm_profiles": { "type": "array", "minItems": 2 },
+        "matrix_route": { "const": "/v2/provider-turn-on-matrix.json" },
+        "activation_request_route": { "const": "/v2/provider-activation-request.json" },
+        "decision_route": { "const": "/v2/provider-turn-on-decision.json" },
+        "drill_route": { "const": "/v2/provider-turn-on-drill.json" },
+        "proof_check": { "const": "make live-turn-on-check" }
+      }
+    },
+    "local_install_preflight": {
+      "type": "object",
+      "required": ["status", "local_deterministic_install_ready", "required_tools_missing_count", "optional_provider_env_present_count", "provider_secret_values_recorded", "public_release_ready", "public_readiness_status", "proof_check", "evidence_file"],
+      "properties": {
+        "status": { "const": "LOCAL_INSTALL_PREFLIGHT_READY" },
+        "local_deterministic_install_ready": { "const": true },
+        "required_tools_missing_count": { "const": 0 },
+        "optional_provider_env_present_count": { "type": "integer", "minimum": 0 },
+        "provider_secret_values_recorded": { "const": false },
+        "public_release_ready": { "const": false },
+        "public_readiness_status": { "const": "NOT_READY_BY_DESIGN" },
+        "proof_check": { "const": "make v2-local-install-preflight" },
+        "evidence_file": { "const": ".mdx-local/v2-local-install-preflight.json" }
+      }
+    },
+    "local_evidence": {
+      "type": "object",
+      "required": ["activation_report_status", "handoff_status", "activation_complete", "dogfood_full", "http_routes", "json_routes", "receipt_backed_routes"],
+      "properties": {
+        "activation_report_status": { "type": "string" },
+        "handoff_status": { "type": "string" },
+        "activation_complete": { "type": "boolean" },
+        "dogfood_full": { "type": "boolean" },
+        "http_routes": { "type": "integer", "minimum": 1 },
+        "json_routes": { "type": "integer", "minimum": 1 },
+        "receipt_backed_routes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "local_substrates": { "type": "object" },
+    "optional_provider_turn_on": { "type": "array", "minItems": 1 },
+    "install_modes": { "type": "array", "minItems": 4 },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["production_write_allowed", "production_cutover_allowed", "service_role_runtime_allowed", "deployment_authority_allowed", "provider_call_without_turn_on_receipt_allowed", "v1_migration_required"],
+      "properties": {
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false },
+        "provider_call_without_turn_on_receipt_allowed": { "const": false },
+        "v1_migration_required": { "const": false }
+      }
+    },
+    "evidence_file": { "const": ".mdx-local/v2-fresh-install-readiness.json" }
+  }
+}

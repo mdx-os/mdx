@@ -1,0 +1,25 @@
+{
+  "name": "@mdx/ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": [
+    "*.css",
+    "**/*.css",
+    "**/*.svelte"
+  ],
+  "exports": {
+    "./components/*": "./components/*",
+    "./harnessRunway": "./harnessRunway.js",
+    "./humanCopy": "./humanCopy.js",
+    "./railIcons": "./railIcons.js",
+    "./surfaces": "./surfaces.js",
+    "./uxModel": "./uxModel.js"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "@mdx/client": "workspace:*"
+  }
+}

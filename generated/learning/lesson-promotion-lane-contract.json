@@ -1,0 +1,102 @@
+{
+  "name": "mdx-lesson-promotion-lane-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_LANE_V1",
+  "purpose": "Define the review lane that folds live evidence receipts into drafted candidate lessons and carries each one through governed, receipt-backed judgment to its promoted, rejected, or superseded end state before MDx memory or runtime behavior can change.",
+  "derived_from": [
+    "generated/learning/mdx-learning-ledger-v0.json",
+    "generated/learning/forge-outcome-record-contract.json",
+    "/forge/runs/projection.json"
+  ],
+  "draft_projection_route": "/learning/forge-outcome-candidates/projection.json",
+  "draft_source_receipt_kinds": [
+    "forge.outcome.signal.recorded",
+    "beta.feedback.captured",
+    "forge.run.event",
+    "learning.implicit.signal"
+  ],
+  "fleet_distillation_gate": "a machine league distillation note drafts a lesson only when its pairwise comparison receipt records pairwise_outcome external_win with distillation_candidate_allowed true",
+  "dedup_rule": "a candidate whose source receipt is cited by a learning.candidate.rejected receipt, or whose candidate id is cited as promotion_id by a learning.judgment.decided receipt, leaves the draft lane",
+  "draft_flag_fields": ["draft_flagged", "draft_flag_reason"],
+  "draft_flag_rule": "machine-authored draft text is scanned deterministically for instruction-injection shapes at the projection seam; a match flags the draft for the reviewer instead of hiding it, and flagged or not, no draft can activate memory without the governed human chain",
+  "required_fields": [
+    "promotion_id",
+    "source_type",
+    "source_id",
+    "surface",
+    "title",
+    "state",
+    "proposed_memory",
+    "judgment_status",
+    "required_evidence",
+    "missing_evidence",
+    "allowed_next_step",
+    "blocked_changes"
+  ],
+  "states": [
+    {
+      "id": "candidate",
+      "meaning": "A plausible lesson exists, but the lane has not proven every promotion-rule requirement."
+    },
+    {
+      "id": "needs_evidence",
+      "meaning": "The item is visible only to show what evidence is missing before review."
+    },
+    {
+      "id": "ready_for_judgment",
+      "meaning": "The evidence is sufficient for accountable human or policy judgment, but no behavior has changed."
+    },
+    {
+      "id": "promoted",
+      "meaning": "A governed judgment, memory promotion request, and memory activation receipt chain recorded approved MDx-owned memory."
+    },
+    {
+      "id": "rejected",
+      "meaning": "A governed rejection receipt records the accountable no and removes the candidate from the draft lane without deleting history."
+    },
+    {
+      "id": "superseded",
+      "meaning": "A governed supersede receipt retires the activated memory and links it to the receipt that replaced it."
+    }
+  ],
+  "state_writes": {
+    "promoted": [
+      "/learning/judgment-decisions.json",
+      "/learning/memory-promotions.json",
+      "/learning/memory-activations.json"
+    ],
+    "rejected": ["/learning/candidate-rejections.json"],
+    "superseded": ["/learning/memory-supersedes.json"]
+  },
+  "state_receipt_kinds": {
+    "promoted": [
+      "learning.judgment.decided",
+      "learning.memory.promotion.requested",
+      "learning.memory.activated"
+    ],
+    "rejected": ["learning.candidate.rejected"],
+    "superseded": ["learning.memory.superseded"]
+  },
+  "promotion_rule": [
+    "intent is linked",
+    "context packet is linked",
+    "execution receipt is linked",
+    "evaluation result is linked",
+    "accountable judgment is linked",
+    "source of truth is updated before generated artifacts refresh",
+    "local check proves generated contract alignment"
+  ],
+  "lane_boundaries": {
+    "draft_projection_writes": false,
+    "state_changes_without_receipt": false,
+    "machine_text_auto_activates": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "allows_hidden_adaptation": false
+  },
+  "checks": ["make learning-loop-check", "make ui-product-surface-check"]
+}

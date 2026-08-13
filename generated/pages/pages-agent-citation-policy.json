@@ -1,0 +1,19 @@
+{
+  "name": "mdx-pages-agent-citation-policy",
+  "policy_version": 1,
+  "human_line": "An agent may cite a page only when the page has earned it: published on the governed rail, source known, a named owner, and a review that is not past due.",
+  "trusted_for_ai_rule": "published AND source_known AND named owner AND NOT stale",
+  "derived_at": "/pages/lifecycle/projection.json",
+  "citable_list_route": "/pages/agent-citations.json",
+  "enforcement": {
+    "live_model_calls": "no page content rides into live provider calls today - the system context is prompt packs, persona layers, and this session's own recorded history; when page grounding turns on, every candidate must come from the citable list route",
+    "charter_corpus": "charter-backed pages are citable by declaration - their evidence is counted in the lifecycle projection",
+    "search_surface": "search marks every hit citable or not from the same flag - one rule, every surface",
+    "structural_pin": "check-pages-agent-citation fails the build if the live gateway or stream path reaches for page bodies directly"
+  },
+  "declared_not_built": {
+    "semantic_retrieval": "arrives with CTX - retrieved candidates will still be filtered by this policy, never around it",
+    "strategy_page_proposals": "Strategy and Product proposing pages from ratification packets awaits its own governed write contract",
+    "forge_auto_publish": "Forge writes draft build handoffs onto the same review rail as every human - auto-publish is not a thing"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "mdx-message-replay-contract",
+  "contract_version": 1,
+  "human_line": "A reconnect never pretends to be live. The relay replays what it provably holds and names the verdict; anything it cannot prove, the client fills from the saved record first.",
+  "ready": {
+    "fields": ["relay_id", "session_id", "replay_window", "driver", "auth_status"],
+    "replay_window_meaning": "hot cache entries per topic - the relay's provable reach"
+  },
+  "subscribe": {
+    "fields": ["tenant_id", "channel_ids", "after_sequence", "device_id", "connection_generation"],
+    "cursor_ownership": "client-owned, advanced only by envelopes actually received",
+    "device_id": "names the browser across reconnects for operators - observability, never identity",
+    "backward_compatibility": "device_id and connection_generation are optional; an older client subscribes exactly as before"
+  },
+  "catch_up": {
+    "per_topic": true,
+    "states": ["caught_up", "gap_detected", "snapshot_required"],
+    "caught_up": "the replay provably covered the client's cursor to now",
+    "gap_detected": "the cursor is before the cache's reach - evictions may hide messages; fill from the projection",
+    "snapshot_required": "the cache is empty and the cursor is real - the relay cannot know what was missed; full projection reload",
+    "client_behavior": "live only after every topic's verdict is caught_up or its gap is filled; the surface shows catching up in between, never a false live dot"
+  },
+  "gap_fill": {
+    "source": "the kernel projection - the saved record is the truth the cache could not cover",
+    "duplicate_safety": "timeline rebuilds from the projection wholesale and live envelopes dedupe by receipt_id and message_id"
+  },
+  "proof": "with a hot cache smaller than the outage, disconnect, land more messages than the cache holds, reconnect: the relay answers gap_detected, the surface says catching up, the projection fill recovers every message exactly once"
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReceiptList",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["count", "receipt_ids"],
+  "properties": {
+    "count": { "type": "integer", "minimum": 0 },
+    "receipt_ids": { "type": "array", "items": { "type": "string" } }
+  }
+}

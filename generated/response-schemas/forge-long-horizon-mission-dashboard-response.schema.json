@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeLongHorizonMissionDashboardResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "writes_route", "checkpoint_route", "projection_route", "scoreboard_route", "provider_preflight_route", "live_run_approval_route", "mission_count", "active_mission_count", "milestone_count", "completed_milestone_count", "blocked_milestone_count", "verification_cadence", "dashboard_ready", "live_provider_calls_allowed", "adapter_execution_allowed", "production_write_allowed", "human_checkpoint_required", "provider_matrix_count", "benchmark_task_count", "scoring_dimension_count", "runner_profile_count", "openai_pattern_packets", "dashboard_signals", "source_paths", "missions"],
+  "properties": {
+    "name": { "const": "mdx-forge-long-horizon-mission-dashboard" },
+    "status": { "enum": ["NO_MISSIONS_ADMITTED", "LIVE-LOCAL-LONG-HORIZON-MISSION-DASHBOARD"] },
+    "route": { "const": "/forge/long-horizon-mission-dashboard.json" },
+    "writes_route": { "const": "/forge/long-horizon-missions.json" },
+    "checkpoint_route": { "const": "/forge/long-horizon-mission-checkpoints.json" },
+    "projection_route": { "const": "/forge/long-horizon-missions/projection.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "provider_preflight_route": { "const": "/forge/fleet-eval-provider-preflight.json" },
+    "live_run_approval_route": { "const": "/forge/fleet-eval-live-run-approvals.json" },
+    "mission_count": { "type": "integer", "minimum": 0 },
+    "active_mission_count": { "type": "integer", "minimum": 0 },
+    "milestone_count": { "type": "integer", "minimum": 0 },
+    "completed_milestone_count": { "type": "integer", "minimum": 0 },
+    "blocked_milestone_count": { "type": "integer", "minimum": 0 },
+    "verification_cadence": { "const": "after_each_milestone" },
+    "dashboard_ready": { "const": true },
+    "live_provider_calls_allowed": { "const": false },
+    "adapter_execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "human_checkpoint_required": { "const": true },
+    "provider_matrix_count": { "const": 4 },
+    "benchmark_task_count": { "const": 15 },
+    "scoring_dimension_count": { "const": 11 },
+    "runner_profile_count": { "minimum": 2 },
+    "openai_pattern_packets": { "type": "array", "minItems": 6, "allOf": [
+      { "contains": { "const": "verification_after_each_milestone" } },
+      { "contains": { "const": "checkpoint_control_log" } }
+    ] },
+    "dashboard_signals": { "type": "array", "minItems": 10, "allOf": [
+      { "contains": { "const": "blocked_authority" } },
+      { "contains": { "const": "pause_steer_resume" } }
+    ] },
+    "source_paths": { "type": "array", "minItems": 4, "contains": { "const": "docs/FORGE-LONG-HORIZON-MISSIONS.md" } },
+    "missions": { "type": "array" }
+  }
+}

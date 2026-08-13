@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeRepoReadinessResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "repo_id", "label", "kind", "origin_url", "repo_receipt_id", "repo_index_receipt_id", "profile_source", "readiness_status", "safe_next_move", "medium_high_work_ready", "primary_language", "language_pack_id", "detected_language_packs", "quality_signals", "standards_sources", "standards_source_summaries", "semantic_intelligence", "semantic_tool_readiness", "toolchain_readiness", "proof_plan", "proof_command_preflight", "suggested_checks", "selected_checks_source", "standards_obligation_count", "standards_obligations", "first_run_tasks", "semantic_query_operations", "source_host_summary", "run_route", "repo_index_route", "repo_standards_packet_route", "repo_task_scout_route", "semantic_query_route", "review_packet_route", "pr_handoff_route", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "credential_values_recorded", "network_call_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-readiness" },
+        "status": { "const": "OK" },
+        "repo_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "kind": { "type": "string" },
+        "origin_url": { "type": "string" },
+        "repo_receipt_id": { "type": "string", "minLength": 1 },
+        "repo_index_receipt_id": { "type": "string" },
+        "profile_source": { "enum": ["repo_index_cached", "computed_live"] },
+        "readiness_status": { "enum": ["READY_FOR_MEDIUM_HIGH_WORK", "SETUP_REQUIRED", "OPERATOR_CHECK_REQUIRED"] },
+        "safe_next_move": { "type": "string", "minLength": 1 },
+        "medium_high_work_ready": { "type": "boolean" },
+        "primary_language": { "type": "string" },
+        "language_pack_id": { "type": "string", "minLength": 1 },
+        "detected_language_packs": { "type": "array", "items": { "type": "string" } },
+        "quality_signals": { "type": "array", "items": { "type": "string" } },
+        "standards_sources": { "type": "array", "items": { "type": "string" } },
+        "standards_source_summaries": { "type": "array", "items": { "type": "string", "pattern": "^[^=]+=[a-z0-9_+]+$" } },
+        "semantic_intelligence": { "type": "array", "items": { "type": "string" } },
+        "semantic_tool_readiness": { "type": "array", "items": { "type": "string" } },
+        "toolchain_readiness": { "type": "array", "items": { "type": "string" } },
+        "proof_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "next_action", "summary"],
+          "properties": {
+            "status": { "enum": ["ready", "setup_required", "operator_check_required"] },
+            "next_action": { "type": "string" },
+            "summary": { "type": "string" }
+          }
+        },
+        "proof_command_preflight": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "ready", "selected_command", "command_source", "proof_plan_status", "missing_readiness", "toolchain_readiness", "safe_next_move", "run_admission_would_refuse", "shell_execution_allowed", "provider_calls_allowed", "run_started", "grants_execution_authority"],
+          "properties": {
+            "status": { "enum": ["READY", "SETUP_REQUIRED", "CHECK_REQUIRED"] },
+            "ready": { "type": "boolean" },
+            "selected_command": { "type": "string" },
+            "command_source": { "enum": ["repo_profile_inferred", "operator_required"] },
+            "proof_plan_status": { "enum": ["ready", "setup_required", "operator_check_required", ""] },
+            "missing_readiness": { "type": "array", "items": { "type": "string" } },
+            "toolchain_readiness": { "type": "array", "items": { "type": "string" } },
+            "safe_next_move": { "type": "string", "minLength": 1 },
+            "run_admission_would_refuse": { "type": "boolean" },
+            "shell_execution_allowed": { "const": false },
+            "provider_calls_allowed": { "const": false },
+            "run_started": { "const": false },
+            "grants_execution_authority": { "const": false }
+          }
+        },
+        "suggested_checks": { "type": "array", "items": { "type": "string" } },
+        "selected_checks_source": { "enum": ["repo_profile_inferred", "none_recorded"] },
+        "standards_obligation_count": { "type": "integer", "minimum": 0 },
+        "standards_obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "tag", "review_axis", "worker_instruction", "must_read_source_before_claiming_compliance", "grants_authority"],
+            "properties": {
+              "source": { "type": "string", "minLength": 1 },
+              "tag": { "type": "string", "minLength": 1 },
+              "review_axis": { "type": "string", "minLength": 1 },
+              "worker_instruction": { "type": "string", "minLength": 1 },
+              "must_read_source_before_claiming_compliance": { "const": true },
+              "grants_authority": { "const": false }
+            }
+          }
+        },
+        "first_run_tasks": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["task_id", "title", "recommended_shape", "task_class", "complexity_tier", "prompt_template", "suggested_checks", "review_focus", "why_this_first", "grants_execution_authority"],
+            "properties": {
+              "task_id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "recommended_shape": { "enum": ["run", "mission"] },
+              "task_class": { "enum": ["bug_fix", "refactor"] },
+              "complexity_tier": { "enum": ["small", "medium"] },
+              "prompt_template": { "type": "string", "minLength": 1 },
+              "suggested_checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "review_focus": { "type": "array", "minItems": 3, "items": { "type": "string", "minLength": 1 } },
+              "why_this_first": { "type": "string", "minLength": 1 },
+              "grants_execution_authority": { "const": false }
+            }
+          }
+        },
+        "semantic_query_operations": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": { "enum": ["capabilities", "orientation", "workspace_symbol", "definition", "references", "impact_radius", "hover", "file_outline", "related_tests", "diagnostics", "lsp_probe"] },
+          "allOf": [
+            { "contains": { "const": "orientation" } },
+            { "contains": { "const": "workspace_symbol" } },
+            { "contains": { "const": "definition" } },
+            { "contains": { "const": "references" } },
+            { "contains": { "const": "impact_radius" } },
+            { "contains": { "const": "related_tests" } },
+            { "contains": { "const": "lsp_probe" } }
+          ]
+        },
+        "source_host_summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_host", "origin_url_present", "origin_url_recorded", "credential_sources_checked", "credential_values_recorded", "source_host_readiness_route", "source_host_pr_draft_route", "network_call_allowed", "remote_push_allowed", "pull_request_open_allowed"],
+          "properties": {
+            "source_host": { "enum": ["github", "bitbucket", "generic"] },
+            "origin_url_present": { "type": "boolean" },
+            "origin_url_recorded": { "const": false },
+            "credential_sources_checked": { "type": "array", "items": { "enum": ["GITHUB_TOKEN", "GH_TOKEN", "BITBUCKET_TOKEN", "BITBUCKET_USERNAME", "BITBUCKET_APP_PASSWORD"] } },
+            "credential_values_recorded": { "const": false },
+            "source_host_readiness_route": { "const": "/forge/source-host-readiness.json" },
+            "source_host_pr_draft_route": { "const": "/forge/source-host-pr-drafts.json" },
+            "network_call_allowed": { "const": false },
+            "remote_push_allowed": { "const": false },
+            "pull_request_open_allowed": { "const": false }
+          }
+        },
+        "run_route": { "const": "/forge/runs.json" },
+        "repo_index_route": { "const": "/forge/repo-indexes.json" },
+        "repo_standards_packet_route": { "const": "/forge/repo-standards-packet.json" },
+        "repo_task_scout_route": { "const": "/forge/repo-task-scout.json" },
+        "semantic_query_route": { "const": "/forge/semantic-queries.json" },
+        "review_packet_route": { "const": "/forge/review-packet.json" },
+        "pr_handoff_route": { "const": "/forge/pr-handoffs.json" },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "credential_values_recorded": { "const": false },
+        "network_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "credential_values_recorded", "network_call_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-readiness" },
+        "status": { "const": "REFUSED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "credential_values_recorded": { "const": false },
+        "network_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  ]
+}

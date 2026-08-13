@@ -1,0 +1,68 @@
+{
+  "name": "mdx-memory-promotion-target-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "READ_ONLY_V0",
+  "purpose": "Define where an approved lesson would land as MDx-owned memory before any memory write or runtime adaptation is allowed.",
+  "derived_from": [
+    "generated/learning/judgment-record-contract.json",
+    "generated/learning/lesson-promotion-lane-contract.json",
+    "generated/learning/mdx-learning-ledger-v0.json"
+  ],
+  "valid_target_types": [
+    "page",
+    "decision_record",
+    "generated_contract",
+    "source_map",
+    "model_scorecard",
+    "worker_scorecard"
+  ],
+  "required_fields": [
+    "memory_target_id",
+    "judgment_id",
+    "promotion_id",
+    "surface",
+    "title",
+    "target_type",
+    "target_path",
+    "source_of_truth_update_required",
+    "local_checks_required",
+    "rollback_rule",
+    "supersession_rule",
+    "sovereignty_rule",
+    "state",
+    "blocked_changes"
+  ],
+  "states": [
+    {
+      "id": "waiting_for_judgment",
+      "meaning": "The target can be inspected, but no memory may be written before accountable judgment."
+    },
+    {
+      "id": "ready_after_judgment",
+      "meaning": "The target would be ready after a governed judgment receipt exists."
+    },
+    {
+      "id": "memory_written",
+      "meaning": "Reserved for a later write-governed slice that records approved memory."
+    },
+    {
+      "id": "superseded",
+      "meaning": "Reserved for a later write-governed slice that points to a newer memory target."
+    }
+  ],
+  "v0_boundaries": {
+    "opens_write_authority": false,
+    "writes_memory": false,
+    "refreshes_generated_artifacts": false,
+    "updates_scorecards": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "allows_provider_only_memory": false,
+    "allows_hidden_adaptation": false
+  },
+  "checks": ["make learning-loop-check", "make ui-product-surface-check"]
+}

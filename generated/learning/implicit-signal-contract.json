@@ -1,0 +1,74 @@
+{
+  "name": "mdx-learning-implicit-signal-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define Learn's implicit signal capture: the zero-user-cost learning source the frontier mines. A human never assembles these. They are derived from dispositions the product already records - a Forge change accepted, rejected, sent back for revision, or edited right after an accept, and a Twin answer a person marked as not right - and each cites the exact disposition receipt it was derived from in the ledger. A rejection and an edit-after-accept are the highest-signal disagreement classes. The signal drafts a candidate lesson the human still gates; nothing here activates memory or adapts behavior.",
+  "writes_route": "/learning/implicit-signals.json",
+  "projection_route": "/learning/implicit-signals/projection.json",
+  "receipt_kind": "learning.implicit.signal",
+  "required_fields": [
+    "implicit_signal_id",
+    "signal_kind",
+    "source_receipt_id",
+    "source_receipt_kind",
+    "work_item",
+    "delta_summary",
+    "lesson_candidate",
+    "high_signal_disagreement",
+    "implicit_signal_receipt_id",
+    "policy_decision_id"
+  ],
+  "signal_kinds": [
+    {
+      "id": "change_accepted",
+      "meaning": "A human accepted a Forge-produced change as produced. The quieter signal, but it teaches what ships cleanly.",
+      "derived_from": ["forge.ship.ratified", "forge.run.ship.decided"]
+    },
+    {
+      "id": "change_rejected",
+      "meaning": "A human rejected a Forge-produced change. A high-signal disagreement: this kind of change on this kind of work needs a different approach.",
+      "derived_from": ["forge.ship.rejected"]
+    },
+    {
+      "id": "revision_requested",
+      "meaning": "A human sent a change back for revision before it could ship.",
+      "derived_from": ["forge.ship.revision_requested", "forge.run.event"]
+    },
+    {
+      "id": "edit_after_accept",
+      "meaning": "A change was revised right after it was accepted. A high-signal disagreement: the accept missed something the edit caught.",
+      "derived_from": ["forge.run.event"]
+    },
+    {
+      "id": "twin_answer_corrected",
+      "meaning": "A person marked a Twin answer as not right. The choice-as-labeling signal.",
+      "derived_from": ["twin.session.answer.grounded", "twin.session.draft.admitted"]
+    }
+  ],
+  "fold": "each learning.implicit.signal receipt folds into a DRAFTED candidate lesson in the /learning/forge-outcome-candidates/projection.json lane, deduped against judged and rejected candidates and sanitized by the same instruction-injection scan as every other rail. The human is still the only gate.",
+  "high_signal_disagreement_kinds": ["change_rejected", "edit_after_accept"],
+  "v0_boundaries": {
+    "records_implicit_signal": true,
+    "drafts_candidate_lesson": true,
+    "requires_source_receipt_in_ledger": true,
+    "requires_source_kind_matches_signal_kind": true,
+    "refuses_double_signal_on_same_source": true,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "writes_active_memory": false,
+    "refreshes_generated_artifacts": false,
+    "writes_provider_memory": false,
+    "updates_scorecards": false,
+    "applies_adaptation": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "changes_runtime_behavior": false,
+    "auto_activates_without_human": false,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make local-smoke"]
+}

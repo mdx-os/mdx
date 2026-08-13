@@ -1,0 +1,33 @@
+{
+  "name": "mdx-message-thread-message-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-THREAD-MESSAGE-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/messages/thread-messages.json",
+  "projection_route": "/messages/thread-messages/projection.json",
+  "default_human_receipt_kind": "message.human.posted",
+  "posted_receipt_kinds": ["message.human.posted", "message.agent.posted", "message.worker.posted", "message.pipeline.posted", "message.system.posted"],
+  "content_types": ["text", "card", "action_request", "action_response"],
+  "auth_session_route": "/local/auth-session.json",
+  "source_contracts": [
+    "generated/world-model/message-event-plane-contract.json",
+    "generated/world-model/message-thread-projection-contract.json",
+    "generated/outbox/message-topic-contract.json"
+  ],
+  "required_fields": ["tenant_id", "actor_id", "thread_id", "channel_id", "message_id", "content_type", "body", "content_payload", "source_receipt_id", "outbox_topic"],
+  "authority_boundary": {
+    "llm_allowed_on_hot_path": false,
+    "realtime_fanout_allowed": false,
+    "live_substrate_required": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "messageThreadMessageUrl",
+    "projection_url_var": "messageThreadMessageProjectionUrl",
+    "handler": "sendGovernedMessage",
+    "button_class": "message-send",
+    "aria_label": "Send governed Message",
+    "fetch_count": 4
+  },
+  "checks": ["make message-thread-message-check", "cargo test -p mdx-core message_thread_message", "cargo test -p mdx-server message_thread_message"]
+}

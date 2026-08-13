@@ -1,0 +1,37 @@
+{
+  "name": "mdx-message-offline-queue-contract",
+  "contract_version": 1,
+  "human_line": "Every send goes through the outbox, online or not - one path, so exactly-once is a property of the design. Words written offline wait visibly and go out the moment the kernel is back.",
+  "idempotency": {
+    "key_field": "message_id",
+    "key_shape": "msg_<uuid>",
+    "minted_by": "client, at enqueue time",
+    "kernel_behavior": "the governed write records message_id and the projection echoes it per message",
+    "retry_safety": "before resending any attempted item, the client probes the projection for its message_id - a hit means saved, the entry retires without a duplicate"
+  },
+  "queue": {
+    "storage": "IndexedDB",
+    "database": "mdx-message-outbox",
+    "store": "queue",
+    "key_path": "messageId",
+    "fallback": "memory-only when IndexedDB is unavailable (private mode) - sends still work, persistence is best-effort and never pretended",
+    "states": ["queued", "sending", "failed"],
+    "crash_recovery": "items found in sending state at load return to queued; the probe decides whether the earlier attempt landed"
+  },
+  "flush": {
+    "trigger_events": ["enqueue", "window online", "visibilitychange visible", "manual retry", "backoff timer"],
+    "order": "oldest first, serial, one flush at a time",
+    "backoff_ms": [1000, 2000, 4000, 8000, 16000, 30000],
+    "jitter": "0.75x to 1.25x, so a thousand reconnecting clients never stampede",
+    "duplicate_suppression": ["projection probe by message_id before any resend", "timeline render filters pending items whose message_id the kernel already echoed", "live envelopes dedupe against both receipt_id and message_id"],
+    "policy_refusals": "a REFUSED answer is terminal - the item retires without retry and the person is told why"
+  },
+  "surface": {
+    "pending_entries": "render in place with honest state - sending, or will-send-when-back",
+    "pending_bar": "N waiting to send, with a send-now affordance",
+    "offline_banner": "offline state named plainly, with last-synced time",
+    "failed_affordance": "not sent yet - tap to retry",
+    "composer": "never blocks on the network - the queue absorbs the wait"
+  },
+  "proof": "kill the network, send, restore the network: the kernel records the message exactly once and the queue drains to zero"
+}

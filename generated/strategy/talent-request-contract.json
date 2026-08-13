@@ -1,0 +1,21 @@
+{
+  "name": "mdx-strategy-talent-request-contract",
+  "mode": "deterministic-local",
+  "source": "docs/STRATEGY-TALENT-REQUEST-CONTRACT.md",
+  "status": "DECLARED-LOCAL-AUTHORITY-REQUEST",
+  "from_surface": "strategy_ratification",
+  "to_authority": "talent_authorization",
+  "allowed_request": "request_talent_planning",
+  "required_strategy_evidence": ["strategy.options.synthesized", "strategy.ratification.recorded", "policy.decision.recorded", "human_sponsor"],
+  "required_product_evidence": ["product.ratification.recorded"],
+  "required_treasury_evidence": ["treasury.reserve.requested"],
+  "required_contracts": ["generated/strategy/strategy-ratification-surface.json", "generated/strategy/treasury-reserve-contract.json", "generated/talent/authorization-envelope.json", "generated/workers/spawn-request-contract.json"],
+  "request_fields": ["source_receipt_ids", "purpose", "needed_capability", "authority_ceiling", "expires_at", "human_sponsor", "policy_decision_id"],
+  "forbidden_without_talent_authority": ["spawn_worker", "grant_tool_access", "allocate_worker_budget", "live_worker_execution", "production_deploy"],
+  "first_local_proof": "make strategy-ratification-check",
+  "rules": [
+    "Strategy may request Talent planning but cannot spawn a worker",
+    "Talent authority must produce budget, tool allowlist, sponsor chain, lease, and credential evidence before worker spawn",
+    "Talent requests cite Product, Strategy, and Treasury evidence"
+  ]
+}

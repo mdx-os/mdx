@@ -1,0 +1,7 @@
+{
+  "suite_id": "local_credentialing_smoke",
+  "score": 100,
+  "credential_id": "credential_000020",
+  "credential_status": "MINTED",
+  "receipt_ids": ["evals_runner_agent_receipt_000005", "evals_runner_agent_receipt_000006", "evals_runner_agent_receipt_000009", "evals_runner_agent_receipt_000010", "evals_runner_agent_receipt_000013", "evals_runner_agent_receipt_000014", "evals_runner_agent_receipt_000018", "evals_runner_agent_receipt_000019", "evals_runner_agent_receipt_000023", "evals_runner_agent_receipt_000024", "evals_runner_agent_receipt_000043", "evals_runner_agent_receipt_000044", "evals_runner_agent_receipt_000047", "evals_runner_agent_receipt_000048"]
+}

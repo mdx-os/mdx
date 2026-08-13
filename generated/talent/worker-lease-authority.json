@@ -1,0 +1,17 @@
+{
+  "name": "mdx-talent-worker-lease-authority",
+  "mode": "deterministic-local",
+  "runtime_status": "DECLARED-LOCAL-AUTHORITY",
+  "source": "docs/TALENT-WORKER-LEASE-AUTHORITY.md",
+  "future_loop_runner_id": "talent_autonomy_agent",
+  "required_receipt_kind": "talent.worker_lease.authorized",
+  "required_before": ["talent.authorization.recorded", "worker.credential.checked", "worker.spawn_requested", "worker.handoff.recorded", "worker.retired"],
+  "required_fields": ["tenant_id", "parent_loop_id", "requested_by_loop_id", "worker_template_id", "scope", "requested_expires_at", "max_lease_seconds", "policy_decision_id"],
+  "consumers": ["generated/talent/authorization-envelope.json", "generated/workers/spawn-request-contract.json"],
+  "forbidden_paths": ["authorization_without_worker_lease_authority", "worker_spawn_without_worker_lease_authority", "lease_reuse_across_scope", "lease_reuse_across_tenant", "lease_extension_without_policy_decision", "unbounded_worker_lease"],
+  "rules": [
+    "Talent cannot authorize worker expiry from a bare expires_at field",
+    "Worker lease authority is bounded by tenant, parent loop, worker template, scope, expiry, and policy decision",
+    "Lease authority remains separate from sponsor chain, budget, tool, and credential authority"
+  ]
+}

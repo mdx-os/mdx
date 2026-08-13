@@ -1,0 +1,17 @@
+{
+  "name": "mdx-harness-model-contract",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-MODEL-CONTRACT.md",
+  "canonical_visual": "specs/visuals/12-inside-the-harness.svg",
+  "rings": ["Runtime", "Capabilities", "Safety and Scale"],
+  "zones": ["Context Injection", "Control", "Action", "Observe and Verify", "Persist"],
+  "runtime_contracts": ["LocalLoopRunner", "TemporalLoopRunner", "ModelGateway"],
+  "capability_contracts": ["StorageProvider", "MemoryProvider", "OutboxProvider", "generated tool manifests"],
+  "safety_contracts": ["ConstraintEvaluator", "policy receipts", "TreasuryAuthorization", "CharterRecord", "Ledger", "xtask gates"],
+  "rules": [
+    "model behavior must stay inside the harness",
+    "capabilities stay declared and generated where possible",
+    "safety and scale do not thin as autonomy grows",
+    "consequential action requires policy decision and receipt"
+  ]
+}

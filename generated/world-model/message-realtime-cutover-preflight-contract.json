@@ -1,0 +1,63 @@
+{
+  "name": "mdx-message-realtime-cutover-preflight-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-REALTIME-CUTOVER-PREFLIGHT-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/messages/realtime-cutover-preflights.json",
+  "projection_route": "/messages/realtime-cutover-preflights/projection.json",
+  "required_receipt_kind": "message.realtime.cutover.preflighted",
+  "source_receipt_kind": "message.presence.requested",
+  "evidence_ladder": [
+    {
+      "name": "delivery_replay",
+      "write_route": "/messages/delivery-replay-batches.json",
+      "projection_route": "/messages/delivery-replay-batches/projection.json",
+      "required_receipt_kind": "message.delivery.replay.recorded",
+      "terminal_state": "ROLLBACK_SAFE_REPLAY_RECORDED_DELIVERY_BLOCKED"
+    },
+    {
+      "name": "subscription_isolation",
+      "write_route": "/messages/subscription-isolation-checks.json",
+      "projection_route": "/messages/subscription-isolation-checks/projection.json",
+      "required_receipt_kind": "message.subscription.isolation.checked",
+      "terminal_state": "TENANT_CHANNEL_ISOLATION_PROVEN_LOCAL_ONLY"
+    },
+    {
+      "name": "service_role_fanout_refusal",
+      "write_route": "/messages/service-role-fanout-refusals.json",
+      "projection_route": "/messages/service-role-fanout-refusals/projection.json",
+      "required_receipt_kind": "message.service_role.fanout.refused",
+      "terminal_state": "SERVICE_ROLE_FANOUT_REFUSED_LOCAL_ONLY"
+    }
+  ],
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "preflight_id", "presence_request_receipt_id", "thread_id", "channel_id", "requested_realtime_scope"],
+  "authority_boundary": {
+    "tenant_subscription_isolation_proven": true,
+    "service_role_fanout_refused": true,
+    "realtime_provider_turn_on_observed": false,
+    "presence_mutation_allowed": false,
+    "typing_indicator_allowed": false,
+    "websocket_fanout_allowed": false,
+    "production_delivery_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "messageRealtimeCutoverPreflightUrl",
+    "projection_url_var": "messageRealtimeCutoverPreflightProjectionUrl",
+    "delivery_replay_url_var": "messageDeliveryReplayBatchUrl",
+    "delivery_replay_projection_url_var": "messageDeliveryReplayBatchProjectionUrl",
+    "subscription_isolation_url_var": "messageSubscriptionIsolationCheckUrl",
+    "subscription_isolation_projection_url_var": "messageSubscriptionIsolationCheckProjectionUrl",
+    "service_role_refusal_url_var": "messageServiceRoleFanoutRefusalUrl",
+    "service_role_refusal_projection_url_var": "messageServiceRoleFanoutRefusalProjectionUrl",
+    "handler": "requestGovernedMessageRealtimeCutoverPreflight",
+    "delivery_replay_handler": "recordGovernedMessageDeliveryReplay",
+    "subscription_isolation_handler": "checkGovernedMessageSubscriptionIsolation",
+    "service_role_refusal_handler": "refuseGovernedMessageServiceRoleFanout",
+    "button_class": "message-realtime-preflight",
+    "aria_label": "Check governed Message realtime readiness",
+    "fetch_count": 10
+  },
+  "checks": ["make message-realtime-cutover-preflight-check", "cargo test -p mdx-core message_realtime_cutover_preflight", "cargo test -p mdx-server message_realtime_cutover_preflight"]
+}

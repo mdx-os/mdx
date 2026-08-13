@@ -1,0 +1,36 @@
+{
+  "name": "mdx-harness-runway",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-RUNWAY.md",
+  "north_star": "docs/HARNESS-NORTH-STAR.md",
+  "status": "READY-LOCAL-CONTRACT",
+  "current_truth": {
+    "rust_harness_foundation": "LIVE-LOCAL",
+    "forge_local_orchestrator": "LIVE-LOCAL-BLOCKED",
+    "forge_frontend": "LIVE-LOCAL-READ-SURFACE",
+    "run_manifest": "READY-LOCAL-CONTRACT",
+    "local_plan_runner": "LIVE-LOCAL-PLAN-ONLY",
+    "transcript_replay": "LIVE-LOCAL-AUDIT-REPLAY",
+    "tool_execution_plane": "LIVE-LOCAL-READ-SEARCH-LIST-PATCH",
+    "provider_coding_loop": "LIVE-LOCAL-FAIL-CLOSED",
+    "local_driver_strategy": "READY-LOCAL-DECISION", "model_gateway_local_driver": "LIVE-LOCAL-CONFORMANCE", "memory_store_local_driver": "LIVE-LOCAL-CONFORMANCE", "workflow_runner_local_driver": "LIVE-LOCAL-CONFORMANCE",
+    "durable_workers": "PENDING-LIVE-RUN"
+  },
+  "gate_order": [
+    { "id": "contract_promotion", "status": "DONE-LOCAL", "done_when": "north star, runway, source map, check, ADR, and draft cleanup are committed together." },
+    { "id": "run_manifest", "status": "DONE-LOCAL-CONTRACT", "done_when": "typed harness run admission schema exists with tenant, actor, surface, mode, scope, policy profile, enterprise pack, budget, quality gates, and exit criteria." },
+    { "id": "local_plan_runner", "status": "LIVE-LOCAL-PLAN-ONLY", "done_when": "deterministic local plan-only runner emits a plan item, policy decision, receipt, and write refusal proof." },
+    { "id": "transcript_replay", "status": "LIVE-LOCAL-AUDIT-REPLAY", "done_when": "append-only run items support audit replay from durable local artifacts." },
+    { "id": "safe_tool_plane", "status": "LIVE-LOCAL-READ-SEARCH-LIST-PATCH", "done_when": "read/search/list and first patch or test tools are policy mediated, capped, redacted, timed, and receipt-backed." },
+    { "id": "provider_gateway", "status": "LIVE-LOCAL-FAIL-CLOSED", "done_when": "coding-turn model profiles route through deterministic tests and fail-closed live adapters." },
+    { "id": "local_driver_ports", "status": "READY-LOCAL-DECISION", "done_when": "ModelGateway, MemoryStore, and WorkflowRunner use one governed contract per capability, local Rust defaults, vendor slots, driver identity in receipts, and conformance gates." },
+    { "id": "model_gateway_local_driver", "status": "LIVE-LOCAL-CONFORMANCE", "done_when": "the local Rust ModelGateway satisfies the same governed contract and receipt shape as any vendor driver without live provider calls." },
+    { "id": "memory_store_local_driver", "status": "LIVE-LOCAL-CONFORMANCE", "done_when": "the local MemoryStore satisfies the same governed contract and receipt shape as any vendor memory driver." },
+    { "id": "workflow_runner_local_driver", "status": "LIVE-LOCAL-CONFORMANCE", "done_when": "the local Rust WorkflowRunner satisfies the same governed contract and receipt shape as any durable workflow driver." },
+    { "id": "durable_workers", "status": "PENDING-LIVE-RUN", "done_when": "workers execute with sponsor, scope, expiry, budget, credentials, handoff evidence, and retirement." },
+    { "id": "live_substrates", "status": "PENDING-LIVE-RUN", "done_when": "Temporal, provider gateway, memory, telemetry, Render, and deployment are turned on only through observed evidence receipts." }
+  ],
+  "hard_stops": ["do not create a new crate before the mdx-core harness module has independent tests and a clear ownership boundary", "do not treat generated contracts, docs, or plans as execution authority without a receipt-backed policy admission", "do not store canonical runtime state in .mdx-local; it is ignored local proof evidence only", "do not treat vendor turn-on as a prerequisite for governed local action when a conforming local driver exists", "do not run external machines before a fail-closed local adapter denial proof exists", "do not mark live substrate, worker, provider, or ship claims green without observed evidence"],
+  "preferred_next_work_item": "harness_model_gateway_local_driver",
+  "checks": ["make harness-runway-check", "make harness-run-manifest-check", "make harness-local-plan-runner-check", "make harness-transcript-replay-check", "make harness-safe-tool-plane-check", "make harness-provider-gateway-check", "make harness-policy-profiles-check", "make model-gateway-driver-check", "make memory-store-driver-check", "make workflow-runner-driver-check", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

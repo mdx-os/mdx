@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/execution-target.schema.json",
+  "title": "ExecutionTarget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "target_id", "tenant_id", "display_name", "capability_revision"],
+  "properties": {
+    "kind": { "enum": ["paired_host", "mdx_cloud", "customer_managed"] },
+    "target_id": { "type": "string", "minLength": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "display_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "capability_revision": { "type": "integer", "minimum": 1 }
+  }
+}

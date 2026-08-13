@@ -1,0 +1,17 @@
+{
+  "name": "mdx-pages-template-registry",
+  "registry_version": 1,
+  "human_line": "Nine shapes for company knowledge - each declares its scaffold, its must-have sections, and how often it deserves a fresh look. The editor names what is missing; it never blocks words.",
+  "review_rule_for_all": "draft on the record, a human approves, then publish - the same governed rail every page rides",
+  "templates": [
+    { "id": "decision_record", "title": "Decision record", "line": "what was decided, and why", "review_interval_days": 180, "required_sections": ["Decision", "Why", "Consequences"], "scaffold": "# Decision: \n\n## Decision\n\n## Why\n\n## Consequences\n" },
+    { "id": "architecture_note", "title": "Architecture note", "line": "how a piece of the system is shaped", "review_interval_days": 90, "required_sections": ["Shape", "Boundaries", "Failure modes"], "scaffold": "# Architecture: \n\n## Shape\n\n## Boundaries\n\n## Failure modes\n" },
+    { "id": "operating_procedure", "title": "Operating procedure", "line": "how we do a thing, step by step", "review_interval_days": 90, "required_sections": ["When to use", "Steps", "Rollback"], "scaffold": "# Procedure: \n\n## When to use\n\n## Steps\n\n1. \n\n## Rollback\n" },
+    { "id": "onboarding_guide", "title": "Onboarding guide", "line": "what a new person needs on day one", "review_interval_days": 60, "required_sections": ["Start here", "First week"], "scaffold": "# Onboarding: \n\n## Start here\n\n## First week\n" },
+    { "id": "incident_review", "title": "Incident review", "line": "what broke, what we learned", "review_interval_days": 365, "required_sections": ["What happened", "Impact", "What we changed"], "scaffold": "# Incident: \n\n## What happened\n\n## Impact\n\n## What we changed\n" },
+    { "id": "policy", "title": "Policy", "line": "a rule the company holds itself to", "review_interval_days": 180, "required_sections": ["The rule", "Scope", "Exceptions"], "scaffold": "# Policy: \n\n## The rule\n\n## Scope\n\n## Exceptions\n" },
+    { "id": "product_brief", "title": "Product brief", "line": "what we are building and for whom", "review_interval_days": 60, "required_sections": ["Problem", "Who it serves", "Shape of the answer"], "scaffold": "# Brief: \n\n## Problem\n\n## Who it serves\n\n## Shape of the answer\n" },
+    { "id": "runbook", "title": "Runbook", "line": "what to do when the pager goes off", "review_interval_days": 90, "required_sections": ["Symptoms", "Checks", "Fixes"], "scaffold": "# Runbook: \n\n## Symptoms\n\n## Checks\n\n## Fixes\n" },
+    { "id": "forge_build_handoff", "title": "Forge build handoff", "line": "what a build did, where its receipts are", "review_interval_days": 365, "required_sections": ["What was built", "Receipts", "What is next"], "scaffold": "# Handoff: \n\n## What was built\n\n## Receipts\n\n## What is next\n" }
+  ]
+}

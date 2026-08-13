@@ -1,0 +1,78 @@
+{
+  "name": "mdx-studio-runtime-steering-contract",
+  "mode": "deterministic-local",
+  "source": "docs/STUDIO-RUNTIME-STEERING-CONTRACT.md",
+  "parent_contract": "docs/STUDIO-WORK-KIND-CONTRACT.md",
+  "status": "CONTRACT-DECLARED-SLICE-2",
+  "product_surface": "studio",
+  "scope": "Declare pause, steering, and resume semantics before kernel, HTTP, projection, or UI implementation.",
+  "current_slice": "2a",
+  "route_status": "PLANNED-NOT-ROUTED",
+  "runtime_states": [
+    "opened",
+    "kind_selected",
+    "drafting",
+    "pause_requested",
+    "paused",
+    "steering_recorded",
+    "resume_requested",
+    "resumed",
+    "artifact_drafted",
+    "landed",
+    "failed",
+    "canceled"
+  ],
+  "terminal_states": ["landed", "failed", "canceled"],
+  "state_rules": [
+    "Pause, steering, and resume are refused after a terminal state.",
+    "A paused run has not landed a new Pages publication.",
+    "Refusal records evidence and performs no partial execution."
+  ],
+  "steering_receipts": [
+    "studio.run.pause.requested",
+    "studio.run.pause.accepted",
+    "studio.run.steering.added",
+    "studio.run.resume.requested",
+    "studio.run.resume.accepted",
+    "studio.run.steering.refused"
+  ],
+  "steering_payload": {
+    "required": ["run_id", "operator_id", "idempotency_key", "instruction", "target_scope", "reason", "source_refs"],
+    "allowed": ["operator intent", "source references", "constraints", "review notes"],
+    "forbidden": ["replacement document body", "pages publication bypass", "automatic kind change", "code work inside Studio", "production write override", "live co-edit channel"]
+  },
+  "planned_routes": [
+    { "method": "POST", "path": "/studio/runs/{run_id}/pause.json", "status": "PLANNED-NOT-ROUTED" },
+    { "method": "POST", "path": "/studio/runs/{run_id}/steering.json", "status": "PLANNED-NOT-ROUTED" },
+    { "method": "POST", "path": "/studio/runs/{run_id}/resume.json", "status": "PLANNED-NOT-ROUTED" },
+    { "method": "GET", "path": "/studio/runs/projection.json", "status": "LIVE-LOCAL-READ-PROJECTION" }
+  ],
+  "projection_must_expose": [
+    "current run state",
+    "allowed next controls",
+    "steering receipt ids",
+    "landed Pages publication only after pages.document.published exists"
+  ],
+  "idempotency": {
+    "required": true,
+    "same_key_same_payload": "return existing control receipt",
+    "same_key_different_payload": "refuse",
+    "landing_rule": "Replay must never create a second pages.document.published receipt for the same landing."
+  },
+  "authority_boundary": {
+    "standalone_document_store_allowed": false,
+    "auto_kind_select_allowed": false,
+    "code_kind_in_studio_allowed": false,
+    "live_co_edit_allowed": false,
+    "production_write_allowed": false,
+    "terminal_run_steering_allowed": false
+  },
+  "implementation_order": [
+    { "slice": "2a", "scope": "runtime steering contract plus generated check" },
+    { "slice": "2b", "scope": "kernel state machine and receipt tests" },
+    { "slice": "2c", "scope": "HTTP pause, steering, resume routes and projection fields" },
+    { "slice": "2d", "scope": "Studio UI controls using one primary governed verb at a time" },
+    { "slice": "2e", "scope": "connector source binding after steering can pause and resume safely" }
+  ],
+  "checks": ["make studio-runtime-steering-contract-check", "make studio-work-kind-contract-check"]
+}

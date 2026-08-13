@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/ui-panel.schema.json",
+  "title": "MDx UI Panel Declaration",
+  "type": "object",
+  "required": ["surface", "role_modes", "declared_sources"],
+  "properties": {
+    "surface": { "type": "string" },
+    "role_modes": { "type": "array", "items": { "type": "string" } },
+    "declared_sources": { "type": "array", "items": { "type": "string" } }
+  }
+}
+

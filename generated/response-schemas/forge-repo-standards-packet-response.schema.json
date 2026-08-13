@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeRepoStandardsPacketResponse",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "repo_id", "label", "repo_receipt_id", "repo_index_receipt_id", "profile_source", "language_pack_id", "standards_sources", "standards_source_fingerprints", "standards_source_summaries", "obligation_count", "obligations", "safe_next_move", "review_packet_route", "repo_readiness_route", "pr_handoff_route", "raw_standards_content_recorded", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "approval_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-standards-packet" },
+        "status": { "enum": ["STANDARDS_PACKET_READY", "NO_STANDARDS_DETECTED"] },
+        "repo_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "repo_receipt_id": { "type": "string", "minLength": 1 },
+        "repo_index_receipt_id": { "type": "string" },
+        "profile_source": { "enum": ["repo_index_cached", "computed_live"] },
+        "language_pack_id": { "type": "string", "minLength": 1 },
+        "standards_sources": { "type": "array", "items": { "type": "string" } },
+        "standards_source_fingerprints": { "type": "array", "items": { "type": "string", "pattern": "^[^=]+=fnv1a64:[0-9a-f]{16}$" } },
+        "standards_source_summaries": { "type": "array", "items": { "type": "string", "pattern": "^[^=]+=[a-z0-9_+]+$" } },
+        "obligation_count": { "type": "integer", "minimum": 0 },
+        "obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source", "tag", "review_axis", "worker_instruction", "must_read_source_before_claiming_compliance", "grants_authority"],
+            "properties": {
+              "source": { "type": "string", "minLength": 1 },
+              "tag": { "type": "string", "minLength": 1 },
+              "review_axis": { "type": "string", "minLength": 1 },
+              "worker_instruction": { "type": "string", "minLength": 1 },
+              "must_read_source_before_claiming_compliance": { "const": true },
+              "grants_authority": { "const": false }
+            }
+          }
+        },
+        "safe_next_move": { "type": "string", "minLength": 1 },
+        "review_packet_route": { "const": "/forge/review-packet.json" },
+        "repo_readiness_route": { "const": "/forge/repo-readiness.json" },
+        "pr_handoff_route": { "const": "/forge/pr-handoffs.json" },
+        "raw_standards_content_recorded": { "const": false },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "approval_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "reason", "raw_standards_content_recorded", "provider_calls_allowed", "adapter_execution_allowed", "run_started", "approval_allowed", "production_write_allowed"],
+      "properties": {
+        "name": { "const": "mdx-forge-repo-standards-packet" },
+        "status": { "const": "REFUSED" },
+        "reason": { "type": "string", "minLength": 1 },
+        "raw_standards_content_recorded": { "const": false },
+        "provider_calls_allowed": { "const": false },
+        "adapter_execution_allowed": { "const": false },
+        "run_started": { "const": false },
+        "approval_allowed": { "const": false },
+        "production_write_allowed": { "const": false }
+      }
+    }
+  ]
+}

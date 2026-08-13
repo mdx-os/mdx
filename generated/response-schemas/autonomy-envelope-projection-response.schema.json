@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AutonomyEnvelopeProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "source_projection", "source_receipt_kinds", "envelope_count", "active_envelope_count", "amended_envelope_count", "revoked_envelope_count", "expired_envelope_count", "active_authorization", "safe_default_note", "human_summary", "envelopes", "read_only", "writes_allowed", "execution_allowed", "deployment_authority_granted", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-autonomy-envelope-projection" },
+    "status": { "const": "OK" },
+    "source_projection": { "type": "string", "minLength": 1 },
+    "source_receipt_kinds": { "type": "array", "items": { "type": "string" } },
+    "envelope_count": { "type": "integer", "minimum": 0 },
+    "active_envelope_count": { "type": "integer", "minimum": 0 },
+    "amended_envelope_count": { "type": "integer", "minimum": 0 },
+    "revoked_envelope_count": { "type": "integer", "minimum": 0 },
+    "expired_envelope_count": { "type": "integer", "minimum": 0 },
+    "active_authorization": { "type": "boolean" },
+    "safe_default_note": { "type": "string", "minLength": 1 },
+    "human_summary": { "type": "string", "minLength": 1 },
+    "envelopes": { "type": "array", "items": { "type": "object" } },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

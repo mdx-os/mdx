@@ -1,0 +1,16 @@
+{
+  "name": "mdx-harness-local-plan-runner",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-LOCAL-PLAN-RUNNER.md",
+  "status": "LIVE-LOCAL-PLAN-ONLY",
+  "runtime": "mdx_core::LocalHarnessPlanRunner",
+  "manifest_contract": "docs/HARNESS-RUN-MANIFEST-CONTRACT.md",
+  "generated_manifest_contract": "generated/architecture/harness-run-manifest-contract.json",
+  "entrypoints": ["mdx_core::LocalHarnessPlanRunner::run_plan_only", "mdx_core::MdxKernel::run_harness_plan_only"],
+  "receipt_kinds": ["harness.run.admitted", "harness.plan.emitted", "harness.write.refused"],
+  "policy_receipt_kind": "loop.action.policy_decided",
+  "status_outcome": "PLAN_ONLY_COMPLETED",
+  "forbidden_capabilities": ["no file writes", "no shell execution", "no git commands", "no patch application", "no browser automation", "no MCP startup", "no network access", "no live model provider calls", "no external machines", "no worker spawn"],
+  "next_gate": "transcript_replay",
+  "checks": ["make harness-local-plan-runner-check", "make harness-run-manifest-check", "make harness-runway-check", "cargo test -p mdx-core", "make source-map-check", "make verification-manifest-check", "make local-smoke"]
+}

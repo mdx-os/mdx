@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "tenant_id",
+    "trace_id",
+    "actor_id",
+    "loop_id",
+    "workflow_id",
+    "kind",
+    "receipt_timestamp",
+    "hash_version",
+    "hash"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string" },
+    "tenant_id": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "actor_id": { "type": "string" },
+    "loop_id": { "type": "string" },
+    "workflow_id": { "type": "string" },
+    "kind": { "type": "string" },
+    "receipt_timestamp": { "type": "string" },
+    "hash_version": { "type": "integer", "minimum": 1 },
+    "hash": { "type": "string" }
+  }
+}

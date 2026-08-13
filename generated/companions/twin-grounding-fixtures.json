@@ -1,0 +1,13 @@
+{
+  "name": "mdx-twin-grounding-fixtures",
+  "mode": "deterministic-local",
+  "source_manifest": "generated/agents/mdx-agent-populations.json",
+  "companions": [
+    { "id": "twin_advisor", "role": "advisor", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin"], "grounding_sources": ["ledger_entries", "eval_verdicts", "charter_records"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] },
+    { "id": "twin_architect", "role": "architect", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin"], "grounding_sources": ["ledger_entries", "loop_runs", "policy_decisions", "charter_records"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] },
+    { "id": "twin_coach", "role": "coach", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin"], "grounding_sources": ["ledger_entries", "eval_verdicts", "memory_records"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] },
+    { "id": "twin_coder", "role": "coder", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin", "forge"], "grounding_sources": ["ledger_entries", "loop_runs", "forge_runs", "policy_decisions", "eval_verdicts"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] },
+    { "id": "twin_compliance", "role": "compliance", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin"], "grounding_sources": ["ledger_entries", "policy_decisions", "charter_records"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] },
+    { "id": "twin_problem_solver", "role": "problem_solver", "runtime_status": "PENDING-LIVE-RUN", "autonomy_ceiling": "READ_ONLY_GROUNDED", "receipt_evidence_required": true, "allowed_surfaces": ["concierge", "twin"], "grounding_sources": ["ledger_entries", "loop_runs", "eval_verdicts"], "forbidden_actions": ["run_loop", "spawn_worker", "mint_credential", "live_spend", "production_deploy"] }
+  ]
+}

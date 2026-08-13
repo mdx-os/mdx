@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ReadShadowDryRunResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "service_role_runtime_allowed", "credential_export_allowed", "production_cutover_allowed", "surface_count", "query_count", "query_manifest", "evidence_packet_template", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-read-shadow-dry-run" },
+    "route": { "const": "/v1/read-shadow-dry-run.json" },
+    "status": { "const": "DRY_RUN_READY_LIVE_READ_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "credential_export_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "surface_count": { "const": 6 },
+    "query_count": { "const": 12 },
+    "query_manifest": {
+      "type": "object",
+      "required": ["name", "status", "surfaces", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_production_read_shadow_query_manifest" },
+        "status": { "const": "QUERY_MANIFEST_DECLARED_NOT_EXECUTED" },
+        "surfaces": { "type": "array", "minItems": 6 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["live_read_allowed", "row_payload_allowed", "production_write_allowed"],
+          "properties": {
+            "live_read_allowed": { "const": false },
+            "row_payload_allowed": { "const": false },
+            "production_write_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "evidence_packet_template": {
+      "type": "object",
+      "required": ["name", "status", "required_surface_results", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_production_read_shadow_evidence_packet" },
+        "status": { "const": "TEMPLATE_DECLARED_NOT_EXECUTED" },
+        "required_surface_results": { "type": "array", "minItems": 6 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["live_read_observed", "row_payload_observed", "production_write_observed"],
+          "properties": {
+            "live_read_observed": { "const": false },
+            "row_payload_observed": { "const": false },
+            "production_write_observed": { "const": false }
+          }
+        }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "service_role_runtime_allowed", "credential_export_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "credential_export_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

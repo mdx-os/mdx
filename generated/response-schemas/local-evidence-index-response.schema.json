@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LocalEvidenceIndexResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "mode", "status", "observed_at", "activation", "ui_smoke", "evidence_file", "notes"],
+  "properties": {
+    "name": { "const": "mdx-local-evidence-index" },
+    "mode": { "const": "local-only-ignored" },
+    "status": { "const": "OK" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "evidence_file": { "const": ".mdx-local/evidence-index.json" },
+    "activation": {
+      "type": "object",
+      "required": ["status", "git"],
+      "properties": {
+        "status": { "const": "OK" },
+        "git": {
+          "type": "object",
+          "required": ["revision", "branch", "dirty"],
+          "properties": {
+            "revision": { "type": "string", "minLength": 1 },
+            "branch": { "type": "string", "minLength": 1 },
+            "dirty": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "ui_smoke": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["app", "status"],
+        "properties": {
+          "app": { "type": "string", "minLength": 1 },
+          "status": { "const": "OK" }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["app"], "properties": { "app": { "const": "observatory" } } } },
+        { "contains": { "type": "object", "required": ["app"], "properties": { "app": { "const": "concierge" } } } },
+        { "contains": { "type": "object", "required": ["app"], "properties": { "app": { "const": "twin" } } } }
+      ]
+    },
+    "runtime": { "type": ["object", "null"] },
+    "http_smoke": { "type": ["object", "null"] },
+    "api_index_check": { "type": ["object", "null"] },
+    "auth_session_check": { "type": ["object", "null"] },
+    "dev_stack": { "type": ["object", "null"] },
+    "dogfood": { "type": ["object", "null"] },
+    "forge_operator_projection": { "type": ["object", "null"] },
+    "harness_inspection_route": { "type": ["object", "null"] },
+    "forge_operator_projection_route": { "type": ["object", "null"] },
+    "forge_operator_workspace_route": { "type": ["object", "null"] },
+    "forge_operator_briefing_route": { "type": ["object", "null"] },
+    "operational_handoff": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["status", "handoff_status"],
+          "properties": {
+            "status": { "const": "OK" },
+            "handoff_status": { "const": "LOCAL-READY" }
+          }
+        }
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "contains": { "const": "local-only ignored artifact" }
+    }
+  }
+}

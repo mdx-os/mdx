@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TwinModelGatewayProviderObservationLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "writes_route", "read_only", "provider_slot_count", "observation_count", "accepted_observation_count", "provider_connected_local_allowed", "provider_call_allowed_now", "live_network_allowed_now", "credential_values_recorded", "provider_secret_values_recorded", "output_text_recorded", "production_write_allowed", "providers", "observations"],
+  "properties": {
+    "name": { "const": "mdx-twin-model-gateway-provider-observation-projection" },
+    "status": { "const": "OK" },
+    "route": { "const": "/twin/model-gateway-provider-observations/projection.json" },
+    "writes_route": { "const": "/twin/model-gateway-provider-observations.json" },
+    "read_only": { "const": true },
+    "provider_slot_count": { "const": 7 },
+    "observation_count": { "type": "integer", "minimum": 0 },
+    "accepted_observation_count": { "type": "integer", "minimum": 0 },
+    "provider_connected_local_allowed": { "type": "boolean" },
+    "provider_call_allowed_now": { "type": "boolean" },
+    "live_network_allowed_now": { "type": "boolean" },
+    "credential_values_recorded": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "output_text_recorded": { "const": false },
+    "production_write_allowed": { "const": false },
+    "providers": { "type": "array", "minItems": 6 },
+    "observations": { "type": "array" }
+  }
+}

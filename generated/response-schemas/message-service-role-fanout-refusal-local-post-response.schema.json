@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageServiceRoleFanoutRefusalLocalPostResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_required", "auth_session_status", "auth_session_route", "writes_route", "projection_route", "service_role_fanout_refusal_id", "service_role_fanout_refusal_receipt_id", "policy_decision_id", "realtime_preflight_receipt_id", "refusal_reason", "service_role_fanout_refused", "presence_mutation_allowed", "typing_indicator_allowed", "production_delivery_allowed", "live_substrate_required", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-message-service-role-fanout-refusal-local-post" },
+    "status": { "const": "SERVICE_ROLE_FANOUT_REFUSED_LOCAL_ONLY" },
+    "auth_session_required": { "const": true },
+    "auth_session_status": { "enum": ["ACCEPTED_LOCAL_STUB", "VERIFIED_TRUSTED_SESSION"] },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/messages/service-role-fanout-refusals.json" },
+    "projection_route": { "const": "/messages/service-role-fanout-refusals/projection.json" },
+    "service_role_fanout_refusal_id": { "type": "string", "minLength": 1 },
+    "service_role_fanout_refusal_receipt_id": { "type": "string", "minLength": 1 },
+    "policy_decision_id": { "type": "string", "minLength": 1 },
+    "realtime_preflight_receipt_id": { "type": "string", "minLength": 1 },
+    "refusal_reason": { "type": "string", "minLength": 1 },
+    "service_role_fanout_refused": { "const": true },
+    "presence_mutation_allowed": { "const": false },
+    "typing_indicator_allowed": { "const": false },
+    "production_delivery_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_write_allowed": { "const": false }
+  }
+}

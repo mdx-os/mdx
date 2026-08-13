@@ -1,0 +1,29 @@
+{
+  "name": "mdx-message-presence-request-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-PRESENCE-REQUEST-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/messages/presence-requests.json",
+  "projection_route": "/messages/presence-requests/projection.json",
+  "required_receipt_kind": "message.presence.requested",
+  "source_receipt_kind": "message.fanout.requested",
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "presence_request_id", "fanout_request_receipt_id", "thread_id", "channel_id", "presence_scope"],
+  "authority_boundary": {
+    "realtime_presence_allowed": false,
+    "websocket_fanout_allowed": false,
+    "typing_indicator_allowed": false,
+    "provider_call_allowed": false,
+    "production_delivery_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "messagePresenceRequestUrl",
+    "projection_url_var": "messagePresenceRequestProjectionUrl",
+    "handler": "requestGovernedMessagePresence",
+    "button_class": "message-request-presence",
+    "aria_label": "Request governed Message presence",
+    "fetch_count": 8
+  },
+  "checks": ["make message-presence-request-check", "cargo test -p mdx-core message_presence_request", "cargo test -p mdx-server message_presence_request"]
+}

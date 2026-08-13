@@ -1,0 +1,27 @@
+{
+  "name": "@mdx/mdx-host",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "dev": "vite dev --host 127.0.0.1 --port 5182",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5183",
+    "smoke": "node scripts/smoke-check.mjs"
+  },
+  "dependencies": {
+    "@mdx/client": "workspace:*",
+    "@mdx/ui": "workspace:*",
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.7",
+    "@sveltejs/adapter-node": "^5.5.7",
+    "@sveltejs/kit": "^2.70.2",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
+    "svelte": "^5.56.4",
+    "vite": "^8.1.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}

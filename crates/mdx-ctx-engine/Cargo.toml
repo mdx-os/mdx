@@ -1,0 +1,16 @@
+[package]
+name = "mdx-ctx-engine"
+version = "0.1.0"
+description = "Local Rust context assembly runtime for governed MDx CTX."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+mdx-core = { path = "../mdx-core" }
+serde_json = "1"
+
+[[bin]]
+name = "mdx-ctx-engine"
+path = "src/main.rs"

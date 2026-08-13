@@ -1,0 +1,7 @@
+{
+  "agent": "evals_runner_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["run_local_eval_suite", "grade_trace", "mint_or_withhold_credential", "write_memory_consolidation_decision", "write_charter_evidence"],
+  "forbidden_actions": ["live_spend", "production_deploy", "external_model_call_without_adapter"]
+}

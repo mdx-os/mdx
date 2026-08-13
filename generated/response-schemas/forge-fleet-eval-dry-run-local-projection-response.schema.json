@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeFleetEvalDryRunLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "writes_route", "result_ingestion_route", "scoreboard_route", "score_count", "coverage", "live_provider_calls_allowed", "live_provider_calls_performed", "provider_credentials_required_for_live", "ready_for_live_credentials", "accepted_for_scoreboard_count", "blocked_reason", "scores"],
+  "properties": {
+    "name": { "const": "mdx-forge-fleet-eval-dry-run-local-projection" },
+    "status": { "const": "OK" },
+    "route": { "const": "/forge/fleet-eval-dry-runs/projection.json" },
+    "writes_route": { "const": "/forge/fleet-eval-dry-runs.json" },
+    "result_ingestion_route": { "const": "/forge/fleet-eval-results.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "score_count": { "type": "integer", "minimum": 0 },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_language_task_count", "language_task_count", "expected_model_profile_count", "model_profile_count", "expected_score_count", "score_count", "language_pack_count", "provider_family_count", "full_matrix_staged", "language_packs", "provider_families", "production_write_allowed"],
+      "properties": {
+        "expected_language_task_count": { "const": 30 },
+        "language_task_count": { "type": "integer", "minimum": 0 },
+        "expected_model_profile_count": { "const": 12 },
+        "model_profile_count": { "type": "integer", "minimum": 0 },
+        "expected_score_count": { "const": 360 },
+        "score_count": { "type": "integer", "minimum": 0 },
+        "language_pack_count": { "type": "integer", "minimum": 0 },
+        "provider_family_count": { "type": "integer", "minimum": 0 },
+        "full_matrix_staged": { "type": "boolean" },
+        "language_packs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "provider_families": {
+          "type": "array",
+          "items": { "enum": ["openai", "gemini", "anthropic", "xai", "aws_bedrock"] }
+        },
+        "production_write_allowed": { "const": false }
+      }
+    },
+    "live_provider_calls_allowed": { "const": false },
+    "live_provider_calls_performed": { "const": false },
+    "provider_credentials_required_for_live": { "const": true },
+    "ready_for_live_credentials": { "const": true },
+    "accepted_for_scoreboard_count": { "const": 0 },
+    "blocked_reason": { "const": "dry_run_waiting_for_live_provider_keys" },
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dry_run_id", "submission_id", "benchmark_task_id", "language_task_corpus_id", "language_pack_id", "repo_family", "language_engineering_facets", "language_evaluation_oracle", "language_human_timebox_minutes", "language_contamination_policy", "hidden_check_slot", "artifact_noise_expected", "diff_language_pack_impact", "principal_engineer_verdict", "runner_id", "model_profile_id", "provider_family", "model_provider", "model_id", "score_receipt_id", "result_receipt_id", "correctness_score", "regression_test_quality_score", "patch_quality_score", "architecture_fit_score", "test_evidence_score", "security_and_policy_score", "maintainability_score", "observability_score", "performance_score", "migration_and_compatibility_score", "policy_score", "cost_score", "latency_score", "cost_latency_budget_score", "handoff_quality_score", "total_score", "live_provider_output_present", "mdx_quality_gates_passed", "accepted_for_scoreboard", "external_output_consumable", "blocked_reason"],
+        "properties": {
+          "dry_run_id": { "type": "string", "minLength": 1 },
+          "submission_id": { "type": "string", "minLength": 1 },
+          "benchmark_task_id": { "type": "string", "minLength": 1 },
+          "language_task_corpus_id": { "type": "string", "minLength": 1 },
+          "language_pack_id": { "type": "string", "minLength": 1 },
+          "repo_family": { "type": "string", "minLength": 1 },
+          "language_engineering_facets": { "type": "string", "minLength": 1 },
+          "language_evaluation_oracle": { "type": "string", "minLength": 1 },
+          "language_human_timebox_minutes": { "type": "integer", "minimum": 30 },
+          "language_contamination_policy": { "type": "string", "minLength": 1 },
+          "hidden_check_slot": { "type": "string", "minLength": 1 },
+          "artifact_noise_expected": { "type": "string", "minLength": 1 },
+          "diff_language_pack_impact": { "type": "string", "minLength": 1 },
+          "principal_engineer_verdict": { "type": "string", "minLength": 1 },
+          "runner_id": { "const": "codex_cli_external_worker" },
+          "model_profile_id": { "type": "string", "minLength": 1 },
+          "provider_family": { "enum": ["openai", "gemini", "anthropic", "xai", "aws_bedrock"] },
+          "model_provider": { "type": "string", "minLength": 1 },
+          "model_id": { "type": "string", "minLength": 1 },
+          "score_receipt_id": { "type": "string", "minLength": 1 },
+          "result_receipt_id": { "type": "string", "minLength": 1 },
+          "correctness_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "regression_test_quality_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "patch_quality_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "architecture_fit_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "test_evidence_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "security_and_policy_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "maintainability_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "observability_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "performance_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "migration_and_compatibility_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "policy_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "cost_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "latency_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "cost_latency_budget_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "handoff_quality_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "total_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "live_provider_output_present": { "const": false },
+          "mdx_quality_gates_passed": { "const": false },
+          "accepted_for_scoreboard": { "const": false },
+          "external_output_consumable": { "const": false },
+          "blocked_reason": { "const": "dry_run_waiting_for_live_provider_keys" }
+        }
+      }
+    }
+  }
+}

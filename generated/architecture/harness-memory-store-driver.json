@@ -1,0 +1,49 @@
+{
+  "name": "mdx-harness-memory-store-driver",
+  "mode": "deterministic-local",
+  "source": "docs/HARNESS-MEMORY-STORE.md",
+  "status": "LIVE-LOCAL-CONFORMANCE",
+  "local_default": {
+    "driver_id": "local_memory_store",
+    "provider": "InMemoryProvider",
+    "mode": "local",
+    "status": "LIVE-LOCAL-CONFORMANCE",
+    "persistence": "kernel_local_memory_plus_postgres_memory_records",
+    "durable_driver": "postgres_memory_records",
+    "durable_table": "memory_records",
+    "durable_status": "POSTGRES_DURABLE_MEMORY_SHAPE",
+    "receipt_driver_field": "memory_driver",
+    "live_substrate_required": false,
+    "live_database_write_allowed": false,
+    "production_write_allowed": false,
+    "vendor_swappable": true
+  },
+  "vendor_slots": [
+    {
+      "driver_id": "mem0_memory_store",
+      "provider": "Mem0MemoryProvider",
+      "mode": "vendor",
+      "status": "PENDING-LIVE-RUN",
+      "persistence": "external_mem0",
+      "durable_driver": "external_mem0",
+      "durable_table": "external_mem0",
+      "durable_status": "PENDING-LIVE-RUN",
+      "receipt_driver_field": "memory_driver",
+      "live_substrate_required": true,
+      "live_database_write_allowed": false,
+      "production_write_allowed": false,
+      "vendor_swappable": true
+    }
+  ],
+  "required_receipt_payload": ["source_receipt_id", "memory_driver", "memory_provider", "memory_durable_driver", "decision"],
+  "memory_episode_fields": ["episode_id", "memory_scope", "memory_tier", "decay_policy", "importance_score"],
+  "postgres_export_proof": {
+    "command": "cargo run -p mdx-server -- export-memory-store-sql",
+    "check": "make memory-store-postgres-export-check",
+    "writes_live_database": false,
+    "durable_driver": "postgres_memory_records",
+    "target_table": "memory_records"
+  },
+  "forbidden_local_capabilities": ["network", "provider_call", "worker_spawn", "shell_execution", "patch_application", "deployment", "production_write"],
+  "conformance_check": "make memory-store-driver-check"
+}

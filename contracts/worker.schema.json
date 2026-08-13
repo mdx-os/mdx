@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/worker.schema.json",
+  "title": "MDx Ephemeral Worker Declaration",
+  "type": "object",
+  "required": [
+    "id",
+    "population",
+    "runtime_status",
+    "scope_required",
+    "expiry_required",
+    "budget_required",
+    "tool_allowlist_required",
+    "receipt_evidence_required",
+    "spawn_request_required",
+    "spawn_request_receipt_required",
+    "spawn_request_receipt_kind",
+    "retirement_required",
+    "retirement_receipt_required",
+    "retirement_receipt_kind",
+    "parent_required",
+    "human_sponsor_chain_required",
+    "forbidden_actions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "population": {
+      "type": "string",
+      "const": "ephemeral_worker"
+    },
+    "runtime_status": {
+      "type": "string",
+      "const": "PENDING-LIVE-RUN"
+    },
+    "scope_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "expiry_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "budget_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "tool_allowlist_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "receipt_evidence_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "spawn_request_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "spawn_request_receipt_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "spawn_request_receipt_kind": {
+      "type": "string",
+      "const": "worker.spawn_requested"
+    },
+    "retirement_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "retirement_receipt_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "retirement_receipt_kind": {
+      "type": "string",
+      "const": "worker.retired"
+    },
+    "parent_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "human_sponsor_chain_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "role_title": {
+      "type": "string",
+      "description": "The role as a person would say it."
+    },
+    "bio": {
+      "type": "string",
+      "description": "One line of what this template is for, in people language."
+    }
+  },
+  "additionalProperties": false
+}

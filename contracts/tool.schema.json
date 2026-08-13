@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.local/contracts/tool.schema.json",
+  "title": "MDx Tool Declaration",
+  "type": "object",
+  "required": ["name", "risk", "policy_required", "receipt_required"],
+  "properties": {
+    "name": { "type": "string" },
+    "risk": { "enum": ["LOW", "MEDIUM", "HIGH"] },
+    "policy_required": { "type": "boolean", "const": true },
+    "receipt_required": { "type": "boolean", "const": true }
+  }
+}
+

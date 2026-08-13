@@ -1,0 +1,7 @@
+{
+  "agent": "forge_orchestrator_agent",
+  "tenant_scope": "single_tenant_local",
+  "autonomy_ceiling": "GUIDED",
+  "allowed_actions": ["accept_forge_spec", "record_stage_transition", "request_talent_delegation", "record_blocked_delegation_boundary"],
+  "forbidden_actions": ["direct_worker_spawn", "direct_git_mutation_without_worker_receipt", "bespoke_ide", "custom_ci_runner", "production_deploy", "live_spend", "bypass_policy"]
+}

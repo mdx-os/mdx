@@ -1,0 +1,40 @@
+{
+  "name": "mdx-learning-evidence-request-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define Learn's first write: record that an accountable actor asked for stronger evidence on a promotion judgment without promoting memory or applying adaptation.",
+  "writes_route": "/learning/evidence-requests.json",
+  "projection_route": "/learning/evidence-requests/projection.json",
+  "receipt_kind": "learning.evidence.requested",
+  "required_fields": [
+    "evidence_request_id",
+    "judgment_id",
+    "promotion_id",
+    "actor_id",
+    "reason",
+    "requested_evidence",
+    "evidence_request_receipt_id",
+    "policy_decision_id"
+  ],
+  "allowed_actions": [
+    {
+      "id": "ask_for_more_evidence",
+      "meaning": "Record that a candidate lesson needs more proof before judgment."
+    }
+  ],
+  "v0_boundaries": {
+    "records_judgment_signal": true,
+    "promotes_memory": false,
+    "applies_adaptation": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "requires_actor_admission": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make local-smoke"]
+}

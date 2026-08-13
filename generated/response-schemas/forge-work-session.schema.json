@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mdx.dev/schemas/forge-work-session.schema.json",
+  "title": "ForgeWorkSession",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "session_id", "session_version", "tenant_id", "owner_user_id", "repository_id", "source_revision", "goal", "state", "stage", "active_target", "target_history", "last_event_sequence", "replay_cursor", "needs_user", "created_at", "updated_at", "execution_authority_open", "deployment_authority_open"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "session_version": { "type": "integer", "minimum": 1 },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "owner_user_id": { "type": "string", "minLength": 1 },
+    "repository_id": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 7 },
+    "goal": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "state": { "enum": ["draft", "queued", "running", "paused", "needs_user", "review_ready", "completed", "failed", "stopped"] },
+    "stage": { "enum": ["intake", "orientation", "build", "check", "review", "handoff", "done"] },
+    "active_target": { "$ref": "execution-target.schema.json" },
+    "target_history": { "type": "array", "minItems": 1, "items": { "$ref": "execution-target.schema.json" } },
+    "last_event_sequence": { "type": "integer", "minimum": 0 },
+    "replay_cursor": { "type": "integer", "minimum": 0 },
+    "needs_user": { "type": "boolean" },
+    "latest_checkpoint_ref": { "type": ["string", "null"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "execution_authority_open": { "const": false },
+    "deployment_authority_open": { "const": false }
+  }
+}

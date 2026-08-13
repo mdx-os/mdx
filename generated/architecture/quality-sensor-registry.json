@@ -1,0 +1,48 @@
+{
+  "name": "mdx-quality-sensor-registry",
+  "mode": "deterministic-local",
+  "status": "CONTRACT-WIRED-LOCAL",
+  "doc": "docs/QUALITY-SENSOR-REGISTRY.md",
+  "tiers": ["inner_loop", "pre_pr", "scheduled_deep", "advisory_semantic"],
+  "authority_rules": {
+    "never_advisory": ["security", "receipt", "tenant", "authority"],
+    "semantic_default": "advisory - gate authority requires an explicit, recorded policy profile grant",
+    "skips_visible": "a skipped sensor is named in the verdict, never silent"
+  },
+  "runtime_wiring": {
+    "consumed_by": "crates/mdx-core/src/harness_pipeline.rs through crates/mdx-core/src/harness_sensors.rs",
+    "verdict_names": ["passed", "failed", "skipped"],
+    "in_process": ["no_fake_green", "product_copy_quiet"],
+    "external_truth_stays_with_make_targets": true,
+    "never_advisory_in_process_failure_blocks": true,
+    "never_advisory_external_deferral_surfaced_never_silent": true
+  },
+  "signal_shape": {
+    "success": "compact - sensor id, tier, pass",
+    "failure": "rich and actionable - what broke, where, and what would fix it"
+  },
+  "correction_rule": "when a human corrects the same class of mistake twice, the registry grows a deterministic sensor for it where possible",
+  "sensors": [
+    { "id": "rust_format", "tier": "inner_loop", "authority": "deterministic", "check": "cargo fmt --check", "domain": "code" },
+    { "id": "rust_lint", "tier": "inner_loop", "authority": "deterministic", "check": "cargo clippy --workspace --all-targets -- -D warnings", "domain": "code" },
+    { "id": "contract_battery", "tier": "inner_loop", "authority": "deterministic", "check": "cargo run -p xtask -- check", "domain": "contracts" },
+    { "id": "workspace_tests", "tier": "pre_pr", "authority": "deterministic", "check": "cargo test --workspace", "domain": "code" },
+    { "id": "generated_clean", "tier": "pre_pr", "authority": "deterministic", "check": "make generated-clean", "domain": "generated" },
+    { "id": "local_smoke", "tier": "pre_pr", "authority": "deterministic", "check": "make local-smoke", "domain": "runtime" },
+    { "id": "runtime_surface_sweep", "tier": "pre_pr", "authority": "deterministic", "check": "make local-http-smoke", "domain": "runtime" },
+    { "id": "security_invariants", "tier": "pre_pr", "authority": "never_advisory", "check": "make security-check", "domain": "security" },
+    { "id": "no_fake_green", "tier": "pre_pr", "authority": "never_advisory", "check": "cargo run -p xtask -- check-no-fake-green", "domain": "receipts" },
+    { "id": "product_copy_quiet", "tier": "pre_pr", "authority": "deterministic", "check": "make product-copy-quiet-check", "domain": "product_copy" },
+    { "id": "local_proof", "tier": "scheduled_deep", "authority": "deterministic", "check": "make local-proof", "domain": "runtime" },
+    { "id": "message_scale_smoke", "tier": "scheduled_deep", "authority": "deterministic", "check": "make message-scale-smoke", "domain": "scale" },
+    { "id": "screenshot_proof", "tier": "scheduled_deep", "authority": "deterministic", "check": "make ui-screenshot-proof && make ui-screenshot-proof-check", "domain": "ui" },
+    { "id": "taste_and_voice_review", "tier": "advisory_semantic", "authority": "advisory", "check": "model-judged against docs/UI-COPY-VOICE.md and the taste bar", "domain": "product_copy" },
+    { "id": "review_quality_judge", "tier": "advisory_semantic", "authority": "advisory", "check": "model-judged review of diff clarity and risk narration", "domain": "review" }
+  ],
+  "non_goals": [
+    "no semantic eval as hard authority by default",
+    "no second check runner - the registry points at make targets",
+    "no sensor claiming an unproven authority"
+  ],
+  "check": "make quality-sensor-registry-check"
+}

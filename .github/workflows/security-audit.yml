@@ -1,0 +1,216 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".github/dependabot.yml"
+      - ".gitleaks.toml"
+      - "security/**"
+      - "generated/security/**"
+      - "deploy/**"
+      - "docs/THREAT-MODEL.md"
+      - "docs/SECURITY-*.md"
+      - "scripts/security-audit.mjs"
+      - "scripts/security-audit-report.mjs"
+      - "scripts/security-trust-publish.mjs"
+      - "scripts/security-trust-publish-check.mjs"
+      - "scripts/rust-unsafe-inventory.mjs"
+      - "scripts/sbom-generate.mjs"
+      - "Cargo.lock"
+      - "Cargo.toml"
+      - "**/Cargo.toml"
+      - "pnpm-lock.yaml"
+      - "package-lock.json"
+      - "package.json"
+      - "**/package.json"
+      - "Dockerfile"
+      - "**/Dockerfile"
+      - "render.yaml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SECURITY_RUN_ID: security-${{ github.run_id }}-${{ github.run_attempt }}
+  GITLEAKS_VERSION: "8.28.0"
+  PIP_CACHE_DIR: ~/.cache/pip
+  TRIVY_CACHE_DIR: ~/.cache/trivy
+  SECURITY_TOOL_CACHE_VERSION: "2026-07-04"
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+        with:
+          toolchain: stable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: "1.26.x"
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare security tool path
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Cache security tools
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ~/.cargo/bin/cargo-audit
+            ~/.cargo/bin/cargo-deny
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/go/bin/osv-scanner
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/.cache/pip
+            ~/.cache/trivy
+            ~/.local/bin/gitleaks
+          key: security-tools-${{ runner.os }}-${{ env.SECURITY_TOOL_CACHE_VERSION }}-${{ hashFiles('Cargo.lock', 'pnpm-lock.yaml', 'security/scanner-policy.json', '.gitleaks.toml') }}
+          restore-keys: |
+            security-tools-${{ runner.os }}-${{ env.SECURITY_TOOL_CACHE_VERSION }}-
+            security-tools-${{ runner.os }}-
+
+      - name: Install cargo audit
+        run: |
+          if ! command -v cargo-audit >/dev/null 2>&1; then
+            cargo install cargo-audit --locked
+          fi
+          cargo audit --version
+
+      - name: Install cargo deny
+        run: |
+          if ! command -v cargo-deny >/dev/null 2>&1; then
+            cargo install cargo-deny --locked
+          fi
+          cargo deny --version
+
+      - name: Install OSV Scanner
+        run: |
+          if ! command -v osv-scanner >/dev/null 2>&1; then
+            go install github.com/google/osv-scanner/v2/cmd/osv-scanner@v2
+          fi
+          osv-scanner --version
+
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install --disable-pip-version-check --upgrade pip
+          python3 -m pip install --disable-pip-version-check semgrep
+          semgrep --version
+
+      - name: Install gitleaks
+        run: |
+          if ! command -v gitleaks >/dev/null 2>&1; then
+            curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tar.gz
+            tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+            install /tmp/gitleaks "$HOME/.local/bin/gitleaks"
+          fi
+          gitleaks version
+
+      - name: Install Trivy
+        run: |
+          if ! command -v trivy >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+            wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+            sudo apt-get update
+            sudo apt-get install -y trivy
+          fi
+          trivy --version
+
+      - name: Install Syft
+        id: syft
+        uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610
+
+      - name: Generate SBOM
+        env:
+          SYFT_BIN: ${{ steps.syft.outputs.cmd }}
+        run: make sbom-generate SBOM_ARGS="--run-id $SECURITY_RUN_ID"
+
+      - name: Run security audit
+        id: audit
+        run: |
+          set +e
+          make security-audit-nightly SECURITY_AUDIT_ARGS="--run-id $SECURITY_RUN_ID"
+          exit_code=$?
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload sanitized security artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: security-audit-${{ env.SECURITY_RUN_ID }}
+          path: |
+            audit/runs/${{ env.SECURITY_RUN_ID }}/manifest.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/scanner-health.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/findings.normalized.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/policy-verdict.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/summary.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/summary.md
+            audit/runs/${{ env.SECURITY_RUN_ID }}/sbom-manifest.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/sbom-summary.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/sbom-summary.md
+            audit/runs/${{ env.SECURITY_RUN_ID }}/sbom.cyclonedx.json
+            audit/runs/${{ env.SECURITY_RUN_ID }}/sbom.spdx.json
+            generated/security/mdx-security-trust.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Security audit summary
+        if: always()
+        run: |
+          echo "## Security Audit Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Run ID: \`$SECURITY_RUN_ID\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact path: \`audit/runs/$SECURITY_RUN_ID/\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runner exit code: \`${{ steps.audit.outputs.exit_code || 'not-run' }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "audit/runs/$SECURITY_RUN_ID/summary.md" ]; then
+            cat "audit/runs/$SECURITY_RUN_ID/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f "audit/runs/$SECURITY_RUN_ID/sbom-summary.md" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            cat "audit/runs/$SECURITY_RUN_ID/sbom-summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Enforce security policy verdict
+        if: always()
+        run: |
+          exit_code="${{ steps.audit.outputs.exit_code }}"
+          if [ -z "$exit_code" ]; then
+            echo "Security audit did not produce an exit code."
+            exit 1
+          fi
+          exit "$exit_code"

@@ -1,0 +1,5 @@
+{
+  "loop": "product_shaping_agent",
+  "agent": "product_shaping_agent",
+  "tests": ["policy_decision_before_product_signal_receipt", "receipt_for_each_product_shaping_transition", "shaped_bet_links_signal_receipt", "handoff_request_blocks_before_human_ratification", "product_never_sets_direction_directly", "product_shaping_stays_within_local_budget"]
+}

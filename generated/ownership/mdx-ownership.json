@@ -1,0 +1,28 @@
+{
+  "name": "mdx-ownership",
+  "mode": "deterministic-local",
+  "source": "docs/OWNERSHIP.md",
+  "codeowners": ".github/CODEOWNERS",
+  "default_owner": "@mdx-os/maintainers",
+  "boundaries": [
+    { "path": "crates/mdx-core/", "owner": "@mdx-os/maintainers", "boundary": "Core contracts, kernel semantics, policy, receipts, storage, providers, read models, and loop runtime", "primary_check": "make verify-budget" },
+    { "path": "crates/mdx-server/", "owner": "@mdx-os/maintainers", "boundary": "Local CLI and HTTP surfaces", "primary_check": "make verify-budget" },
+    { "path": "crates/mdx-codegen/", "owner": "@mdx-os/maintainers", "boundary": "Deterministic generated artifacts", "primary_check": "make generate" },
+    { "path": "xtask/", "owner": "@mdx-os/maintainers", "boundary": "Repo checks, invariant gates, and operating-discipline gates", "primary_check": "make verify-budget" },
+    { "path": "contracts/", "owner": "@mdx-os/maintainers", "boundary": "Shared JSON schemas for declarations, receipts, memory, credentials, and agent populations", "primary_check": "make verify-budget" },
+    { "path": "generated/", "owner": "@mdx-os/maintainers", "boundary": "Committed generated contracts and artifacts", "primary_check": "make generated-clean" },
+    { "path": "loops/", "owner": "@mdx-os/maintainers", "boundary": "Loop declarations, tools, tests, capability cards, UI declarations, and outbox declarations", "primary_check": "make loop-rails-check" },
+    { "path": "companions/", "owner": "@mdx-os/maintainers", "boundary": "Read-only-grounded companion archetype declarations", "primary_check": "make twin-grounding-check" },
+    { "path": "workers/", "owner": "@mdx-os/maintainers", "boundary": "Ephemeral worker declaration templates and bounded job rails", "primary_check": "make local-talent-worker-proof-check" },
+    { "path": "migrations/", "owner": "@mdx-os/maintainers", "boundary": "SQL migration contracts and live database turn-on path", "primary_check": "make migrate-check" },
+    { "path": "docs/", "owner": "@mdx-os/maintainers", "boundary": "ADRs, playbooks, onboarding, and operating discipline", "primary_check": "make operating-check" },
+    { "path": "specs/", "owner": "@mdx-os/maintainers", "boundary": "Canonical product and architecture specs", "primary_check": "make vision-check" },
+    { "path": ".github/", "owner": "@mdx-os/maintainers", "boundary": "CI, PR templates, and repository governance", "primary_check": "make verify-budget" }
+  ],
+  "rules": [
+    "read ownership before changing a path",
+    "generated artifacts are outputs, not hand-authored sources",
+    "core owns semantics",
+    "live provider code stays behind MDx-owned contracts"
+  ]
+}

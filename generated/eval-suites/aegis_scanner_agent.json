@@ -1,0 +1,5 @@
+{
+  "loop": "aegis_scanner_agent",
+  "agent": "aegis_scanner_agent",
+  "tests": ["policy_decision_before_security_scan", "receipt_for_each_aegis_transition", "finding_requires_scan_receipt", "charter_record_links_finding_receipt", "remediation_plan_links_charter_receipt", "aegis_stays_within_local_budget"]
+}

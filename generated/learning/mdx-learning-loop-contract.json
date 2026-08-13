@@ -1,0 +1,162 @@
+{
+  "name": "mdx-learning-loop-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "CONTRACT-V0",
+  "purpose": "Declare the MDx substrate that converts human intent, agent execution, durable traces, private evaluation, accountable judgment, memory, and governed adaptation into better next loops.",
+  "loop_order": [
+    {
+      "id": "intent",
+      "description": "The work the organization wants to move forward.",
+      "current_sources": ["Strategy direction", "Product bets", "Forge requests", "Pages documents", "feedback captures", "ratified next moves"]
+    },
+    {
+      "id": "context",
+      "description": "The retrieved institutional frame for the work.",
+      "current_sources": ["Pages", "ADRs", "source maps", "readiness manifests", "work queues", "standards", "run history", "model scorecards", "prior decisions"]
+    },
+    {
+      "id": "execution",
+      "description": "The agent or workflow attempt.",
+      "current_sources": ["Forge runs", "fleets", "Harness workers", "Twin sessions", "Message workstreams", "local drivers", "governed feedback autonomy"]
+    },
+    {
+      "id": "trace",
+      "description": "The durable record of what happened.",
+      "current_sources": ["run events", "policy decisions", "model calls", "tool calls", "diffs", "approvals", "refusals", "costs", "latency", "route proof", "receipts"]
+    },
+    {
+      "id": "evaluation",
+      "description": "The private judgment surface for whether the work improved the system.",
+      "current_sources": ["local checks", "UI proof", "route smoke", "review packets", "scorecards", "acceptance criteria", "risk registers"]
+    },
+    {
+      "id": "human_judgment",
+      "description": "The accountable decision that can approve, reject, revise, or override.",
+      "current_sources": ["ratification", "approval", "rejection", "revision requests", "ship decisions", "waiver decisions", "operator overrides"]
+    },
+    {
+      "id": "memory",
+      "description": "The promoted organizational knowledge.",
+      "current_sources": ["Pages", "decision records", "model track records", "work item history", "handoff notes", "source maps", "generated contracts"]
+    },
+    {
+      "id": "adaptation",
+      "description": "The changed behavior for the next loop.",
+      "current_sources": ["model routing candidates", "fleet casting candidates", "prompt shape candidates", "work slicing candidates", "guardrail candidates", "check selection candidates", "budget candidates", "review requirement candidates"]
+    },
+    {
+      "id": "next_intent",
+      "description": "The next work request shaped by promoted memory and approved adaptation.",
+      "current_sources": ["ratified next moves", "Forge admission", "work queue updates", "Pages-backed decisions"]
+    }
+  ],
+  "substrate_primitives": [
+    {
+      "id": "intent_record",
+      "role": "Names the human or product intent and the accountable owner before work begins."
+    },
+    {
+      "id": "context_packet",
+      "role": "Captures the Pages, ADRs, source maps, standards, and run history used by the agent."
+    },
+    {
+      "id": "trace_receipt",
+      "role": "Records model calls, tool calls, policy decisions, diffs, approvals, refusals, cost, latency, and route proof."
+    },
+    {
+      "id": "evaluation_verdict",
+      "role": "Connects the work to private checks, acceptance criteria, scorecards, and risk posture."
+    },
+    {
+      "id": "judgment_record",
+      "role": "Records the accountable human or policy decision that promotes, rejects, revises, or overrides the lesson."
+    },
+    {
+      "id": "memory_promotion",
+      "role": "Moves a lesson into Pages, decision records, generated contracts, source maps, or other MDx-owned memory."
+    },
+    {
+      "id": "adaptation_rule",
+      "role": "Names the approved behavior change for model routing, fleet casting, prompt shape, work slicing, guardrails, checks, budgets, or review depth."
+    }
+  ],
+  "promotion_rule": [
+    "trace is linked to an intent, context packet, execution receipt, evaluation result, and accountable judgment",
+    "adaptation names the behavior it changes and the surface that consumes the change",
+    "change is reversible or scoped behind an explicit approval boundary",
+    "source of truth is updated before generated artifacts are refreshed",
+    "local check proves the generated contract still matches the source"
+  ],
+  "current_strengths": [
+    "MDx already records many receipts, generated contracts, source maps, checks, and operator decisions.",
+    "Forge, Harness, fleets, Pages, Twin, Message, and Product already provide most raw ingredients for trace and evaluation.",
+    "The repo-as-truth posture supports model sovereignty because lessons can live in MDx-owned memory instead of provider behavior."
+  ],
+  "known_gaps": [
+    {
+      "id": "adaptation_not_yet_closed",
+      "description": "Traces and evaluations are not yet consistently promoted into changed model routing, fleet casting, checks, budgets, or review depth."
+    },
+    {
+      "id": "private_evals_need_outcome_weighting",
+      "description": "Private checks exist, but the loop still needs explicit weighting for business outcome, governance outcome, operator trust, cost, latency, and risk."
+    },
+    {
+      "id": "memory_promotion_needs_single_lane",
+      "description": "Lessons can appear in docs, generated artifacts, session notes, or Pages. The learning loop needs a single promotion lane before runtime behavior changes."
+    },
+    {
+      "id": "reinforcement_not_claimed",
+      "description": "MDx should not claim reinforcement or training until real traces are intentionally captured, governed, and used by an approved training or policy process."
+    },
+    {
+      "id": "sovereignty_edges_need_hardening",
+      "description": "Lessons must survive provider swaps. Prompt-only or provider-hidden learning does not satisfy the sovereignty test."
+    }
+  ],
+  "v0_boundaries": {
+    "opens_runtime_authority": false,
+    "opens_live_provider": false,
+    "changes_model_routing": false,
+    "claims_reinforcement_training": false,
+    "allows_hidden_adaptation": false,
+    "changes_production_data_access": false,
+    "requires_receipts_for_promotion": true,
+    "requires_human_or_policy_approval_for_behavior_change": true
+  },
+  "first_proof_path": {
+    "id": "forge_outcome_to_next_casting",
+    "status": "GOVERNED_ADAPTATION_V1",
+    "steps": [
+      "completed Forge run emits an outcome record",
+      "outcome is evaluated against private checks, acceptance criteria, cost, latency, and risk",
+      "human or policy judgment promotes or rejects the lesson",
+      "promoted lesson becomes MDx memory",
+      "a human opens a reversible fleet casting grant over the activated lesson",
+      "next Forge casting cites the granted lesson before preferring or avoiding a runner - and only fleet casting, never model routing, budget, or review depth"
+    ],
+    "opened_adaptation": {
+      "adaptation_type": "fleet_casting",
+      "grant_receipt_kind": "learning.adaptation.granted",
+      "applied_receipt_kind": "learning.adaptation.applied",
+      "rollback_receipt_kind": "learning.adaptation.superseded",
+      "consumer_surfaces": [
+        "crates/mdx-server/src/fleet_plan_route.rs",
+        "crates/mdx-server/src/forge_model_scorecard_route.rs"
+      ]
+    },
+    "blocked_authority": [
+      "no automatic model-routing changes",
+      "no live provider activation",
+      "no production data access change",
+      "no hidden adaptation",
+      "no budget, check policy, or review depth change"
+    ]
+  },
+  "checks": [
+    "make learning-loop-check",
+    "make source-map-check",
+    "make verification-manifest-check"
+  ]
+}

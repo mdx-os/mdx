@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V2ProviderTurnOnDrillResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "mode",
+    "status",
+    "route",
+    "read_only",
+    "selected_candidate_id",
+    "selected_substrate",
+    "selected_profile_kind",
+    "selected_live_adapter",
+    "selected_required_receipt_kind",
+    "selected_env_ready",
+    "selected_missing_env_names",
+    "selected_env_requirements",
+    "credential_presence_only",
+    "credential_values_recorded",
+    "requested_secret_values_recorded",
+    "provider_secret_values_recorded",
+    "human_approval_required",
+    "human_approval_receipt_required",
+    "turn_on_receipt_required",
+    "provider_call_allowed_now",
+    "live_provider_call_allowed_now",
+    "live_network_allowed_now",
+    "turn_on_allowed_now",
+    "ready_for_live_call_count",
+    "production_write_allowed",
+    "production_cutover_allowed",
+    "service_role_runtime_allowed",
+    "deployment_authority_allowed",
+    "drill_result",
+    "approval_gate",
+    "receipt_gate",
+    "blocked_authority",
+    "proof_check",
+    "route_check",
+    "upstream_decision_check",
+    "provider_turn_on_check",
+    "evidence_files",
+    "source_routes",
+    "evidence_file"
+  ],
+  "properties": {
+    "name": { "const": "mdx-v2-provider-turn-on-drill" },
+    "mode": { "const": "local-first-provider-turn-on-drill" },
+    "status": { "enum": ["PROVIDER_TURN_ON_DRILL_READY", "NOT_READY"] },
+    "route": { "const": "/v2/provider-turn-on-drill.json" },
+    "read_only": { "const": true },
+    "selected_candidate_id": { "type": "string", "minLength": 1 },
+    "selected_substrate": { "type": "string", "minLength": 1 },
+    "selected_profile_kind": { "type": "string", "minLength": 1 },
+    "selected_live_adapter": { "type": "string", "minLength": 1 },
+    "selected_required_receipt_kind": { "type": "string", "minLength": 1 },
+    "selected_env_ready": { "type": "boolean" },
+    "selected_missing_env_names": { "type": "array", "items": { "type": "string" } },
+    "selected_env_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "present", "value_recorded"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "present": { "type": "boolean" },
+          "value_recorded": { "const": false }
+        }
+      }
+    },
+    "credential_presence_only": { "const": true },
+    "credential_values_recorded": { "const": false },
+    "requested_secret_values_recorded": { "const": false },
+    "provider_secret_values_recorded": { "const": false },
+    "human_approval_required": { "const": true },
+    "human_approval_receipt_required": { "const": true },
+    "turn_on_receipt_required": { "const": true },
+    "provider_call_allowed_now": { "type": "boolean" },
+    "live_provider_call_allowed_now": { "type": "boolean" },
+    "live_network_allowed_now": { "type": "boolean" },
+    "turn_on_allowed_now": { "const": false },
+    "ready_for_live_call_count": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "production_write_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "drill_result": {
+      "type": "object",
+      "required": ["status", "env_ready", "safe_to_run_live_turn_on_check", "provider_call_attempted", "network_call_attempted", "secret_value_recorded", "next_action", "proof"],
+      "properties": {
+        "status": { "enum": ["PROVIDER_CONNECTED_LOCAL_READY", "READY_FOR_APPROVAL_RECEIPT_BUT_CALL_BLOCKED", "WAITING_FOR_ENV_AND_APPROVAL"] },
+        "env_ready": { "type": "boolean" },
+        "safe_to_run_live_turn_on_check": { "type": "boolean" },
+        "provider_call_attempted": { "type": "boolean" },
+        "network_call_attempted": { "type": "boolean" },
+        "secret_value_recorded": { "const": false },
+        "next_action": { "enum": ["use_provider_connected_local_mode", "capture_human_approval_receipt_then_run_live_turn_on_check", "provide_optional_provider_environment"] },
+        "proof": { "const": "make live-turn-on-check" }
+      }
+    },
+    "approval_gate": {
+      "type": "object",
+      "required": ["required", "receipt_required", "allowed_now"],
+      "properties": {
+        "required": { "const": true },
+        "receipt_required": { "const": true },
+        "allowed_now": { "type": "boolean" }
+      }
+    },
+    "receipt_gate": {
+      "type": "object",
+      "required": ["required", "required_receipt_kind", "observed_now", "allowed_now", "proof"],
+      "properties": {
+        "required": { "const": true },
+        "required_receipt_kind": { "type": "string", "minLength": 1 },
+        "observed_now": { "type": "boolean" },
+        "allowed_now": { "type": "boolean" },
+        "proof": { "const": "make live-turn-on-check" }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["provider_call_without_turn_on_receipt_allowed", "live_network_without_approval_allowed", "secret_value_recording_allowed", "production_write_allowed", "deployment_authority_allowed"],
+      "properties": {
+        "provider_call_without_turn_on_receipt_allowed": { "const": false },
+        "live_network_without_approval_allowed": { "const": false },
+        "secret_value_recording_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false }
+      }
+    },
+    "proof_check": { "const": "make v2-provider-turn-on-drill" },
+    "route_check": { "const": "make v2-provider-turn-on-drill-route-check" },
+    "upstream_decision_check": { "const": "make v2-provider-turn-on-decision" },
+    "provider_turn_on_check": { "const": "make live-turn-on-check" },
+    "evidence_files": {
+      "type": "object",
+      "required": ["provider_turn_on_matrix", "provider_activation_request", "provider_turn_on_decision", "output"],
+      "properties": {
+        "provider_turn_on_matrix": { "const": ".mdx-local/v2-provider-turn-on-matrix.json" },
+        "provider_activation_request": { "const": ".mdx-local/v2-provider-activation-request.json" },
+        "provider_turn_on_decision": { "const": ".mdx-local/v2-provider-turn-on-decision.json" },
+        "output": { "const": ".mdx-local/v2-provider-turn-on-drill.json" }
+      }
+    },
+    "source_routes": {
+      "type": "array",
+      "allOf": [
+        { "contains": { "const": "/v2/provider-turn-on-matrix.json" } },
+        { "contains": { "const": "/v2/provider-activation-request.json" } },
+        { "contains": { "const": "/v2/provider-turn-on-decision.json" } },
+        { "contains": { "const": "/v2/provider-turn-on-drill.json" } }
+      ]
+    },
+    "evidence_file": { "const": ".mdx-local/v2-provider-turn-on-drill.json" }
+  }
+}

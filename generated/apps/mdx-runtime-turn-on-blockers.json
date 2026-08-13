@@ -1,0 +1,46 @@
+{
+  "name": "mdx-runtime-turn-on-blockers",
+  "mode": "deterministic-local",
+  "source": "docs/RUNTIME-TURN-ON-BLOCKERS.md",
+  "apps": [
+    {
+      "legacy_app": "Forge",
+      "runtime_status": "BLOCKED-BY-RAILS",
+      "blocked_by": [
+        "generated/talent/authorization-envelope.json",
+        "generated/talent/credential-lifecycle.json",
+        "generated/talent/credential-lifecycle-scenarios.json",
+        "generated/workers/handoff-evidence-contract.json",
+        "generated/workers/runtime-boundary.json",
+        "generated/verification/ci-verification-evidence.json",
+        "generated/ui/human-edge-contract.json"
+      ],
+      "first_local_proofs": [
+        "make local-talent-worker-proof-check",
+        "make ci-verification-check",
+        "make human-edge-check"
+      ]
+    },
+    {
+      "legacy_app": "Talent",
+      "runtime_status": "LIVE-WORKER-RUNTIME-BLOCKED",
+      "blocked_by": [
+        "generated/workers/handoff-evidence-contract.json",
+        "generated/workers/retirement-receipt-contract.json",
+        "generated/workers/runtime-boundary.json",
+        "generated/workers/live-execution-gate.json",
+        "generated/live-substrates/provider-turn-on-evidence.json"
+      ],
+      "first_local_proofs": [
+        "make run-local-loops",
+        "make local-talent-worker-proof-check"
+      ]
+    }
+  ],
+  "rules": [
+    "Runtime work cannot start while an app has BLOCKED status",
+    "Each blocker must name a generated contract and at least one local proof",
+    "Forge delegates through Talent and never spawns workers directly",
+    "Talent cannot turn on live workers until handoff, retirement, runtime-boundary, and provider evidence are enforced"
+  ]
+}

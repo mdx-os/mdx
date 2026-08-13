@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LocalDogfoodProofResponse",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "mode", "status", "dogfood_status", "full_dogfood_pass", "git", "activation", "evidence_file", "evidence_index_file", "activation_summary_file", "forge_session", "charter_ship", "talent_worker", "pages_publication", "proven_now", "missing_for_full_dogfood", "notes"],
+  "properties": {
+    "name": { "const": "mdx-local-dogfood-proof" },
+    "mode": { "const": "local-ship-provenance" },
+    "status": { "const": "OK" },
+    "dogfood_status": { "enum": ["LOCAL-COMPLETE", "PARTIAL-LOCAL"] },
+    "full_dogfood_pass": { "type": "boolean" },
+    "git": {
+      "type": "object",
+      "required": ["revision", "branch", "dirty", "subject", "subject_has_area", "body_has_why", "body_has_changed", "body_has_validation"],
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string", "minLength": 1 },
+        "dirty": { "type": "boolean" },
+        "subject": { "type": "string", "minLength": 1 },
+        "subject_has_area": { "type": "boolean" },
+        "body_has_why": { "type": "boolean" },
+        "body_has_changed": { "type": "boolean" },
+        "body_has_validation": { "type": "boolean" }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "required": ["revision", "complete", "runtime_loops", "http_routes", "served_ui_apps", "dev_stack_apps"],
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "complete": { "type": "boolean" },
+        "runtime_loops": { "type": "integer", "minimum": 0 },
+        "http_routes": { "type": "integer", "minimum": 0 },
+        "served_ui_apps": { "type": "integer", "minimum": 0 },
+        "dev_stack_apps": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "evidence_file": { "const": ".mdx-local/dogfood/local-dogfood-proof.json" },
+    "evidence_index_file": { "const": ".mdx-local/evidence-index.json" },
+    "activation_summary_file": { "const": ".mdx-local/activation-summary.json" },
+    "forge_session": {
+      "type": "object",
+      "required": ["status", "evidence_file"],
+      "properties": {
+        "status": { "type": "string", "minLength": 1 },
+        "session_id": { "type": "string", "minLength": 1 },
+        "forge_status": { "type": "string", "minLength": 1 },
+        "receipt_count": { "type": "integer", "minimum": 0 },
+        "evidence_file": { "const": ".mdx-local/dogfood/local-forge-session-proof.json" }
+      }
+    },
+    "charter_ship": {
+      "type": "object",
+      "required": ["status", "evidence_file"],
+      "properties": {
+        "status": { "type": "string", "minLength": 1 },
+        "receipt_id": { "type": "string", "minLength": 1 },
+        "charter_status": { "type": "string", "minLength": 1 },
+        "receipt_count": { "type": "integer", "minimum": 0 },
+        "evidence_file": { "const": ".mdx-local/dogfood/local-charter-ship-proof.json" }
+      }
+    },
+    "talent_worker": {
+      "type": "object",
+      "required": ["status", "evidence_file"],
+      "properties": {
+        "status": { "type": "string", "minLength": 1 },
+        "receipt_chain_id": { "type": "string", "minLength": 1 },
+        "talent_status": { "type": "string", "minLength": 1 },
+        "receipt_count": { "type": "integer", "minimum": 0 },
+        "evidence_file": { "const": ".mdx-local/dogfood/local-talent-worker-proof.json" }
+      }
+    },
+    "pages_publication": {
+      "type": "object",
+      "required": ["status", "evidence_file"],
+      "properties": {
+        "status": { "type": "string", "minLength": 1 },
+        "publication_receipt_id": { "type": "string", "minLength": 1 },
+        "document_id": { "type": "string", "minLength": 1 },
+        "source_receipt_count": { "type": "integer", "minimum": 0 },
+        "verified_document_count": { "type": "integer", "minimum": 0 },
+        "document_count": { "type": "integer", "minimum": 0 },
+        "onboarding_document_count": { "type": "integer", "minimum": 0 },
+        "evidence_file": { "const": ".mdx-local/dogfood/local-pages-publication-proof.json" }
+      }
+    },
+    "proven_now": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "missing_for_full_dogfood": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "contains": { "const": "live worker execution remains separately gated" }
+    }
+  }
+}

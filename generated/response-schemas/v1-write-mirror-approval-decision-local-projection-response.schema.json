@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1WriteMirrorApprovalDecisionLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "auth_session_route", "writes_route", "approval_decision_count", "approval_decision_shape_valid", "human_decision_recorded", "human_approval_granted", "write_mirror_allowed", "production_write_allowed", "service_role_runtime_allowed", "live_substrate_required", "production_cutover_allowed", "decisions"],
+  "properties": {
+    "name": { "const": "mdx-v1-write-mirror-approval-decision-local-projection" },
+    "status": { "const": "OK" },
+    "auth_session_route": { "const": "/local/auth-session.json" },
+    "writes_route": { "const": "/v1/write-mirror-approval-decisions.json" },
+    "approval_decision_count": { "type": "integer", "minimum": 0 },
+    "approval_decision_shape_valid": { "const": true },
+    "human_decision_recorded": { "type": "boolean" },
+    "human_approval_granted": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "live_substrate_required": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["approval_decision_id", "approval_decision_receipt_id", "policy_decision_id", "approval_request_receipt_id", "decision_scope", "decision_outcome", "decision_rationale", "decided_by", "decided_role", "expires_at", "terminal_state", "approval_decision_shape_valid", "human_decision_recorded", "human_approval_granted", "write_mirror_allowed", "production_write_allowed", "service_role_runtime_allowed", "production_cutover_allowed"],
+        "properties": {
+          "approval_decision_id": { "type": "string" },
+          "approval_decision_receipt_id": { "type": "string" },
+          "policy_decision_id": { "type": "string" },
+          "approval_request_receipt_id": { "type": "string" },
+          "decision_scope": { "type": "string" },
+          "decision_outcome": { "const": "hold_for_mirror_turn_on" },
+          "decision_rationale": { "type": "string" },
+          "decided_by": { "type": "string" },
+          "decided_role": { "type": "string" },
+          "expires_at": { "type": "string" },
+          "terminal_state": { "const": "WRITE_MIRROR_APPROVAL_DECISION_RECORDED_MIRROR_BLOCKED" },
+          "approval_decision_shape_valid": { "const": true },
+          "human_decision_recorded": { "const": true },
+          "human_approval_granted": { "const": false },
+          "write_mirror_allowed": { "const": false },
+          "production_write_allowed": { "const": false },
+          "service_role_runtime_allowed": { "const": false },
+          "production_cutover_allowed": { "const": false }
+        }
+      }
+    }
+  }
+}

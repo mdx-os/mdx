@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ForgeWorkClassificationLocalProjectionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "writes_route", "run_route", "mission_route", "scoreboard_route", "dashboard_route", "classification_count", "mission_recommended_count", "run_recommended_count", "live_provider_calls_allowed", "adapter_execution_allowed", "production_write_allowed", "class_vocabulary", "complexity_tiers", "classifications"],
+  "properties": {
+    "name": { "const": "mdx-forge-work-classification-local-projection" },
+    "status": { "enum": ["NO_WORK_CLASSIFICATIONS_RECORDED", "LIVE-LOCAL-WORK-CLASSIFICATION-PROJECTION"] },
+    "route": { "const": "/forge/work-classifications/projection.json" },
+    "writes_route": { "const": "/forge/work-classifications.json" },
+    "run_route": { "const": "/forge/runs.json" },
+    "mission_route": { "const": "/forge/long-horizon-missions.json" },
+    "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" },
+    "dashboard_route": { "const": "/forge/long-horizon-mission-dashboard.json" },
+    "classification_count": { "type": "integer", "minimum": 0 },
+    "mission_recommended_count": { "type": "integer", "minimum": 0 },
+    "run_recommended_count": { "type": "integer", "minimum": 0 },
+    "live_provider_calls_allowed": { "const": false },
+    "adapter_execution_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "class_vocabulary": { "type": "array", "minItems": 15, "maxItems": 15, "contains": { "const": "long_horizon" } },
+    "complexity_tiers": { "type": "array", "minItems": 5, "maxItems": 5, "allOf": [
+      { "contains": { "const": "xl" } },
+      { "contains": { "const": "extreme" } }
+    ] },
+    "classifications": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["classification_id", "classification_receipt_id", "policy_decision_id", "ask", "repo", "recommended_shape", "recommended_width", "recommendation_label", "recommendation_reason", "next_route", "next_gate", "adjustable_fields", "new_project_supported", "task_class", "complexity_tier", "confidence_pct", "rationale", "suggested_checks", "allowed_write_scope", "blocked_paths", "mission_recommended", "run_route", "mission_route", "scoreboard_route", "dashboard_route"], "properties": { "classification_id": { "type": "string", "minLength": 1 }, "classification_receipt_id": { "type": "string", "minLength": 1 }, "policy_decision_id": { "type": "string" }, "ask": { "type": "string", "minLength": 1 }, "repo": { "type": "string", "minLength": 1 }, "recommended_shape": { "enum": ["run", "mission"] }, "recommended_width": { "type": "integer", "minimum": 1, "maximum": 128 }, "recommendation_label": { "type": "string", "minLength": 1 }, "recommendation_reason": { "type": "string", "minLength": 1 }, "next_route": { "enum": ["/forge/runs.json", "/forge/fleet-plans.json", "/forge/long-horizon-missions.json"] }, "next_gate": { "enum": ["run_start", "fleet_plan_ratification", "mission_admission"] }, "adjustable_fields": { "type": "string", "minLength": 1 }, "new_project_supported": { "const": false }, "task_class": { "type": "string", "minLength": 1 }, "complexity_tier": { "type": "string", "minLength": 1 }, "confidence_pct": { "type": "integer", "minimum": 0, "maximum": 100 }, "rationale": { "type": "string", "minLength": 1 }, "suggested_checks": { "type": "string", "minLength": 1 }, "allowed_write_scope": { "type": "string", "minLength": 1 }, "blocked_paths": { "type": "string", "minLength": 1 }, "mission_recommended": { "type": "boolean" }, "run_route": { "const": "/forge/runs.json" }, "mission_route": { "const": "/forge/long-horizon-missions.json" }, "scoreboard_route": { "const": "/forge/fleet-eval-scoreboard.json" }, "dashboard_route": { "const": "/forge/long-horizon-mission-dashboard.json" } } } }
+  }
+}

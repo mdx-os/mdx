@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeMetricsResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "source_projection", "source_receipt_kinds", "measurement_source", "latency_percentiles_observed", "observed_local", "standing_targets", "not_yet_instrumented", "overload_posture", "human_summary", "read_only", "writes_allowed", "execution_allowed", "deployment_authority_granted", "production_write_allowed"],
+  "properties": {
+    "name": { "const": "mdx-runtime-metrics" },
+    "status": { "const": "OK" },
+    "source_projection": { "type": "string", "minLength": 1 },
+    "source_receipt_kinds": { "type": "array", "items": { "type": "string" } },
+    "measurement_source": { "const": "observed_local" },
+    "latency_percentiles_observed": { "type": "boolean" },
+    "observed_local": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["admitted", "queued", "shed", "builds_completed", "builds_failed", "autonomous_completions", "escalations", "completion_rate_pct", "escalation_rate_pct", "sandbox_test_duration_ms", "forge_phase_duration_ms", "forge_total_run_duration_ms", "forge_model_duration_ms", "forge_tool_duration_ms", "forge_model_tokens", "forge_model_attribution", "forge_tool_attribution", "top_failure_reasons"],
+      "properties": {
+        "admitted": { "type": "integer", "minimum": 0 },
+        "queued": { "type": "integer", "minimum": 0 },
+        "shed": { "type": "integer", "minimum": 0 },
+        "builds_completed": { "type": "integer", "minimum": 0 },
+        "builds_failed": { "type": "integer", "minimum": 0 },
+        "autonomous_completions": { "type": "integer", "minimum": 0 },
+        "escalations": { "type": "integer", "minimum": 0 },
+        "completion_rate_pct": { "type": "integer", "minimum": 0 },
+        "escalation_rate_pct": { "type": "integer", "minimum": 0 },
+        "sandbox_test_duration_ms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "min_ms", "mean_ms", "max_ms"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 0 },
+            "min_ms": { "type": "integer", "minimum": 0 },
+            "mean_ms": { "type": "integer", "minimum": 0 },
+            "max_ms": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "forge_phase_duration_ms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["intake", "plan", "execute", "review", "ship"],
+          "properties": {
+            "intake": { "$ref": "#/$defs/durationStats" },
+            "plan": { "$ref": "#/$defs/durationStats" },
+            "execute": { "$ref": "#/$defs/durationStats" },
+            "review": { "$ref": "#/$defs/durationStats" },
+            "ship": { "$ref": "#/$defs/durationStats" }
+          }
+        },
+        "forge_total_run_duration_ms": { "$ref": "#/$defs/durationStats" },
+        "forge_model_duration_ms": { "$ref": "#/$defs/durationStats" },
+        "forge_tool_duration_ms": { "$ref": "#/$defs/durationStats" },
+        "forge_model_tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input", "output"],
+          "properties": {
+            "input": { "type": "integer", "minimum": 0 },
+            "output": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "forge_model_attribution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["model", "calls", "input_tokens", "output_tokens", "latency_ms"],
+            "properties": {
+              "model": { "type": "string" },
+              "calls": { "type": "integer", "minimum": 0 },
+              "input_tokens": { "type": "integer", "minimum": 0 },
+              "output_tokens": { "type": "integer", "minimum": 0 },
+              "latency_ms": { "$ref": "#/$defs/durationStats" }
+            }
+          }
+        },
+        "forge_tool_attribution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["tool", "calls", "latency_ms"],
+            "properties": {
+              "tool": { "type": "string" },
+              "calls": { "type": "integer", "minimum": 0 },
+              "latency_ms": { "$ref": "#/$defs/durationStats" }
+            }
+          }
+        },
+        "top_failure_reasons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["reason", "count"],
+            "properties": {
+              "reason": { "type": "string" },
+              "count": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "standing_targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engineers", "peak_forge_builds"],
+      "properties": {
+        "engineers": { "type": "integer", "minimum": 0 },
+        "peak_forge_builds": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "not_yet_instrumented": { "type": "array", "items": { "type": "string" } },
+    "overload_posture": { "type": "array", "items": { "type": "string" } },
+    "human_summary": { "type": "string", "minLength": 1 },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "deployment_authority_granted": { "const": false },
+    "production_write_allowed": { "const": false }
+  },
+  "$defs": {
+    "durationStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "min_ms", "mean_ms", "max_ms"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 },
+        "min_ms": { "type": "integer", "minimum": 0 },
+        "mean_ms": { "type": "integer", "minimum": 0 },
+        "max_ms": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

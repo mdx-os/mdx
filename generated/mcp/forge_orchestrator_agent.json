@@ -1,0 +1,9 @@
+{
+  "name": "forge_orchestrator_agent",
+  "loop": "forge_orchestrator_agent",
+  "tools": [
+    { "name": "forge_spec_acceptor", "risk": "MEDIUM", "policy_required": true, "receipt_required": true },
+    { "name": "forge_stage_transitioner", "risk": "MEDIUM", "policy_required": true, "receipt_required": true },
+    { "name": "forge_delegation_requester", "risk": "HIGH", "policy_required": true, "receipt_required": true }
+  ]
+}

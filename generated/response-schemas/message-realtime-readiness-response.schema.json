@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MessageRealtimeReadinessResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "status", "route", "read_only", "receipt_backed", "local_ready", "relay_runtime", "bridge", "governed_ladder", "relay_observation", "local_authority", "blocked_authority", "source_routes", "ui_handoff", "checks"],
+  "properties": {
+    "name": { "const": "mdx-message-realtime-readiness" },
+    "status": { "enum": ["LOCAL-REALTIME-MISSING-GOVERNED-EVIDENCE", "LOCAL-REALTIME-MISSING-RELAY-OBSERVATION", "LIVE-LOCAL-REALTIME-READY-PRODUCTION-BLOCKED"] },
+    "route": { "const": "/messages/realtime-readiness.json" },
+    "read_only": { "const": true },
+    "receipt_backed": { "const": true },
+    "local_ready": { "type": "boolean" },
+    "relay_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crate", "driver", "transport", "local_live_proof_check", "health_route", "websocket_route", "jwt_subprotocol_required", "bounded_hot_cache", "durable_replay_driver", "p99_budget_ms"],
+      "properties": {
+        "crate": { "const": "mdx-message-relay" },
+        "driver": { "const": "valkey" },
+        "transport": { "const": "websocket_valkey_pubsub" },
+        "local_live_proof_check": { "const": "make message-realtime-relay-check" },
+        "health_route": { "const": "/health" },
+        "websocket_route": { "const": "/messages/realtime/ws" },
+        "jwt_subprotocol_required": { "const": true },
+        "bounded_hot_cache": { "const": true },
+        "durable_replay_driver": { "const": "local_jsonl_relay_replay_log" },
+        "p99_budget_ms": { "const": 20 }
+      }
+    },
+    "bridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "descriptor_source", "descriptor_count", "metadata_cursor_use", "client_owned_cursor_on_reconnect", "server_watermark_on_reconnect_allowed"],
+      "properties": {
+        "route": { "const": "/messages/relay-bridge.json" },
+        "descriptor_source": { "const": "kernel_route" },
+        "descriptor_count": { "const": 3 },
+        "metadata_cursor_use": { "const": "first_subscribe_seed_only" },
+        "client_owned_cursor_on_reconnect": { "const": true },
+        "server_watermark_on_reconnect_allowed": { "const": false }
+      }
+    },
+    "governed_ladder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preflight_count", "delivery_replay_count", "subscription_isolation_count", "service_role_refusal_count", "required_receipt_kinds", "source_receipt_ids"],
+      "properties": {
+        "preflight_count": { "type": "integer", "minimum": 0 },
+        "delivery_replay_count": { "type": "integer", "minimum": 0 },
+        "subscription_isolation_count": { "type": "integer", "minimum": 0 },
+        "service_role_refusal_count": { "type": "integer", "minimum": 0 },
+        "required_receipt_kinds": { "type": "array", "minItems": 4, "items": { "type": "string" } },
+        "source_receipt_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "relay_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["write_route", "projection_route", "observation_count", "required_receipt_kind", "observed_under_budget", "source_receipt_ids"],
+      "properties": {
+        "write_route": { "const": "/messages/relay-observations.json" },
+        "projection_route": { "const": "/messages/relay-observations/projection.json" },
+        "observation_count": { "type": "integer", "minimum": 0 },
+        "required_receipt_kind": { "const": "message.relay.observed" },
+        "observed_under_budget": { "type": "boolean" },
+        "source_receipt_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "local_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["websocket_fanout_allowed", "typing_signal_allowed", "rollback_safe_delivery_replay_proven", "tenant_subscription_isolation_proven", "service_role_fanout_refused"],
+      "properties": {
+        "websocket_fanout_allowed": { "const": true },
+        "typing_signal_allowed": { "const": true },
+        "rollback_safe_delivery_replay_proven": { "type": "boolean" },
+        "tenant_subscription_isolation_proven": { "type": "boolean" },
+        "service_role_fanout_refused": { "type": "boolean" }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["production_delivery_allowed", "service_role_fanout_allowed", "presence_mutation_allowed", "provider_call_allowed", "production_write_allowed", "production_cutover_allowed"],
+      "properties": {
+        "production_delivery_allowed": { "const": false },
+        "service_role_fanout_allowed": { "const": false },
+        "presence_mutation_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    },
+    "source_routes": { "type": "array", "minItems": 7, "items": { "type": "string" } },
+    "ui_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_owner", "target_surface", "safe_to_show_local_realtime_ready", "must_fetch_bridge_descriptors", "must_preserve_client_owned_cursor", "must_show_relay_observation_receipt", "must_not_construct_tenant_or_topic_in_ui", "must_not_claim_production_realtime_cutover", "must_not_enable_service_role_fanout"],
+      "properties": {
+        "target_owner": { "const": "claude" },
+        "target_surface": { "const": "apps/mdx Message module" },
+        "safe_to_show_local_realtime_ready": { "type": "boolean" },
+        "must_fetch_bridge_descriptors": { "const": true },
+        "must_preserve_client_owned_cursor": { "const": true },
+        "must_show_relay_observation_receipt": { "const": true },
+        "must_not_construct_tenant_or_topic_in_ui": { "const": true },
+        "must_not_claim_production_realtime_cutover": { "const": true },
+        "must_not_enable_service_role_fanout": { "const": true }
+      }
+    },
+    "checks": { "type": "array", "minItems": 4, "items": { "type": "string" } }
+  }
+}

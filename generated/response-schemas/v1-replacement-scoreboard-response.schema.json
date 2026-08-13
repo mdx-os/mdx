@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1ReplacementScoreboardResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed", "replacement_proof_check", "route_check", "surface_count", "production_gate_count", "cutover_blocker_count", "ui_handoff", "scoreboard", "production_gates", "cutover_blockers", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-replacement-scoreboard" },
+    "route": { "const": "/v1/replacement-scoreboard.json" },
+    "status": { "const": "ACTIVE_EXECUTION_CUTOVER_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "write_mirror_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "provider_call_allowed": { "const": false },
+    "worker_spawn_allowed": { "const": false },
+    "patch_application_allowed": { "const": false },
+    "deployment_authority_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "replacement_proof_check": { "const": "make v1-replacement-proof" },
+    "route_check": { "const": "make v1-replacement-scoreboard-route-check" },
+    "surface_count": { "const": 6 },
+    "production_gate_count": { "const": 12 },
+    "cutover_blocker_count": { "const": 12 },
+    "ui_handoff": {
+      "type": "object",
+      "required": ["status", "backend_owner", "ui_owner", "safe_to_wire_read_only", "safe_to_wire_governed_local_writes", "production_authority_allowed", "next_surface_order", "notes"],
+      "properties": {
+        "status": { "const": "CLAUDE_UI_WIRING_READY_LOCAL_ONLY" },
+        "backend_owner": { "const": "Codex" },
+        "ui_owner": { "const": "Claude" },
+        "safe_to_wire_read_only": { "const": true },
+        "safe_to_wire_governed_local_writes": { "const": true },
+        "production_authority_allowed": { "const": false },
+        "next_surface_order": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "Twin" },
+            { "const": "Forge" },
+            { "const": "Message" },
+            { "const": "Pages" }
+          ],
+          "minItems": 4
+        },
+        "notes": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "scoreboard": {
+      "type": "object",
+      "required": ["name", "status", "replacement_surfaces", "execution_order"],
+      "properties": {
+        "name": { "const": "v1_replacement_scoreboard" },
+        "status": { "const": "ACTIVE_EXECUTION" },
+        "replacement_surfaces": { "type": "array", "minItems": 6 },
+        "execution_order": { "type": "array", "minItems": 5 }
+      }
+    },
+    "production_gates": {
+      "type": "object",
+      "required": ["name", "status", "gates"],
+      "properties": {
+        "name": { "const": "v1_production_replacement_gates" },
+        "status": { "const": "NOT_READY_FOR_CUTOVER" },
+        "gates": { "type": "array", "minItems": 12 }
+      }
+    },
+    "cutover_blockers": {
+      "type": "object",
+      "required": ["name", "status", "cutover_green_allowed", "blocker_count", "blockers"],
+      "properties": {
+        "name": { "const": "v1_cutover_blocker_index" },
+        "status": { "const": "CUTOVER_BLOCKED_BY_DECLARED_CONTROLS" },
+        "cutover_green_allowed": { "const": false },
+        "blocker_count": { "const": 12 },
+        "blockers": { "type": "array", "minItems": 12 }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "write_mirror_allowed", "production_write_allowed", "provider_call_allowed", "worker_spawn_allowed", "patch_application_allowed", "deployment_authority_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "write_mirror_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "provider_call_allowed": { "const": false },
+        "worker_spawn_allowed": { "const": false },
+        "patch_application_allowed": { "const": false },
+        "deployment_authority_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

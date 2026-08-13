@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V1GrantSnapshotDryRunResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "route", "status", "read_only", "writes_allowed", "execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "service_role_runtime_allowed", "production_cutover_allowed", "catalog_section_count", "known_risk_section_count", "query_manifest", "grant_posture_control", "dry_run_control", "blocked_authority"],
+  "properties": {
+    "name": { "const": "mdx-v1-grant-snapshot-dry-run" },
+    "route": { "const": "/v1/grant-snapshot-dry-run.json" },
+    "status": { "const": "DRY_RUN_READY_LIVE_GRANT_READ_BLOCKED" },
+    "read_only": { "const": true },
+    "writes_allowed": { "const": false },
+    "execution_allowed": { "const": false },
+    "live_read_allowed": { "const": false },
+    "row_payload_allowed": { "const": false },
+    "production_write_allowed": { "const": false },
+    "service_role_runtime_allowed": { "const": false },
+    "production_cutover_allowed": { "const": false },
+    "catalog_section_count": { "const": 5 },
+    "known_risk_section_count": { "const": 4 },
+    "query_manifest": {
+      "type": "object",
+      "required": ["name", "status", "queries", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_grant_metadata_query_manifest" },
+        "status": { "const": "QUERY_MANIFEST_DECLARED_NOT_EXECUTED" },
+        "queries": { "type": "array", "minItems": 5 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed"],
+          "properties": {
+            "execution_allowed": { "const": false },
+            "live_read_allowed": { "const": false },
+            "row_payload_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "grant_posture_control": {
+      "type": "object",
+      "required": ["name", "status", "known_grant_facts", "missing_green_requirements"],
+      "properties": {
+        "name": { "const": "v1_grant_posture_control" },
+        "status": { "const": "CHECK_BOUND_MISSING_FULL_GRANT_SNAPSHOT" },
+        "known_grant_facts": { "type": "object" },
+        "missing_green_requirements": { "type": "array", "minItems": 5 }
+      }
+    },
+    "dry_run_control": {
+      "type": "object",
+      "required": ["name", "status", "required_catalog_sections", "required_known_risk_sections", "blocked_authority"],
+      "properties": {
+        "name": { "const": "v1_grant_snapshot_dry_run" },
+        "status": { "const": "ROUTE_BACKED_DRY_RUN_LIVE_GRANT_READ_BLOCKED" },
+        "required_catalog_sections": { "type": "array", "minItems": 5 },
+        "required_known_risk_sections": { "type": "array", "minItems": 4 },
+        "blocked_authority": {
+          "type": "object",
+          "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "service_role_runtime_allowed", "production_cutover_allowed"],
+          "properties": {
+            "execution_allowed": { "const": false },
+            "live_read_allowed": { "const": false },
+            "row_payload_allowed": { "const": false },
+            "production_write_allowed": { "const": false },
+            "service_role_runtime_allowed": { "const": false },
+            "production_cutover_allowed": { "const": false }
+          }
+        }
+      }
+    },
+    "blocked_authority": {
+      "type": "object",
+      "required": ["execution_allowed", "live_read_allowed", "row_payload_allowed", "production_write_allowed", "service_role_runtime_allowed", "production_cutover_allowed"],
+      "properties": {
+        "execution_allowed": { "const": false },
+        "live_read_allowed": { "const": false },
+        "row_payload_allowed": { "const": false },
+        "production_write_allowed": { "const": false },
+        "service_role_runtime_allowed": { "const": false },
+        "production_cutover_allowed": { "const": false }
+      }
+    }
+  }
+}

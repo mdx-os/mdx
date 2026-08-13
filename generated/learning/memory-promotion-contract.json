@@ -1,0 +1,64 @@
+{
+  "name": "mdx-learning-memory-promotion-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MDX-LEARNING-LOOP.md",
+  "status": "GOVERNED_WRITE_V0",
+  "purpose": "Define Learn's governed memory promotion request: turn a ready judgment decision into a reviewable MDx-owned memory candidate without activating memory or changing behavior.",
+  "writes_route": "/learning/memory-promotions.json",
+  "projection_route": "/learning/memory-promotions/projection.json",
+  "receipt_kind": "learning.memory.promotion.requested",
+  "required_fields": [
+    "memory_promotion_id",
+    "judgment_decision_id",
+    "judgment_decision_receipt_id",
+    "judgment_id",
+    "promotion_id",
+    "actor_id",
+    "target_type",
+    "target_path",
+    "lesson_summary",
+    "evidence_refs",
+    "review_cadence",
+    "expiry_rule",
+    "memory_candidate_state",
+    "memory_promotion_receipt_id",
+    "policy_decision_id"
+  ],
+  "optional_fields": [
+    "applicability_work_tiers",
+    "applicability_language_packs",
+    "applicability_notes"
+  ],
+  "applicability_rule": "applicability fields are comma-joined work complexity tiers and language pack ids scoping where the lesson rides into Forge context; empty means universal, and an explicit list that does not name a run excludes the lesson from that run",
+  "valid_target_types": [
+    "page",
+    "decision_record",
+    "generated_contract",
+    "source_map",
+    "model_scorecard",
+    "worker_scorecard"
+  ],
+  "memory_candidate_states": [
+    "candidate",
+    "rejected",
+    "superseded",
+    "activated"
+  ],
+  "v0_boundaries": {
+    "creates_memory_candidate": true,
+    "writes_active_memory": false,
+    "refreshes_generated_artifacts": false,
+    "updates_scorecards": false,
+    "applies_adaptation": false,
+    "changes_model_routing": false,
+    "changes_fleet_casting": false,
+    "changes_check_policy": false,
+    "changes_budget": false,
+    "changes_review_depth": false,
+    "requires_actor_admission": true,
+    "requires_judgment_decision_receipt": true,
+    "requires_receipt": true,
+    "production_write_allowed": false
+  },
+  "checks": ["make learning-loop-check", "make local-smoke"]
+}

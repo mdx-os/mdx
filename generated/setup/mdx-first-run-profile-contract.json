@@ -1,0 +1,17 @@
+{
+  "name": "mdx-first-run-profile",
+  "purpose": "The guided 'Try MDx' start: collect role, goal, and working mode so the first Twin conversation is about the operator's real work. Records a profile receipt, seeds the first prompt.",
+  "writes_route": "/install/first-run-profiles.json",
+  "projection_route": "/install/first-run-profile.json",
+  "receipt_kind": "setup.first_run_profile.recorded",
+  "is_account_or_auth": false,
+  "requires_login": false,
+  "creates_fake_users": false,
+  "privacy_acknowledgement_required": true,
+  "roles": ["leadership", "product", "design", "engineering"],
+  "working_modes": ["exploring", "deciding", "hands_on"],
+  "seeds_first_twin_prompt": true,
+  "rich_personalization_lives_in": "the You surface",
+  "production_write_allowed": false,
+  "check": "make first-run-profile-contract-check"
+}

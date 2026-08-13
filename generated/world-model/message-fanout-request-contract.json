@@ -1,0 +1,29 @@
+{
+  "name": "mdx-message-fanout-request-contract",
+  "mode": "deterministic-local",
+  "source": "docs/MESSAGE-FANOUT-REQUEST-CONTRACT.md",
+  "runtime_status": "LIVE-LOCAL-GOVERNED-WRITE",
+  "write_route": "/messages/fanout-requests.json",
+  "projection_route": "/messages/fanout-requests/projection.json",
+  "required_receipt_kind": "message.fanout.requested",
+  "source_receipt_kind": "message.human.posted",
+  "auth_session_route": "/local/auth-session.json",
+  "required_fields": ["tenant_id", "actor_id", "fanout_request_id", "message_receipt_id", "channel_id", "delivery_scope"],
+  "authority_boundary": {
+    "realtime_fanout_allowed": false,
+    "presence_allowed": false,
+    "typing_state_allowed": false,
+    "provider_call_allowed": false,
+    "production_delivery_allowed": false,
+    "production_write_allowed": false
+  },
+  "sanctioned_ui_guard_pattern": {
+    "write_url_var": "messageFanoutRequestUrl",
+    "projection_url_var": "messageFanoutRequestProjectionUrl",
+    "handler": "requestGovernedMessageFanout",
+    "button_class": "message-request-fanout",
+    "aria_label": "Request governed Message fanout",
+    "fetch_count": 6
+  },
+  "checks": ["make message-fanout-request-check", "cargo test -p mdx-core message_fanout_request", "cargo test -p mdx-server message_fanout_request"]
+}

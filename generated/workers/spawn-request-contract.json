@@ -1,0 +1,13 @@
+{
+  "name": "mdx-worker-spawn-request-contract",
+  "mode": "deterministic-local",
+  "runtime_status": "PENDING-LIVE-RUN",
+  "source_manifest": "generated/agents/mdx-agent-populations.json",
+  "request_schema_path": "contracts/worker-spawn-request.schema.json",
+  "required_request_fields": ["worker_template_id", "parent_id", "sponsor_chain_authority_receipt_id", "human_sponsor_chain", "worker_lease_authority_receipt_id", "scope", "expires_at", "budget_authority_receipt_id", "budget", "tool_allowlist_authority_receipt_id", "tool_allowlist", "credential_check_receipt_id", "requested_receipt_kind"],
+  "authority_receipt_fields": ["sponsor_chain_authority_receipt_id", "worker_lease_authority_receipt_id", "budget_authority_receipt_id", "tool_allowlist_authority_receipt_id", "credential_check_receipt_id"],
+  "authority_contracts": ["generated/talent/sponsor-chain-authority.json", "generated/talent/worker-lease-authority.json", "generated/talent/budget-authority.json", "generated/talent/tool-allowlist.json", "generated/workers/credential-check-contract.json"],
+  "workers": [
+    { "id": "worker_bounded_task_template", "path": "workers/templates/bounded-task.yaml", "runtime_status": "PENDING-LIVE-RUN", "spawn_request_required": true, "spawn_request_receipt_required": true, "spawn_request_receipt_kind": "worker.spawn_requested", "scope_required": true, "expiry_required": true, "budget_required": true, "tool_allowlist_required": true, "parent_required": true, "human_sponsor_chain_required": true, "forbidden_actions": ["run_unscoped_work", "exceed_budget", "ignore_expiry", "bypass_talent", "production_deploy_without_approval"] }
+  ]
+}

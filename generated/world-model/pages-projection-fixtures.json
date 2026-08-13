@@ -1,0 +1,49 @@
+{
+  "name": "mdx-pages-projection-fixtures",
+  "mode": "deterministic-local",
+  "source": "docs/PAGES-PROJECTION-FIXTURES.md",
+  "contract": "generated/world-model/pages-projection-contract.json",
+  "status": "FIXTURE-NEXT",
+  "allowed_projection": {
+    "id": "allowed_receipt_backed_evidence_page",
+    "tenant_id": "tenant_local",
+    "document_id": "page_evidence_evals_runner",
+    "title": "Evals Runner Evidence Summary",
+    "body_ref": "world_model://pages/page_evidence_evals_runner/body/v1",
+    "author_actor_id": "loop:evals_runner_agent",
+    "source_receipt_ids": ["receipt_evals_runner_completed", "receipt_credential_minted"],
+    "charter_evidence_ids": ["charter_evals_runner_attested"],
+    "revision_id": "rev_001",
+    "visibility": "tenant_only",
+    "required_receipts": ["pages.document.projected", "pages.document.cited"]
+  },
+  "developer_onboarding_corpus": [
+    { "document_id": "page_developer_start_here", "title": "Developer Start Here", "body_ref": "docs/ONBOARDING.md", "summary": "The first-hour path for humans and agents joining MDx without reading the whole repo.", "category": "developer_onboarding", "source_receipt_ids": ["receipt_onboarding_context_spine", "receipt_agent_preflight_check"], "charter_evidence_ids": ["charter_agent_first_repo"], "revision_id": "rev_developer_start_here_001", "visibility": "tenant_only" },
+    { "document_id": "page_agent_context_spine", "title": "Agent Context Spine", "body_ref": "AGENTS.md", "summary": "The compact map that tells Codex, Claude, Gemini, and Grok which docs and checks to load by change type.", "category": "agent_rails", "source_receipt_ids": ["receipt_agent_context_spine_check", "receipt_agent_preflight_check"], "charter_evidence_ids": ["charter_agent_first_repo"], "revision_id": "rev_agent_context_spine_001", "visibility": "tenant_only" },
+    { "document_id": "page_ui_taste_and_rails", "title": "UI Taste And Rails", "body_ref": "docs/UI-FIRST-VIEWPORT-CONTRACT.md", "summary": "The product bar for first viewports, calm copy, evidence disclosure, and screenshot-backed UI work.", "category": "ui_experience", "source_receipt_ids": ["receipt_ui_first_viewport_check", "receipt_ui_screenshot_proof"], "charter_evidence_ids": ["charter_human_edge_doctrine"], "revision_id": "rev_ui_taste_and_rails_001", "visibility": "tenant_only" },
+    { "document_id": "page_ui_app_experience_upgrade", "title": "UI App Experience Upgrade", "body_ref": "docs/UI-APP-EXPERIENCE-UPGRADE.md", "summary": "How Pages, Message, and Twin become real app surfaces while staying read-only, receipt-grounded, and separate from runtime truth.", "category": "ui_experience", "source_receipt_ids": ["receipt_ui_app_experience_check", "receipt_ui_first_viewport_check"], "charter_evidence_ids": ["charter_human_edge_doctrine"], "revision_id": "rev_ui_app_experience_upgrade_001", "visibility": "tenant_only" },
+    { "document_id": "page_pr_and_handoff_standard", "title": "PR And Handoff Standard", "body_ref": "AGENTS.md", "summary": "How to leave readable history, useful handoff notes, and honest validation for the next agent.", "category": "shipping_discipline", "source_receipt_ids": ["receipt_agent_working_contract_check", "receipt_operating_check"], "charter_evidence_ids": ["charter_no_fake_green"], "revision_id": "rev_pr_and_handoff_001", "visibility": "tenant_only" },
+    { "document_id": "page_local_proof_runway", "title": "Local Proof Runway", "body_ref": "docs/LOCAL-RUNBOOK.md", "summary": "How builders prove local changes through smoke, operational handoff, local proof, and evidence checks before trusting them.", "category": "local_activation", "source_receipt_ids": ["receipt_local_smoke", "receipt_operational_handoff_check"], "charter_evidence_ids": ["charter_no_fake_green"], "revision_id": "rev_local_proof_runway_002", "visibility": "tenant_only" },
+    { "document_id": "page_activation_runway", "title": "Activation Runway", "body_ref": "docs/QUICKSTART.md", "summary": "The current local-ready proof path, external substrate blockers, and hard stops for turning proof into real operation.", "category": "activation_runway", "source_receipt_ids": ["receipt_activation_runway_check", "receipt_operational_proof"], "charter_evidence_ids": ["charter_no_fake_green"], "revision_id": "rev_activation_runway_001", "visibility": "tenant_only" },
+    { "document_id": "page_harness_policy_profiles", "title": "Harness Policy Profiles", "body_ref": "docs/HARNESS-POLICY-PROFILES.md", "summary": "How enterprise packs narrow provider, redaction, budget, approval, and audit rules without customer-specific runtime branches.", "category": "harness_policy", "source_receipt_ids": ["receipt_harness_policy_profiles_check", "receipt_harness_provider_gateway_check"], "charter_evidence_ids": ["charter_no_customer_runtime_branches"], "revision_id": "rev_harness_policy_profiles_001", "visibility": "tenant_only" },
+    { "document_id": "page_harness_safe_tool_plane", "title": "Harness Safe Tool Plane", "body_ref": "docs/HARNESS-SAFE-TOOL-PLANE.md", "summary": "How read, search, list, and patch mediation stay bounded by path scope, output caps, policy decisions, receipts, and denial proof.", "category": "harness_tool_plane", "source_receipt_ids": ["receipt_harness_safe_tool_plane_check", "receipt_harness_cli_inspection_check"], "charter_evidence_ids": ["charter_no_fake_green"], "revision_id": "rev_harness_safe_tool_plane_001", "visibility": "tenant_only" }
+  ],
+  "blocked_projections": [
+    { "id": "missing_source_receipts", "missing": ["source_receipt_ids"], "blocked_by": "pages_documents_require_receipt_backed_provenance" },
+    { "id": "uncited_agent_authorship", "missing": ["author_actor_id", "source_receipt_ids"], "blocked_by": "uncited_agent_authorship" },
+    { "id": "cross_tenant_visibility", "visibility": "cross_tenant", "blocked_by": "cross_tenant_document_visibility" },
+    { "id": "rich_editor_before_provenance", "attempted_action": "rich_edit", "missing": ["pages.document.revised"], "blocked_by": "rich_editor_before_provenance" }
+  ],
+  "read_surface_expectations": [
+    "Concierge may answer from this projection only with source receipt ids",
+    "Observatory may display this projection only as read-only evidence",
+    "Twin may cite this projection only with world_model_sources",
+    "Developer onboarding Pages remain read-only projections over repo docs and generated checks"
+  ],
+  "rules": [
+    "Pages fixtures prove allowed and blocked projection paths before storage or UI work",
+    "A Pages document is queryable only after source receipts and tenant visibility are present",
+    "Developer onboarding lives in Pages as a receipt-backed corpus, not as scattered README sprawl",
+    "Fixture changes require make pages-message-check"
+  ]
+}
