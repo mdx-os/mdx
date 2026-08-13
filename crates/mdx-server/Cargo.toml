@@ -18,7 +18,7 @@ aws-sdk-s3 = { version = "=1.138.1", default-features = false, features = ["defa
 aws-smithy-types = "1.3.4"
 liteparse = { version = "2.1.1", default-features = false }
 ppt-rs = "0.2.19"
-redis = "0.27"
+redis = "1.5"
 rust_xlsxwriter = "0.95.0"
 zip = { version = "0.6", default-features = false }
 # Live model gateway (provider-connected local): minimal sync HTTPS client
