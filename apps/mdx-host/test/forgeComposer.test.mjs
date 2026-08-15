@@ -7,6 +7,7 @@ import {
   buildProofPreflightView,
   resolveExecutionTarget
 } from "../src/lib/forgeComposer.js";
+import { forgeKernelReachable } from "../src/lib/forgeReachability.js";
 
 const forgePage = readFileSync(new URL("../src/routes/forge/+page.svelte", import.meta.url), "utf8");
 const forgeServer = readFileSync(new URL("../src/routes/forge/+page.server.js", import.meta.url), "utf8");
@@ -30,6 +31,15 @@ test("hosted Forge never advertises a local-only playground", () => {
   assert.match(forgeServer, /playgroundAvailable: !verifiedHostSessionRequired\(\)/);
   assert.match(forgePage, /data\.playgroundAvailable === true/);
   assert.match(forgePage, /Hosted Forge needs a connected repo/);
+});
+
+test("Forge uses the dedicated layout liveness result instead of a product projection", () => {
+  assert.equal(forgeKernelReachable({ reachable: true }), true);
+  assert.equal(forgeKernelReachable({ reachable: false }), false);
+  assert.match(forgeServer, /const parentData = await parent\(\)/);
+  assert.doesNotMatch(forgeServer, /const kernelReachable = runs !== null/);
+  assert.match(forgePage, /MDx is taking longer than expected/);
+  assert.match(forgePage, /data\.playgroundAvailable/);
 });
 
 test("a bounded queue exposes governed fleet widths above active workers", () => {

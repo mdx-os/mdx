@@ -1,7 +1,7 @@
 {
   "name": "mdx-local-db-schema",
   "mode": "deterministic-local",
-  "migration_count": 44,
+  "migration_count": 45,
   "tenant_owned_table_count": 123,
   "rls_enabled_table_count": 125,
   "policy_definition_count": 175,

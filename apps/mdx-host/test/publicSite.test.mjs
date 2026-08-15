@@ -20,6 +20,24 @@ test("the public site has one restrained navigation contract", () => {
   assert.match(footer, /Request an invite/);
 });
 
+test("the private beta journey keeps one public visual shell", () => {
+  const shell = read("lib/marketing/BetaFunnelShell.svelte");
+  const routes = [
+    read("routes/waitlist/+page.svelte"),
+    read("routes/redeem/+page.svelte"),
+    read("routes/auth/sign-in/+page.svelte"),
+    read("routes/download/macos/+page.svelte")
+  ];
+
+  assert.match(shell, /import PublicNav from "\.\/PublicNav\.svelte"/);
+  assert.match(shell, /--beta-bg: #08080a/);
+  assert.match(shell, /<PublicNav \{active\} \/>/);
+  for (const route of routes) {
+    assert.match(route, /BetaFunnelShell/);
+    assert.doesNotMatch(route, /:global\(body\)/);
+  }
+});
+
 test("open source is a first-class launch action with one canonical target", () => {
   const publicSite = read("lib/marketing/publicSite.js");
   const landing = read("routes/landing/+page.svelte");
@@ -53,6 +71,8 @@ test("public claims stay modest until usage supplies outside proof", () => {
     assert.doesNotMatch(security, claim);
   }
   assert.match(landing, /MDx is early\. Expect rough edges/);
+  assert.match(landing, /Start locally with one setup command/);
+  assert.doesNotMatch(landing, /before launch/);
   assert.match(security, /The claims have checks behind them/);
 });
 

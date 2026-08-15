@@ -1705,12 +1705,17 @@
 
   {#if !data.kernelReachable}
     <section class="setup-strip kernel-down" aria-label="MDx is not reachable">
-      <p class="ss-lead">MDx isn't reachable on this Mac</p>
-      <p class="kd-line">
-        The local server isn't answering, so nothing here is missing - it just can't be read yet.
-        The bar at the top has a Retry, or start it from the MDx repo and this page connects on its own:
-      </p>
-      <p class="kd-cmd"><code>sh scripts/dogfood-stack.sh</code></p>
+      {#if data.playgroundAvailable}
+        <p class="ss-lead">MDx isn't reachable on this Mac</p>
+        <p class="kd-line">
+          The local server isn't answering, so nothing here is missing - it just can't be read yet.
+          The bar at the top has a Retry, or start it from the MDx repo and this page connects on its own:
+        </p>
+        <p class="kd-cmd"><code>sh scripts/dogfood-stack.sh</code></p>
+      {:else}
+        <p class="ss-lead">MDx is taking longer than expected</p>
+        <p class="kd-line">Your work is safe. Use Retry in the bar above to reconnect to the beta service.</p>
+      {/if}
     </section>
   {/if}
 
@@ -2374,7 +2379,7 @@
     </nav>
     <p class="status-line" role="status">
       {#if !data.kernelReachable}
-        Resting - connect MDx to wake it
+        {data.playgroundAvailable ? "Resting - connect MDx to wake it" : "Waiting for MDx to reconnect"}
       {:else}
         {[
           decisionsWaiting === 0

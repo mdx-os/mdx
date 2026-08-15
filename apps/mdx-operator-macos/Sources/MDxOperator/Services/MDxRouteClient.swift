@@ -435,28 +435,6 @@ struct MDxRouteClient {
     _ = try await postJSON(baseURL: baseURL, path: "/beta/telemetry-events.json", body: body)
   }
 
-  func loadLatestMacRelease(hostedOrigin: URL) async throws -> MacReleaseManifest? {
-    let json = try await fetchJSON(
-      baseURL: hostedOrigin,
-      path: "/download/macos/manifest.json",
-      timeout: 10
-    )
-    guard json.bool(at: "available", fallback: false) else { return nil }
-    let manifest = json.dictionary(at: "manifest")
-    let version = manifest.string(at: "version", fallback: "")
-    let build = manifest.string(at: "build", fallback: "")
-    let sha256 = manifest.string(at: "sha256", fallback: "")
-    let sizeBytes = manifest.int(at: "size_bytes", fallback: 0)
-    guard !version.isEmpty, !build.isEmpty, sha256.count == 64, sizeBytes > 0 else { return nil }
-    return MacReleaseManifest(
-      version: version,
-      build: build,
-      sha256: sha256,
-      sizeBytes: sizeBytes,
-      notarizedAt: manifest.string(at: "notarized_at", fallback: "")
-    )
-  }
-
   /// Governed, METRICS-ONLY app-health ingest. Sends EXACTLY the server's
   /// allowlisted rollup (counts, durations, a bounded health state, and bare
   /// route-path strings), governed like `postFeedback`, so the kernel never

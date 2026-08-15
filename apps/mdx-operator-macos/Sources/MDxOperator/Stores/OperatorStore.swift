@@ -105,9 +105,6 @@ final class OperatorStore {
   private(set) var reportStatuses: [String: RemoteReportStatus] = [:]
   /// The kernel's self-description, when it has /version.json.
   private(set) var kernelVersion: KernelVersion?
-  /// Latest notarized canary, shown only when it is newer than this bundle.
-  private(set) var availableMacRelease: MacReleaseManifest?
-  private(set) var macReleaseCheckInFlight = false
   /// True when the previous session did not exit cleanly (crash/force quit).
   private(set) var launchedAfterUncleanExit = false
   /// The launch-time crash verdict, frozen for the health rollup. Unlike
@@ -239,7 +236,6 @@ final class OperatorStore {
   static let cleanExitDefaultsKey = "MDxCleanExit"
 
   private let client: MDxRouteClient
-  private let macReleaseHostedOrigin: URL?
   private let logger = Logger(subsystem: "com.mdx.app", category: "Store")
 
   /// One point in navigation: the route AND the selection state that makes
@@ -265,12 +261,10 @@ final class OperatorStore {
 
   init(
     client: MDxRouteClient = MDxRouteClient(),
-    macReleaseHostedOrigin: URL? = CloudConfiguration.current?.hostedOrigin,
     initialSnapshot: OperatorSnapshot? = nil,
     startBackgroundTasks: Bool = true
   ) {
     self.client = client
-    self.macReleaseHostedOrigin = macReleaseHostedOrigin
     let baseURL = Self.configuredBaseURL()
     self.snapshot = initialSnapshot ?? .offline(baseURL: baseURL)
     self.forgeRuns = initialSnapshot?.forgeRuns ?? []
@@ -1238,7 +1232,6 @@ final class OperatorStore {
     } else {
       didRecordBetaSessionStart = false
     }
-    await checkForMacUpdate()
   }
 
   func recordCanarySurfaceVisit(_ route: AppRoute) async {
@@ -1247,32 +1240,6 @@ final class OperatorStore {
       route: "/\(route.id)",
       surface: FeedbackSurfaceMap.surface(for: route)
     )
-  }
-
-  func checkForMacUpdate() async {
-    guard let macReleaseHostedOrigin, !macReleaseCheckInFlight else { return }
-    macReleaseCheckInFlight = true
-    defer { macReleaseCheckInFlight = false }
-    do {
-      let manifest = try await client.loadLatestMacRelease(hostedOrigin: macReleaseHostedOrigin)
-      if let manifest,
-         manifest.isNewer(thanVersion: Bundle.main.appShortVersion, build: Bundle.main.appBuildVersion) {
-        availableMacRelease = manifest
-      } else {
-        availableMacRelease = nil
-      }
-    } catch {
-      logger.info("Mac release check skipped: \(error.localizedDescription, privacy: .public)")
-    }
-  }
-
-  func openMacUpdate() {
-    guard let macReleaseHostedOrigin else { return }
-    NSWorkspace.shared.open(macReleaseHostedOrigin.appending(path: "download/macos"))
-  }
-
-  func dismissMacUpdate() {
-    availableMacRelease = nil
   }
 
   @discardableResult

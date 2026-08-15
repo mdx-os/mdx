@@ -1,12 +1,19 @@
 import {
-  archivePathForMacRelease,
-  latestMacReleaseManifest,
-  signedMacReleaseURL
+  dmgReadyMacReleaseManifest,
+  latestMacReleaseManifest
 } from "../../../lib/server/macosRelease.server.js";
+
+const AUTHENTICATED_MAC_DMG_PATH = "/download/macos/installer.dmg";
+const AUTHENTICATED_MAC_ZIP_PATH = "/download/macos/update.zip";
 
 export const _appHandoff = {
   continuity: "Use the same invited Google or Apple account everywhere. Your workspace, Pages, and Forge history will follow you between web, Mac, and iPhone.",
-  macSteps: [
+  macDmgSteps: [
+    "Open MDx.dmg after it downloads.",
+    "Drag MDx into the Applications folder shown in the installer.",
+    "Eject MDx, then open the app from Applications and sign in with the account connected to your invite."
+  ],
+  macZipSteps: [
     "Open the ZIP after it downloads.",
     "Move MDx into your Applications folder.",
     "Open MDx from Applications and sign in with the account connected to your invite."
@@ -27,8 +34,15 @@ export async function load({ locals, fetch, setHeaders }) {
   try {
     const manifest = await latestMacReleaseManifest({ locals, fetch });
     if (!manifest) return unavailable();
-    const downloadUrl = await signedMacReleaseURL(locals, archivePathForMacRelease(manifest), 120);
-    return { available: Boolean(downloadUrl), manifest: downloadUrl ? manifest : null, downloadUrl, appHandoff: _appHandoff };
+    const hasDmg = Boolean(dmgReadyMacReleaseManifest(manifest));
+    return {
+      available: true,
+      manifest,
+      downloadUrl: hasDmg ? AUTHENTICATED_MAC_DMG_PATH : AUTHENTICATED_MAC_ZIP_PATH,
+      downloadFilename: hasDmg ? "MDx.dmg" : "MDx.zip",
+      macSteps: hasDmg ? _appHandoff.macDmgSteps : _appHandoff.macZipSteps,
+      appHandoff: _appHandoff
+    };
   } catch {
     return unavailable();
   }

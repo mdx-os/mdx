@@ -47,8 +47,19 @@
       "scanner": "osv-scanner",
       "category": "dependency",
       "id": "RUSTSEC-2026-0253",
-      "reason": "aws-sdk-s3 pins lru 0.16 for its S3 Express identity cache. The affected pop path requires a key with a panicking Drop implementation; the SDK cache key is a String wrapper with no custom Drop. Track the AWS SDK until it adopts lru 0.18.2 or newer.",
-      "expires_on": "2026-10-31"
+      "path": "Cargo.lock",
+      "reason": "The only current path is aws-sdk-s3's S3 Express cache. Its CacheKey wraps String, whose Drop does not panic; the advisory requires a panicking key Drop plus catch_unwind. AWS SDK still constrains lru to 0.16, so the patched 0.18.2 release cannot be selected without replacing upstream source.",
+      "expires_on": "2026-10-31",
+      "mitigation_check": "Run cargo tree -i lru@0.16.4 and inspect aws-sdk-s3 src/s3_express.rs. Block this acceptance if another consumer appears, CacheKey gains a custom Drop implementation, or AWS permits lru 0.18.2 or newer."
+    },
+    {
+      "scanner": "trivy-fs",
+      "category": "iac",
+      "id": "AWS-0028",
+      "path": "deploy/agentcore/bootstrap.yaml:430-467",
+      "reason": "Trivy misreads this CloudFormation resource. ProxyInstance explicitly sets MetadataOptions.HttpTokens to required, enables the metadata endpoint, and limits the response hop count to one.",
+      "expires_on": "2026-10-31",
+      "mitigation_check": "hosted-sandbox-backend-check requires the ProxyInstance metadata options to keep IMDSv2 tokens required and the response hop limit at one. Reassess this scanner result before expiry."
     }
   ],
   "scanners": {
@@ -100,17 +111,7 @@
       "block_on_unavailable": false,
       "applies_when": { "files_exist": ["Cargo.lock"] },
       "availability_command": ["osv-scanner", "--version"],
-      "command": [
-        "osv-scanner",
-        "scan",
-        "source",
-        "--lockfile",
-        "Cargo.lock",
-        "--lockfile",
-        "pnpm-lock.yaml",
-        "--format",
-        "json"
-      ]
+      "command": ["osv-scanner", "scan", "--recursive", "--format", "json", "."]
     },
     "rust-unsafe-inventory": {
       "category": "rust-unsafe",
@@ -172,6 +173,8 @@
         "node_modules",
         "--skip-dirs",
         ".svelte-kit",
+        "--skip-dirs",
+        "apps/mdx-operator-macos/.build",
         "--skip-dirs",
         ".mdx-local",
         "--skip-dirs",

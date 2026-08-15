@@ -2446,7 +2446,7 @@ fn local_json_routes_declare_response_schema_paths() {
 #[test]
 fn migration_contracts_have_tenant_ids_and_rls() {
     let report = validate_migration_contracts().expect("migration contracts");
-    assert_eq!(report.migration_count, 44);
+    assert_eq!(report.migration_count, 45);
     assert!(report.tenant_owned_tables >= TENANT_OWNED_TABLES.len());
     assert_eq!(report.rls_enabled_tables, RLS_TABLES.len());
     // +28 in both: the live-path migration declares the dynamic persist-plane

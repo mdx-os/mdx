@@ -130,7 +130,7 @@
           <code>cd mdx</code>
           <code>make local-smoke</code>
         </div>
-        <small>Public setup must pass from a clean machine before launch.</small>
+        <small>Start locally with one setup command, then make it yours.</small>
       </div>
     </section>
 
@@ -215,7 +215,7 @@
     .job-grid, .source { grid-template-columns: 1fr; }.source { gap: 3rem; }.job-grid h3 { margin-top: 3rem; }
   }
   @media (max-width: 560px) {
-    .hero { padding-top: 6rem; }.product-stage { padding-inline: .75rem; }.product-window { margin-right: -18rem; }.window-body { min-height: 520px; grid-template-columns: 74px 1fr; }.workbench { width: 520px; padding: 1.1rem; }.workbench > header button { display: none; }
+    .hero { padding-top: 6rem; }.product-stage { padding-inline: .75rem; }.window-body { min-height: 520px; grid-template-columns: 1fr; }.window-body aside { display: none; }.workbench { min-width: 0; padding: 1.1rem; }.workbench > header { gap: 1rem; }.workbench > header button { display: none; }.workbench header h2 { font-size: 1.8rem; }
     .section-wrap { padding-inline: 1.1rem; }.decision-card { grid-template-columns: auto 1fr; }.decision-card > button { grid-column: 2; justify-self: start; }.job-grid article { min-height: 220px; }
   }
   @media (prefers-reduced-motion: reduce) { :global(*) { scroll-behavior: auto !important; transition: none !important; } }

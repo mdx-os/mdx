@@ -73,7 +73,7 @@ export async function load({ fetch, locals }) {
 
   const arrivalStep = hosted
     ? { id: "install_completed", title: "Install the apps", body: "Get the notarized Mac app and your TestFlight handoff. Use the same invited account on every device.", href: "/download/macos" }
-    : { id: "install_completed", title: "You're in", body: "MDx is running on this machine, your data in a local snapshot.", href: "/" };
+    : { id: "install_completed", title: "Open your workspace", body: "See MDx running on this machine with your data kept in its local snapshot.", href: "/" };
 
   const modelStep = {
     id: "model_connected",
@@ -91,7 +91,7 @@ export async function load({ fetch, locals }) {
     modelStep,
     { id: "first_page_draft", title: "Write your first Page", body: "Capture a note, decision, or plan. Keep it private until you choose to publish it.", href: "/pages" },
     { id: "repo_connected", title: "Connect a repository", body: "Choose repository access in GitHub. MDx never asks for a personal access token.", href: "/forge" },
-    { id: "first_forge_request", title: "Hand Forge one bounded job", body: "Use a safe repository and a small, reviewable request. Forge plans before it touches anything.", href: "/forge" },
+    { id: "first_forge_request", title: "Try one bounded Forge job", body: "Open Forge, connect a safe repo if needed, and give it one small request. Forge plans before it touches anything.", href: "/forge" },
     { id: "first_result_seen", title: "Review the result", body: "Read the checks and receipt, then approve, decline, or leave the branch for later.", href: "/forge/review" },
     { id: "first_capability_inspected", title: "Inspect a capability", body: "Open one curated Marketplace capability and see exactly what it can touch.", href: "/marketplace" },
     { id: "first_feedback_submitted", title: "Tell us one thing", body: "Use the feedback affordance on any surface. It only sends safe context.", href: "/" }

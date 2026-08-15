@@ -5,6 +5,7 @@
 // admission.
 import { platformProof } from "../../lib/platform.js";
 import { runtimeProjections } from "../../lib/forgeSession.js";
+import { forgeKernelReachable } from "../../lib/forgeReachability.js";
 import { verifiedHostSessionRequired } from "../../lib/session.server.js";
 
 async function readJson(fetchImpl, path) {
@@ -49,7 +50,8 @@ export const actions = {
   }
 };
 
-export async function load({ fetch, locals, url }) {
+export async function load({ fetch, locals, url, parent }) {
+  const parentData = await parent();
   const [
     forgeRuntime,
     operatorPacket,
@@ -137,7 +139,10 @@ export async function load({ fetch, locals, url }) {
       title: String(doc?.title ?? "").replace(/^standard:\s*/i, "")
     }));
 
-  const kernelReachable = runs !== null;
+  // Reachability belongs to the tiny version probe in the root layout. A large
+  // projection can be slow or temporarily unavailable while the kernel itself
+  // remains healthy, so its absence must never turn into a false offline state.
+  const kernelReachable = forgeKernelReachable(parentData);
   const githubOutcome = url.searchParams.get("github");
   const githubNotice =
     githubOutcome === "connected"

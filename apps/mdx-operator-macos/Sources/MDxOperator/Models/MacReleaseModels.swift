@@ -1,24 +1,5 @@
 import Foundation
 
-struct MacReleaseManifest: Equatable, Sendable {
-  let version: String
-  let build: String
-  let sha256: String
-  let sizeBytes: Int
-  let notarizedAt: String
-
-  func isNewer(thanVersion installedVersion: String, build installedBuild: String) -> Bool {
-    let available = version.split(separator: ".").map { Int($0) ?? 0 }
-    let installed = installedVersion.split(separator: ".").map { Int($0) ?? 0 }
-    for index in 0..<max(available.count, installed.count) {
-      let left = index < available.count ? available[index] : 0
-      let right = index < installed.count ? installed[index] : 0
-      if left != right { return left > right }
-    }
-    return (Int(build) ?? 0) > (Int(installedBuild) ?? 0)
-  }
-}
-
 struct MacDistributionProfile: Equatable, Sendable {
   let channel: String
 
@@ -30,7 +11,7 @@ struct MacDistributionProfile: Equatable, Sendable {
 
   var updateDetail: String {
     if isCanary {
-      return "MDx checks the private canary release and sends you to the secure download when a newer build is ready."
+      return "MDx checks the private canary channel and can install a newer signed build in place."
     }
     return "Development builds are updated from the repository."
   }

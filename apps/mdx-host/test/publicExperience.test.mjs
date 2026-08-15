@@ -54,7 +54,9 @@ test("waitlist success keeps its support reference without linking to private ev
 
 test("sign-in guides a new participant into one cross-device workspace", () => {
   const signIn = readFileSync(new URL("../src/routes/auth/sign-in/+page.server.js", import.meta.url), "utf8");
-  assert.match(signIn, /provider for the address that received your invite/);
-  assert.match(signIn, /connect Apple from You without creating another workspace/);
-  assert.match(signIn, /private relay address must match your beta invite/);
+  assert.match(signIn, /Google or Apple account that received your invite/);
+  assert.match(signIn, /workspace follows you across web, Mac, and iPhone/);
+  assert.match(signIn, /Connect Apple later from You/);
+  assert.match(signIn, /relay address must be invited too/);
+  assert.match(signIn, /We couldn't finish that sign-in/);
 });

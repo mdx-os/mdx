@@ -1027,6 +1027,9 @@ mod tests {
 
     #[test]
     fn participant_reads_only_own_journey_while_operator_reads_tenant_cohort() {
+        let _env = ENV_TEST_LOCK
+            .lock()
+            .unwrap_or_else(|error| error.into_inner());
         let kernel = kernel();
         for actor in ["engineer_1", "engineer_2"] {
             let body = format!(

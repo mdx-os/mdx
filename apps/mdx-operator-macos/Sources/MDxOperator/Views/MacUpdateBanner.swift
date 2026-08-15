@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct MacUpdateBanner: View {
-  @Environment(OperatorStore.self) private var store
+  @Environment(MacUpdaterController.self) private var updater
 
   var body: some View {
-    if let release = store.availableMacRelease {
+    if let release = updater.availableUpdate {
       HStack(spacing: 12) {
         Image(systemName: "arrow.down.circle.fill")
           .font(.title2)
@@ -14,17 +14,17 @@ struct MacUpdateBanner: View {
         VStack(alignment: .leading, spacing: 3) {
           Text("A newer notarized MDx is ready")
             .font(.headline)
-          Text("Version \(release.version), build \(release.build). Download it from your private beta page.")
+          Text("Version \(release.version), build \(release.build). MDx can install it and reopen when ready.")
             .font(.callout)
             .foregroundStyle(.secondary)
         }
 
         Spacer(minLength: 12)
 
-        Button("Download update") { store.openMacUpdate() }
+        Button("Install update") { Task { await updater.installAvailableUpdate() } }
           .mdxPrimaryButtonStyle()
         Button {
-          store.dismissMacUpdate()
+          updater.dismissAvailableUpdate()
         } label: {
           Image(systemName: "xmark")
         }
