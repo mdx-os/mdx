@@ -18,10 +18,8 @@ export async function GET({ locals, url }) {
     if (linkingIdentity && locals.session?.authenticated) {
       redirect(303, "/you?identity=apple-link-failed");
     }
-    return new Response(JSON.stringify({ error: "supabase_oauth_exchange_failed" }), {
-      status: 401,
-      headers: { "content-type": "application/json", "cache-control": "private, no-store" }
-    });
+    const next = safeReturnPath(url.searchParams.get("next"));
+    redirect(303, `/auth/sign-in?next=${encodeURIComponent(next)}&auth=exchange-failed`);
   }
   // The exchange succeeded, so the person is signed in with the identity
   // provider - but signing in is not the same as being admitted. Until an

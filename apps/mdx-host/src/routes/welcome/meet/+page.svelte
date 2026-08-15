@@ -59,9 +59,9 @@
   <div class="hero">
     <div class="hero-inner">
       <div class="hero-logo" aria-label="MDx">MD<span>x</span></div>
-      <p class="hero-tag">What do you wanna build <em>next</em>?</p>
+      <p class="hero-tag">What do you want to work on <em>first</em>?</p>
       <div class="hero-cta">
-        <a class="mdx-btn primary hero-go" href="/welcome/setup">Start your journey &rarr;</a>
+        <a class="mdx-btn primary hero-go" href={data.nextPath}>Choose where to start &rarr;</a>
       </div>
     </div>
     <button type="button" class="hero-explore" onclick={seeHow} aria-label="See how it works">
@@ -126,7 +126,7 @@
   </section>
 
   <div class="meet-cta">
-    <a class="mdx-btn primary" href="/welcome/setup">Set up MDx &rarr;</a>
+    <a class="mdx-btn primary" href={data.nextPath}>Choose where to start &rarr;</a>
     <a class="meet-skip" href="/twin">or look around first</a>
   </div>
   </div>

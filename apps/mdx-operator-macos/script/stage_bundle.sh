@@ -32,12 +32,23 @@ APP_CONTENTS="$APP_BUNDLE/Contents"
 APP_MACOS="$APP_CONTENTS/MacOS"
 APP_BINARY="$APP_MACOS/$PRODUCT_NAME"
 INFO_PLIST="$APP_CONTENTS/Info.plist"
+SPARKLE_FRAMEWORK_SOURCE="$ROOT_DIR/.build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+SPARKLE_FRAMEWORK="$APP_CONTENTS/Frameworks/Sparkle.framework"
 
 rm -rf "$APP_BUNDLE"
 mkdir -p "$APP_MACOS"
 mkdir -p "$APP_CONTENTS/Resources"
+mkdir -p "$APP_CONTENTS/Frameworks"
 cp "$BUILD_BINARY" "$APP_BINARY"
 chmod +x "$APP_BINARY"
+test -d "$SPARKLE_FRAMEWORK_SOURCE" || {
+  echo "stage_bundle: Sparkle.framework artifact is missing; run swift package resolve and build first" >&2
+  exit 1
+}
+/usr/bin/ditto "$SPARKLE_FRAMEWORK_SOURCE" "$SPARKLE_FRAMEWORK"
+# MDx is not sandboxed. Sparkle's Downloader and Installer XPC services are
+# only required for sandboxed applications and broaden the signing surface.
+rm -rf "$SPARKLE_FRAMEWORK/Versions/Current/XPCServices"
 
 # App icon (regenerate with: swift script/make_icon.swift + iconutil).
 if [[ -f "$ROOT_DIR/Resources/AppIcon.icns" ]]; then
@@ -108,6 +119,16 @@ if [[ "$cloud_value_count" -eq 3 ]]; then
   plutil -insert MDXSupabasePublishableKey -string "$MDX_SUPABASE_PUBLISHABLE_KEY" "$INFO_PLIST"
   plutil -insert MDXPublicHostURL -string "$MDX_PUBLIC_HOST_URL" "$INFO_PLIST"
   plutil -insert MDXDistributionChannel -string "${MDX_DISTRIBUTION_CHANNEL:-canary}" "$INFO_PLIST"
+  if [[ ! "${MDX_SPARKLE_PUBLIC_KEY:-}" =~ ^[A-Za-z0-9+/]{43}=$ ]]; then
+    echo "stage_bundle: cloud canaries require a valid MDX_SPARKLE_PUBLIC_KEY" >&2
+    exit 1
+  fi
+  plutil -insert SUFeedURL -string "${MDX_PUBLIC_HOST_URL%/}/download/macos/appcast.xml" "$INFO_PLIST"
+  plutil -insert SUPublicEDKey -string "$MDX_SPARKLE_PUBLIC_KEY" "$INFO_PLIST"
+  # MDx owns the schedule so it can refresh the private beta bearer token
+  # immediately before each quiet check.
+  plutil -insert SUEnableAutomaticChecks -bool false "$INFO_PLIST"
+  plutil -insert SUSendsSystemProfile -bool false "$INFO_PLIST"
 fi
 
 plutil -lint "$INFO_PLIST" >/dev/null
@@ -122,6 +143,9 @@ if command -v codesign >/dev/null 2>&1; then
   if security find-identity -p codesigning 2>/dev/null | grep -q "$SIGN_IDENTITY_NAME"; then
     identity="$SIGN_IDENTITY_NAME"
   fi
+  codesign --force --sign "$identity" "$SPARKLE_FRAMEWORK/Versions/Current/Autoupdate" >/dev/null
+  codesign --force --sign "$identity" "$SPARKLE_FRAMEWORK/Versions/Current/Updater.app" >/dev/null
+  codesign --force --sign "$identity" "$SPARKLE_FRAMEWORK" >/dev/null
   codesign --force --sign "$identity" "$APP_BUNDLE" >/dev/null
   if [[ "$identity" == "-" ]]; then
     echo "stage_bundle: signed ad-hoc (create an 'MDx Dev' certificate for stable notifications/TCC)"

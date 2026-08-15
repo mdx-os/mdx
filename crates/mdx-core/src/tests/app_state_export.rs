@@ -514,7 +514,7 @@ fn postgres_app_state_writer_accepts_observed_migrations() {
     let writer = PostgresAppStateWriter::connect_after_observed_migrations(
         Some("postgres://mdx:mdx@localhost/mdx"),
         PostgresMigrationEvidence {
-            migration_count: 44,
+            migration_count: 45,
             tenant_owned_tables: 123,
             rls_enabled_tables: 125,
             observed_by: "test".to_string(),
@@ -546,7 +546,7 @@ fn postgres_app_state_writer_rejects_migration_evidence_mismatch() {
     assert_eq!(
         result,
         Err(StorageAdapterError::MigrationEvidenceMismatch {
-            expected_migrations: 44,
+            expected_migrations: 45,
             observed_migrations: 8,
             expected_tenant_owned_tables: 123,
             observed_tenant_owned_tables: 67,

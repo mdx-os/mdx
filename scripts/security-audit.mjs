@@ -248,6 +248,10 @@ function finding(scanner, category, severity, title, location = {}, extra = {}) 
 function acceptedFinding(policy, item) {
   const entries = policy.accepted_findings ?? [];
   return entries.find((entry) => {
+    if (entry.expires_on) {
+      const expiresAt = Date.parse(`${entry.expires_on}T23:59:59.999Z`);
+      if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) return false;
+    }
     if (entry.scanner && entry.scanner !== item.scanner) return false;
     if (entry.category && entry.category !== item.category) return false;
     if (entry.id && entry.id !== item.id) return false;
@@ -377,6 +381,9 @@ function normalizeOsvScanner(raw) {
   const findings = [];
   for (const result of raw?.results ?? []) {
     const sourcePath = result.source?.path ?? result.path ?? "lockfile";
+    const normalizedSourcePath = path.isAbsolute(sourcePath)
+      ? rel(sourcePath)
+      : sourcePath.replaceAll(path.sep, "/");
     for (const pkg of result.packages ?? []) {
       const packageName = pkg.package?.name ?? pkg.name ?? "dependency";
       for (const vulnerability of pkg.vulnerabilities ?? []) {
@@ -386,7 +393,7 @@ function normalizeOsvScanner(raw) {
               "dependency",
               normalizeOsvSeverityValue(vulnerability),
               vulnerability.summary ?? vulnerability.id ?? packageName,
-              { path: sourcePath, line: null },
+              { path: normalizedSourcePath, line: null },
               { id: vulnerability.id, package: packageName }
           )
         );

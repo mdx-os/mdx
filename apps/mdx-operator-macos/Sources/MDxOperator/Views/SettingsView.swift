@@ -164,6 +164,7 @@ private struct SettingsCoverTopBar: View {
 
 struct SettingsView: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(MacUpdaterController.self) private var updater
   @Environment(CloudAuthStore.self) private var auth
   @AppStorage(OperatorStore.apiURLDefaultsKey) private var apiURL = MDxRouteClient.defaultBaseURL.absoluteString
   @AppStorage(OperatorStore.appearanceModeDefaultsKey) private var appearanceModeRaw = AppearanceMode.system.rawValue
@@ -636,7 +637,7 @@ struct SettingsView: View {
     VStack(alignment: .leading, spacing: 20) {
       SettingsSectionHeader(
         title: "Keep MDx up to date",
-        subtitle: "See the version on this Mac and download a newer signed release when one is ready."
+        subtitle: "See the version on this Mac and install a newer signed release when one is ready."
       )
 
       if let kernel = store.kernelVersion {
@@ -659,11 +660,11 @@ struct SettingsView: View {
         )
       }
 
-      if let release = store.availableMacRelease {
+      if let release = updater.availableUpdate {
         SettingsGroup {
           SettingsInfoRow(
             title: "Update available",
-            subtitle: "A newer signed canary is ready on the private download page.",
+            subtitle: "A newer signed canary is ready for MDx to install.",
             value: "\(release.version) (\(release.build))"
           )
         }
@@ -671,12 +672,12 @@ struct SettingsView: View {
 
       HStack(spacing: 10) {
         Button("Check for updates") {
-          Task { await store.checkForMacUpdate() }
+          Task { await updater.checkForUpdates() }
         }
-        .disabled(store.macReleaseCheckInFlight)
+        .disabled(!updater.isConfigured || updater.checkInFlight)
 
-        if store.availableMacRelease != nil {
-          Button("Open secure download") { store.openMacUpdate() }
+        if updater.availableUpdate != nil {
+          Button("Install update") { Task { await updater.installAvailableUpdate() } }
             .buttonStyle(.borderedProminent)
         }
       }
@@ -684,7 +685,7 @@ struct SettingsView: View {
       if !Bundle.main.macDistributionProfile.isCanary {
         PackagingPanel()
       } else {
-        Text("This canary was signed with Developer ID, notarized by Apple, and checked before it was published.")
+        Text("This canary was signed with Developer ID, notarized by Apple, and verified again before MDx installs it.")
           .font(.caption)
           .foregroundStyle(.secondary)
       }

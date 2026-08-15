@@ -24,6 +24,34 @@ importers:
         specifier: 0.3.206
         version: 0.3.206(@anthropic-ai/sdk@0.110.0(zod@4.4.3))(@modelcontextprotocol/sdk@1.29.0(zod@4.4.3))(zod@4.4.3)
 
+  apps/concierge:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+
+  apps/mdx:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.61.1
+        version: 1.61.1
+
   apps/mdx-host:
     dependencies:
       '@mdx/client':
@@ -57,6 +85,74 @@ importers:
       '@playwright/test':
         specifier: 1.61.1
         version: 1.61.1
+
+  apps/message:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+
+  apps/observatory:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.61.1
+        version: 1.61.1
+
+  apps/pages:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+
+  apps/start:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.61.1
+        version: 1.61.1
+
+  apps/twin:
+    dependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^7.2.0
+        version: 7.2.0(svelte@5.56.4)(vite@8.1.4)
+      svelte:
+        specifier: ^5.56.4
+        version: 5.56.4
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4
 
   packages/mdx-client: {}
 

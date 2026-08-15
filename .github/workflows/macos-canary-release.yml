@@ -32,6 +32,7 @@ jobs:
       MDX_SUPABASE_PUBLISHABLE_KEY: ${{ vars.MDX_SUPABASE_PUBLISHABLE_KEY }}
       MDX_PUBLIC_HOST_URL: ${{ vars.MDX_PUBLIC_HOST_URL }}
       MDX_DISTRIBUTION_CHANNEL: canary
+      MDX_SPARKLE_PUBLIC_KEY: ${{ vars.SPARKLE_EDDSA_PUBLIC_KEY }}
       MDX_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
       MDX_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.SUPABASE_RELEASE_S3_ACCESS_KEY_ID }}
@@ -56,6 +57,8 @@ jobs:
           : "${MDX_SUPABASE_URL:?GitHub environment variable is required}"
           : "${MDX_SUPABASE_PUBLISHABLE_KEY:?GitHub environment variable is required}"
           : "${MDX_PUBLIC_HOST_URL:?GitHub environment variable is required}"
+          : "${MDX_SPARKLE_PUBLIC_KEY:?Sparkle EdDSA public key variable is required}"
+          [[ "$MDX_SPARKLE_PUBLIC_KEY" =~ ^[A-Za-z0-9+/]{43}=$ ]]
           : "${MDX_NOTARY_KEY_ID:?GitHub environment secret is required}"
           : "${MDX_NOTARY_ISSUER_ID:?GitHub environment secret is required}"
           : "${AWS_ACCESS_KEY_ID:?GitHub environment secret is required}"
@@ -95,6 +98,17 @@ jobs:
           chmod 600 "$notary_key"
           echo "MDX_NOTARY_KEY_PATH=$notary_key" >> "$GITHUB_ENV"
 
+      - name: Prepare Sparkle update signing key
+        env:
+          SPARKLE_PRIVATE_KEY_BASE64: ${{ secrets.SPARKLE_EDDSA_PRIVATE_KEY_BASE64 }}
+        run: |
+          : "${SPARKLE_PRIVATE_KEY_BASE64:?Sparkle EdDSA private key is required}"
+          sparkle_key="$RUNNER_TEMP/mdx-sparkle-eddsa-private-key"
+          printf '%s' "$SPARKLE_PRIVATE_KEY_BASE64" | base64 -D > "$sparkle_key"
+          chmod 600 "$sparkle_key"
+          test -s "$sparkle_key"
+          echo "MDX_SPARKLE_PRIVATE_KEY_PATH=$sparkle_key" >> "$GITHUB_ENV"
+
       - name: Build cloud-configured app
         working-directory: apps/mdx-operator-macos
         run: script/package_release.sh
@@ -112,8 +126,10 @@ jobs:
           aws configure set default.s3.addressing_style path
           versioned="releases/macos/canary/$MDX_MARKETING_VERSION/$MDX_BUILD_VERSION"
           aws s3 cp dist/MDx.zip "s3://$SUPABASE_RELEASE_BUCKET/$versioned/MDx.zip" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/zip --no-progress
+          aws s3 cp dist/MDx.dmg "s3://$SUPABASE_RELEASE_BUCKET/$versioned/MDx.dmg" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/x-apple-diskimage --no-progress
           aws s3 cp dist/manifest.json "s3://$SUPABASE_RELEASE_BUCKET/$versioned/manifest.json" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/json --no-progress
           aws s3 cp dist/MDx.zip "s3://$SUPABASE_RELEASE_BUCKET/latest/MDx.zip" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/zip --no-progress
+          aws s3 cp dist/MDx.dmg "s3://$SUPABASE_RELEASE_BUCKET/latest/MDx.dmg" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/x-apple-diskimage --no-progress
           aws s3 cp dist/manifest.json "s3://$SUPABASE_RELEASE_BUCKET/latest/manifest.json" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/json --no-progress
 
       - name: Upload notarization evidence
@@ -124,6 +140,8 @@ jobs:
             apps/mdx-operator-macos/dist/manifest.json
             apps/mdx-operator-macos/dist/notary-submission.json
             apps/mdx-operator-macos/dist/notary-log.json
+            apps/mdx-operator-macos/dist/dmg-notary-submission.json
+            apps/mdx-operator-macos/dist/dmg-notary-log.json
             apps/mdx-operator-macos/dist/signed-entitlements.plist
           if-no-files-found: error
           retention-days: 90
@@ -135,7 +153,10 @@ jobs:
           echo "- Version: \`$MDX_MARKETING_VERSION ($MDX_BUILD_VERSION)\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Artifact: private Supabase Storage bucket \`$SUPABASE_RELEASE_BUCKET\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Download gate: \`$MDX_PUBLIC_HOST_URL/download/macos\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- SHA-256: \`$(plutil -extract sha256 raw apps/mdx-operator-macos/dist/manifest.json)\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- First-install format: signed and notarized DMG" >> "$GITHUB_STEP_SUMMARY"
+          echo "- In-app update channel: authenticated Sparkle appcast" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Sparkle ZIP SHA-256: \`$(plutil -extract sha256 raw apps/mdx-operator-macos/dist/manifest.json)\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Installer DMG SHA-256: \`$(plutil -extract dmg_sha256 raw apps/mdx-operator-macos/dist/manifest.json)\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Remove ephemeral signing material
         if: always()
@@ -143,4 +164,4 @@ jobs:
           if [[ -n "${MDX_CI_KEYCHAIN:-}" && -f "$MDX_CI_KEYCHAIN" ]]; then
             security delete-keychain "$MDX_CI_KEYCHAIN" || true
           fi
-          rm -f "$RUNNER_TEMP"/mdx-developer-id.p12 "$RUNNER_TEMP"/AuthKey_*.p8
+          rm -f "$RUNNER_TEMP"/mdx-developer-id.p12 "$RUNNER_TEMP"/AuthKey_*.p8 "$RUNNER_TEMP"/mdx-sparkle-eddsa-private-key

@@ -22,7 +22,7 @@ rust-check:
 	cargo check --workspace --all-targets
 
 macos-check:
-	swift test --package-path apps/mdx-operator-macos
+	sh ./scripts/native-macos-operator-check.sh
 
 ios-build-check:
 	xcodebuild -project apps/mdx-operator-ios/MDxAnywhere.xcodeproj -scheme MDxAnywhere -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO build

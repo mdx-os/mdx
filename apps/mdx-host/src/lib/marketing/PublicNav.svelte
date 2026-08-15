@@ -14,7 +14,11 @@
   <a class="brand" href="/landing" aria-label="MDx home">MD<span>x</span></a>
   <nav aria-label="MDx public site">
     {#each links as link}
-      <a href={link.href} aria-current={active === link.id ? "page" : undefined}>{link.label}</a>
+      <a
+        class:mobile-optional={link.id === "product"}
+        href={link.href}
+        aria-current={active === link.id ? "page" : undefined}
+      >{link.label}</a>
     {/each}
   </nav>
   <a class="signin" href="/auth/sign-in?next=%2Fwelcome%2Fbeta">Sign in</a>
@@ -95,10 +99,10 @@
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     .public-nav { padding-inline: 0.9rem; }
     nav a { font-size: 0.76rem; }
-    nav a:first-child { display: none; }
+    nav a.mobile-optional { display: none; }
     .signin { font-size: 0.76rem; }
   }
 </style>

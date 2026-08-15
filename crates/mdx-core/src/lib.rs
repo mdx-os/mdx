@@ -6324,6 +6324,7 @@ fn migration_sources() -> Vec<&'static str> {
         include_str!("../../../migrations/0041_memory_record_local_embedding.sql"),
         include_str!("../../../migrations/0042_model_fabric_runtime.sql"),
         include_str!("../../../migrations/0043_marketplace_pack_actions.sql"),
+        include_str!("../../../migrations/0044_allow_macos_dmg_release_artifacts.sql"),
     ]
 }
 const RLS_TABLES: &[&str] = &[

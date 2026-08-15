@@ -147,7 +147,7 @@ fn check_migrations_cli_reports_contract_counts() {
 
     assert!(output.status.success());
     let stdout = String::from_utf8(output.stdout).expect("utf8 stdout");
-    assert!(stdout.contains("migrations: 44"));
+    assert!(stdout.contains("migrations: 45"));
     assert!(stdout.contains("rls_enabled_tables: 125"));
     assert!(stdout.contains("policy_definitions: 175"));
     assert!(stdout.contains("policy_drop_guards: 175"));
@@ -163,7 +163,7 @@ fn check_postgres_boundary_reports_pending_without_live_evidence() {
     assert!(output.status.success());
     let stdout = String::from_utf8(output.stdout).expect("utf8 stdout");
     assert!(stdout.contains("postgres_boundary: PENDING-LIVE-RUN"));
-    assert!(stdout.contains("migrations: 44"));
+    assert!(stdout.contains("migrations: 45"));
     assert!(stdout.contains("rls_enabled_tables: 125"));
     assert!(stdout.contains("policy_drop_guards: 175"));
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(MacUpdaterController.self) private var updater
   @Environment(\.scenePhase) private var scenePhase
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @AppStorage(OperatorStore.showInspectorDefaultsKey) private var showInspector = false
@@ -50,10 +51,16 @@ struct ContentView: View {
       CompanionPanelController.shared.configure(store: store)
       await store.refresh()
       await store.beginCanarySession()
+      await updater.checkInBackground()
     }
     .onChange(of: scenePhase) { _, phase in
       store.setForeground(phase == .active)
-      if phase == .active { Task { await store.beginCanarySession() } }
+      if phase == .active {
+        Task {
+          await store.beginCanarySession()
+          await updater.checkInBackground()
+        }
+      }
     }
     .onChange(of: store.selectedAppRoute, initial: true) { _, route in
       // Twin, Pages, Message, and Marketplace each own a navigation rail of

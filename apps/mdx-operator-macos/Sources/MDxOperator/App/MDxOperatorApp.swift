@@ -125,6 +125,7 @@ struct MDxApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
   @State private var auth: CloudAuthStore
   @State private var store: OperatorStore
+  @State private var updater: MacUpdaterController
 
   init() {
     let auth = CloudAuthStore()
@@ -132,6 +133,9 @@ struct MDxApp: App {
     _store = State(initialValue: OperatorStore(client: MDxRouteClient(accessTokenProvider: {
       await auth.accessToken()
     })))
+    _updater = State(initialValue: MacUpdaterController(accessTokenProvider: {
+      await auth.accessToken()
+    }))
     // Headless contract checks (`--mapper-checks`): run and exit before any UI.
     MapperChecks.runIfRequested()
     // Headless S7 parity probe (`--parity-probe`): drive the real client against
@@ -150,6 +154,7 @@ struct MDxApp: App {
       }
         .environment(auth)
         .environment(store)
+        .environment(updater)
         .onChange(of: auth.state) { _, state in
           switch state {
           case .authorized:
@@ -157,6 +162,7 @@ struct MDxApp: App {
             store = OperatorStore(client: MDxRouteClient(accessTokenProvider: {
               await activeAuth.accessToken()
             }))
+            Task { await updater.checkInBackground() }
           case .checkingAccess, .signedOut, .pending, .failed:
             store.suspendCloudAccess()
           case .local, .restoring:
@@ -210,7 +216,8 @@ struct MDxApp: App {
 
       CommandGroup(replacing: .help) {
         Button("Show Welcome") { store.showWelcome() }
-        Button("Check for Updates…") { Task { await store.checkForMacUpdate() } }
+        Button("Check for Updates…") { Task { await updater.checkForUpdates() } }
+          .disabled(!updater.isConfigured || updater.checkInFlight)
         Divider()
         Button("Report an Issue…") { store.startFeedback() }
           .keyboardShortcut("b", modifiers: [.command, .shift])
@@ -246,6 +253,7 @@ struct MDxApp: App {
       if let runID {
         RunMonitorView(runID: runID)
           .environment(store)
+          .environment(updater)
           .preferredColorScheme(appearanceMode.colorScheme)
       }
     }
@@ -258,6 +266,7 @@ struct MDxApp: App {
     MenuBarExtra {
       MenuBarView()
         .environment(store)
+        .environment(updater)
     } label: {
       MenuBarLabel(store: store)
     }

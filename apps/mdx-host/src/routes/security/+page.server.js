@@ -3,8 +3,8 @@
 // mdx-security-posture.json) and the scanner policy (security/scanner-policy.json:
 // which scanners run, the posture-score bar, what blocks, and the accepted
 // findings with reasons). These are committed source-of-truth, so the page is
-// the REAL posture, never a brochure. It reads them server-side at request time,
-// so when a fix or a policy change lands the page reflects it.
+// the REAL posture, never a brochure. Import them at build time because the
+// production host image contains the compiled app, not the full repository.
 //
 // What it deliberately does NOT show: a live posture score from an unverified
 // run. Local audit runs are gitignored, and a readiness dry-run (scanners
@@ -12,27 +12,9 @@
 // trend light up only from generated/security/mdx-security-trust.json, a
 // sanitized committed artifact derived from a completed executed scan. No fake
 // green.
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-
-function readJsonFromRepo(relPath) {
-  // Resolve from the repo root regardless of where the host server was started.
-  const candidates = [
-    relPath,
-    resolve(process.cwd(), relPath),
-    resolve(process.cwd(), "..", relPath),
-    resolve(process.cwd(), "..", "..", relPath),
-    resolve(process.cwd(), "..", "..", "..", relPath)
-  ];
-  for (const candidate of candidates) {
-    try {
-      return JSON.parse(readFileSync(candidate, "utf8"));
-    } catch (error) {
-      // try the next candidate
-    }
-  }
-  return null;
-}
+import posture from "../../../../../generated/security/mdx-security-posture.json" with { type: "json" };
+import trust from "../../../../../generated/security/mdx-security-trust.json" with { type: "json" };
+import policy from "../../../../../security/scanner-policy.json" with { type: "json" };
 
 function acceptedSummary(entry) {
   if (typeof entry === "string") return { id: entry, reason: "" };
@@ -72,10 +54,6 @@ function trustSummary(trust) {
 }
 
 export async function load() {
-  const posture = readJsonFromRepo("generated/security/mdx-security-posture.json");
-  const policy = readJsonFromRepo("security/scanner-policy.json");
-  const trust = readJsonFromRepo("generated/security/mdx-security-trust.json");
-
   // scanner-policy.json keys scanners by id, each with a category + required
   // flag. Read those directly so the page stays in sync with the policy.
   let scanners = [];

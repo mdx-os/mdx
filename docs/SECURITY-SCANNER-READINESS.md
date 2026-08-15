@@ -161,6 +161,8 @@ Current accepted findings:
 - Semgrep loopback HTTP in `scripts/ctx-provider-turn-on-check.mjs`: local spawned proof server only.
 - Trivy ConfigMap sensitivity in `deploy/kubernetes/base/configmap.yaml`: `MDX_SECRETS_BACKEND` is a backend selector, while secret values live in `mdx-runtime-secrets` or an external secret store.
 - Trivy unrestricted HTTPS egress on the isolated AgentCore dependency proxy: package registries and source hosts use dynamic addresses that a security group cannot express as FQDNs. The runtime can reach only the proxy, Squid enforces the deployed domain allowlist and private-address denial, and the acceptance expires on 2026-10-31 for network-layer reassessment.
+- OSV `RUSTSEC-2026-0253` in the AWS S3 SDK dependency chain: the SDK's S3 Express cache key wraps `String`, so the advisory's panicking `Drop` precondition is not reachable. The acceptance is exact to `Cargo.lock`, expires on 2026-10-31, and must close when AWS permits `lru` 0.18.2 or newer.
+- Trivy `AWS-0028` on the AgentCore proxy instance: the CloudFormation resource already requires IMDSv2 session tokens and limits metadata responses to one hop. `hosted-sandbox-backend-check` protects those settings, and the false-positive acceptance expires on 2026-10-31 for scanner reassessment.
 
 Do not add broad accepted findings. If a finding represents a real vulnerability or a production obligation, fix it or leave it as a warning until the owning deployment target supplies the missing detail.
 

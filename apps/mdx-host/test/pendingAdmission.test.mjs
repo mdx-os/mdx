@@ -78,6 +78,23 @@ test("OAuth sends an unadmitted identity to the waiting room with its invite int
   }
 });
 
+test("a failed first sign-in returns to a human recovery screen", async () => {
+  const location = await redirectFrom(() =>
+    finishOAuth({
+      locals: {
+        session: { authenticated: false },
+        supabase: {
+          auth: {
+            exchangeCodeForSession: async () => ({ error: new Error("provider exchange failed") })
+          }
+        }
+      },
+      url: new URL("https://mdx.test/auth/callback?code=proof&next=%2Fdownload%2Fmacos")
+    })
+  );
+  assert.equal(location, "/auth/sign-in?next=%2Fdownload%2Fmacos&auth=exchange-failed");
+});
+
 test("checking access keeps an unadmitted provider session in the waiting room", async () => {
   const result = await actions.default({
     locals: { supabase: pendingSupabase() },
