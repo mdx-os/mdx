@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem in MDx.
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping make MDx more reliable. Remove secrets and private workspace data before submitting.
+  - type: input
+    id: revision
+    attributes:
+      label: MDx revision or release
+      description: Paste a release number or git commit when possible.
+      placeholder: v0.2.0 or abc1234
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include your operating system and relevant tool versions.
+      placeholder: macOS 15.6, Apple silicon, Docker 29.5
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Give the smallest safe sequence that reproduces the problem.
+      placeholder: |-
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Redacted evidence
+      description: Add safe logs, screenshots, or receipts. Do not include secrets, invite ids, private paths, or customer data.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed secrets, private data, and sensitive security details.
+          required: true

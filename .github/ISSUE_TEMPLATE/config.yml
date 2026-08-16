@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/mdx-os/mdx/security/advisories/new
+    about: Report a vulnerability privately. Do not include exploit details in a public issue.
+  - name: Hosted beta access
+    url: https://mdx-os.com/waitlist
+    about: Request an invite for the hosted MDx beta.

@@ -30,7 +30,7 @@
         <p class="note">Version {data.manifest.version} ({data.manifest.build}).</p>
       </section>
       <section class="app-card beta-panel iphone" aria-labelledby="iphone-title">
-        <h2 id="iphone-title">MDx Anywhere</h2>
+        <h2 id="iphone-title">MDx for iPhone</h2>
         <p>{data.appHandoff.iphone}</p>
         <a class="secondary beta-secondary" href="https://apps.apple.com/app/testflight/id899247664" target="_blank" rel="noopener">Get TestFlight</a>
         <p class="note">{data.appHandoff.iphoneNote}</p>

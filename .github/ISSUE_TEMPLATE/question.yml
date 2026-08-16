@@ -1,0 +1,24 @@
+name: Question
+description: Ask about running, extending, or contributing to MDx.
+title: "[question] "
+labels:
+  - question
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Include relevant documentation and safe, redacted output.
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: MDx revision or release
+      placeholder: v0.2.0 or abc1234

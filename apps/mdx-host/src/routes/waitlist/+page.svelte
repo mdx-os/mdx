@@ -12,7 +12,7 @@
   title={form?.success ? `You're on the list${form.firstName ? `, ${form.firstName}` : ""}.` : "Get into the beta"}
   intro={form?.success
     ? "Invites go out in small waves so every beta member gets real attention."
-    : "Tell us who you are and what you would build. We will email your invite when your spot opens."}
+    : "Use the Google or Apple account you plan to sign in with. Tell us what you would build, and we will email your invite when your spot opens."}
 >
   {#if form?.success}
     <section class="card beta-panel done" aria-live="polite">
@@ -44,8 +44,9 @@
         <input class="beta-field" type="text" name="name" required placeholder="Alex Rivera" autocomplete="name" value={form?.values?.name ?? ""} maxlength="120" />
       </label>
       <label>
-        Work email
-        <input class="beta-field" type="email" name="email" required placeholder="you@company.com" autocomplete="email" value={form?.values?.email ?? ""} />
+        Email for your invite
+        <input class="beta-field" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-describedby="invite-email-hint" value={form?.values?.email ?? ""} />
+        <span class="hint" id="invite-email-hint">Use the address tied to your Google or Apple sign-in.</span>
       </label>
       <label>
         What's closest to your role?
@@ -108,6 +109,13 @@
     font-size: 0.8rem;
     font-weight: 450;
     line-height: 1.5;
+  }
+
+  .hint {
+    color: var(--beta-dim);
+    font-size: 0.74rem;
+    font-weight: 450;
+    line-height: 1.45;
   }
 
   .consent input {
