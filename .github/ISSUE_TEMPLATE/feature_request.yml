@@ -1,0 +1,24 @@
+name: Product idea
+description: Propose a focused improvement to MDx.
+title: "[idea] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should MDx solve?
+      description: Describe the job or friction before proposing an interface.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What would a useful outcome look like?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Add examples, constraints, or alternatives you have tried. Remove private data.

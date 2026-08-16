@@ -38,6 +38,17 @@ test("the private beta journey keeps one public visual shell", () => {
   }
 });
 
+test("the invite and download handoffs keep one account explicit", () => {
+  const waitlist = read("routes/waitlist/+page.svelte");
+  const signIn = read("routes/auth/sign-in/+page.server.js");
+
+  assert.match(waitlist, /Email for your invite/);
+  assert.match(waitlist, /address tied to your Google or Apple sign-in/);
+  assert.doesNotMatch(waitlist, /Work email/);
+  assert.match(signIn, /Get MDx for Mac/);
+  assert.match(signIn, /return here to download the signed, notarized Mac app/);
+});
+
 test("open source is a first-class launch action with one canonical target", () => {
   const publicSite = read("lib/marketing/publicSite.js");
   const landing = read("routes/landing/+page.svelte");

@@ -59,6 +59,8 @@ MDx is licensed under [Apache 2.0](LICENSE).
 - [Documentation](docs/README.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Contributing](CONTRIBUTING.md)
+- [Support](SUPPORT.md)
+- [Code of conduct](CODE_OF_CONDUCT.md)
 - [Security](SECURITY.md)
 - [Product direction](docs/UI-PRODUCT-NORTH-STAR.md)
 

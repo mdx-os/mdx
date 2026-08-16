@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { isPublicExperiencePath } from "../src/lib/publicExperience.js";
+import { load as loadSignIn } from "../src/routes/auth/sign-in/+page.server.js";
 
 test("the public experience path contract includes pages and Svelte data reads", () => {
   for (const path of [
@@ -59,4 +60,14 @@ test("sign-in guides a new participant into one cross-device workspace", () => {
   assert.match(signIn, /Connect Apple later from You/);
   assert.match(signIn, /relay address must be invited too/);
   assert.match(signIn, /We couldn't finish that sign-in/);
+});
+
+test("sign-in explains the safe destination without trusting arbitrary return paths", () => {
+  const download = loadSignIn({ url: new URL("https://mdx-os.com/auth/sign-in?next=%2Fdownload%2Fmacos") });
+  assert.equal(download.next, "/download/macos");
+  assert.equal(download.guidance.title, "Get MDx for Mac");
+
+  const unsafe = loadSignIn({ url: new URL("https://mdx-os.com/auth/sign-in?next=https%3A%2F%2Fevil.example") });
+  assert.equal(unsafe.next, "/");
+  assert.equal(unsafe.guidance.title, "Sign in to MDx");
 });

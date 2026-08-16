@@ -5,9 +5,9 @@
   const next = $derived(encodeURIComponent(data.next));
 </script>
 
-<svelte:head><title>Sign in - MDx</title></svelte:head>
+<svelte:head><title>{data.guidance.title} - MDx</title></svelte:head>
 
-<BetaFunnelShell title="Sign in to MDx" intro={data.guidance.intro}>
+<BetaFunnelShell title={data.guidance.title} intro={data.guidance.intro}>
   <section class="signin-card beta-panel">
     {#if data.notice}<p class="notice" role="alert">{data.notice}</p>{/if}
     <div class="choices">
