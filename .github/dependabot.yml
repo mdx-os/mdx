@@ -29,13 +29,3 @@ updates:
       github-actions-weekly:
         patterns:
           - "*"
-
-  - package-ecosystem: "docker"
-    directory: "/deploy/docker-compose"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 1
-    groups:
-      docker-weekly:
-        patterns:
-          - "*"
