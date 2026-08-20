@@ -81,6 +81,11 @@
   }
   const runs = $derived(allRuns.filter((run) => !hiddenRunIds.includes(run.runId)));
   const anyRunning = $derived(runs.some((run) => isRunning(run.status)));
+  // A restart can make the fail-soft loader return no run projection before
+  // the kernel has finished restoring it. Keep polling that honest recovery
+  // state even though there is not yet a visible running row to drive the
+  // normal live poll.
+  const reconnectingRunHistory = $derived(data.runs == null);
   const trailStage = $derived(
     runs.some((run) => run.operatorStatus === "ready_for_review" || (["done", "finished"].includes(run.status) && run.branch))
       ? "review"
@@ -247,7 +252,7 @@
       });
     }
     return startLivePoll({
-      isActive: () => anyRunning,
+      isActive: () => anyRunning || reconnectingRunHistory,
       // Scoped: re-read only the runs projection, not the whole layout
       // waterfall, on each tick. SSE carries the open run's live detail.
       refresh: () => invalidate("forge:runs")
@@ -532,7 +537,12 @@
     </div>
   {/if}
 
-  {#if runs.length === 0}
+  {#if reconnectingRunHistory}
+    <div class="forge-empty reconnecting" role="status">
+      <h2>Reconnecting to your run history</h2>
+      <p>Your runs and isolated workspaces stay recorded while MDx restores the latest trail.</p>
+    </div>
+  {:else if runs.length === 0}
     <div class="forge-empty">
       <h2>Nothing built yet</h2>
       <p>Describe a change on the Forge home and one agent reads the code, makes the change, and runs your checks - each run lands here with its full trail.</p>

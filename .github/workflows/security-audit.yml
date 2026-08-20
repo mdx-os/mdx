@@ -140,12 +140,12 @@ jobs:
       - name: Install Trivy
         run: |
           if ! command -v trivy >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+            scripts/ci-apt-get.sh update
+            scripts/ci-apt-get.sh install -y wget apt-transport-https gnupg lsb-release
             wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
             echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
-            sudo apt-get update
-            sudo apt-get install -y trivy
+            scripts/ci-apt-get.sh update
+            scripts/ci-apt-get.sh install -y trivy
           fi
           trivy --version
 

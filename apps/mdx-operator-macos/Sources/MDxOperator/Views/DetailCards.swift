@@ -28,6 +28,10 @@ struct ConnectHeroCard: View {
   @Environment(OperatorStore.self) private var store
   let connect: () -> Void
 
+  private var isHosted: Bool {
+    store.snapshot.baseURL.scheme?.lowercased() == "https"
+  }
+
   /// Overridable for beta installs whose start command differs.
   private var startCommand: String {
     UserDefaults.standard.string(forKey: "MDxStartCommand") ?? "sh scripts/dogfood-stack.sh"
@@ -40,9 +44,11 @@ struct ConnectHeroCard: View {
           .font(.system(size: 30))
           .foregroundStyle(Color.accentColor)
         VStack(alignment: .leading, spacing: 4) {
-          Text("Connect local MDx to begin")
+          Text(isHosted ? "Reconnect to MDx Cloud" : "Connect local MDx to begin")
             .font(.title3.weight(.semibold))
-          Text("The native shell is ready. Start the local route server, then connect to see live work, decisions, and proof.")
+          Text(isHosted
+            ? "Your account is signed in, but this app cannot reach your private workspace right now. Retry to restore live work, decisions, and proof."
+            : "The native shell is ready. Start the local route server, then connect to see live work, decisions, and proof.")
             .font(.callout)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
@@ -54,7 +60,7 @@ struct ConnectHeroCard: View {
         Button {
           connect()
         } label: {
-          Label(store.phase == .loading ? "Connecting" : "Connect", systemImage: "arrow.clockwise")
+          Label(store.phase == .loading ? "Connecting" : (isHosted ? "Retry" : "Connect"), systemImage: "arrow.clockwise")
         }
         .mdxPrimaryButtonStyle()
         .disabled(store.phase == .loading)
@@ -67,34 +73,38 @@ struct ConnectHeroCard: View {
 
       HStack(spacing: 7) {
         ProgressView().controlSize(.mini)
-        Text("Looking for MDx on this Mac — it connects the moment the local server is up.")
+        Text(isHosted
+          ? "Looking for your private MDx Cloud workspace."
+          : "Looking for MDx on this Mac. It connects the moment the local server is up.")
           .font(.caption)
           .foregroundStyle(.tertiary)
       }
 
-      VStack(alignment: .leading, spacing: 6) {
-        Text("Not running yet? Start it from the MDx repo:")
-          .font(.caption)
-          .foregroundStyle(.secondary)
-        HStack(spacing: 8) {
-          Text(startCommand)
-            .font(.caption.monospaced())
-            .padding(.horizontal, 8)
-            .padding(.vertical, 5)
-            .background(
-              RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(Color.primary.opacity(0.06))
-            )
-          Button {
-            Pasteboard.copy(startCommand)
-          } label: {
-            Image(systemName: "doc.on.doc")
-              .font(.caption)
+      if !isHosted {
+        VStack(alignment: .leading, spacing: 6) {
+          Text("Not running yet? Start it from the MDx repo:")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+          HStack(spacing: 8) {
+            Text(startCommand)
+              .font(.caption.monospaced())
+              .padding(.horizontal, 8)
+              .padding(.vertical, 5)
+              .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                  .fill(Color.primary.opacity(0.06))
+              )
+            Button {
+              Pasteboard.copy(startCommand)
+            } label: {
+              Image(systemName: "doc.on.doc")
+                .font(.caption)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+            .help("Copy the start command")
+            .accessibilityLabel("Copy the start command")
           }
-          .buttonStyle(.plain)
-          .foregroundStyle(.secondary)
-          .help("Copy the start command")
-          .accessibilityLabel("Copy the start command")
         }
       }
     }
@@ -130,6 +140,10 @@ struct TwinComposerCard: View {
     store.snapshot.connectionStatus == .ok
   }
 
+  private var isHosted: Bool {
+    store.snapshot.baseURL.scheme?.lowercased() == "https"
+  }
+
   private var canBuild: Bool {
     isConnected && repoReady && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !store.buildStartInFlight
   }
@@ -144,7 +158,11 @@ struct TwinComposerCard: View {
         VStack(alignment: .leading, spacing: 4) {
           Text("Ask Forge to build")
             .font(.title3.weight(.semibold))
-          Text(isConnected ? "Describe a change in plain language. Forge starts the run, you watch it work, and every step carries a receipt." : "Connect local MDx to ask Forge to build or fix something.")
+          Text(isConnected
+            ? "Describe a change in plain language. Forge starts the run, you watch it work, and every step carries a receipt."
+            : (isHosted
+              ? "Reconnect to MDx Cloud to ask Forge to build or fix something."
+              : "Connect local MDx to ask Forge to build or fix something."))
             .font(.callout)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
@@ -157,7 +175,9 @@ struct TwinComposerCard: View {
       // chips, and a circular send all live inside one soft rounded surface.
       VStack(alignment: .leading, spacing: 12) {
         TextField(
-          isConnected ? "Describe a change in plain language" : "Waiting for the local route server",
+          isConnected
+            ? "Describe a change in plain language"
+            : (isHosted ? "Waiting for MDx Cloud" : "Waiting for the local route server"),
           text: $prompt,
           axis: .vertical
         )
@@ -182,10 +202,22 @@ struct TwinComposerCard: View {
                 Button(repo.label) { store.selectedRepoID = repo.id }
               }
               if store.repos.isEmpty {
-                Text("No repos connected")
+                switch store.repoLoadPhase {
+                case .loading:
+                  Text("Loading repos…")
+                case .failed, .stale:
+                  Button("Retry cloud repos") { Task { await store.loadRepos() } }
+                default:
+                  Text("No repos connected")
+                }
               }
-              Divider()
-              Button("Connect a repo on this Mac…") { store.connectRepoFromPanel() }
+              if !isHosted {
+                Divider()
+                Button("Connect a repo on this Mac…") { store.connectRepoFromPanel() }
+              } else if !store.repos.isEmpty {
+                Divider()
+                Button("Refresh cloud repos") { Task { await store.loadRepos() } }
+              }
             } label: {
               ComposerChip(icon: "shippingbox", text: selectedRepoLabel, menu: true)
             }
@@ -193,7 +225,10 @@ struct TwinComposerCard: View {
             .menuIndicator(.hidden)
             .fixedSize()
 
-            ComposerChip(icon: "laptopcomputer", text: "Work locally")
+            ComposerChip(
+              icon: isHosted ? "icloud" : "laptopcomputer",
+              text: isHosted ? "MDx Cloud" : "Work locally"
+            )
             ComposerChip(icon: "arrow.triangle.branch", text: "Isolated branch")
           }
           Spacer(minLength: 8)

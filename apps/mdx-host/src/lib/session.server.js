@@ -26,6 +26,10 @@ export function resolveOAuthProvider(
   return oauthProviders.has(requested) ? requested : "google";
 }
 
+export function oauthProviderQueryParams(provider) {
+  return provider === "google" ? { prompt: "select_account" } : undefined;
+}
+
 function localDemoAllowed() {
   return localDemoModes.has(deploymentMode());
 }

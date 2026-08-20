@@ -42,10 +42,17 @@ struct ForgeView: View {
       .scrollDismissesKeyboard(.interactively)
       .navigationTitle("Forge")
       .mobileAdaptiveNavigationTitle(dynamicTypeSize)
-      .onAppear(perform: selectDefaultRepository)
+      .task { await store.refreshBuildTargets() }
+      .onAppear(perform: reconcileTargetAndRepository)
       .onChange(of: selectedTarget) { _, _ in
         repositoryID = ""
         selectDefaultRepository()
+      }
+      .onChange(of: store.canStartPairedHostBuild) { _, _ in
+        reconcileTargetAndRepository()
+      }
+      .onChange(of: store.canStartCloudBuild) { _, _ in
+        reconcileTargetAndRepository()
       }
       .onChange(of: repositoryOptions) { _, _ in selectDefaultRepository() }
       .toolbar {
@@ -88,7 +95,7 @@ struct ForgeView: View {
       VStack(spacing: 10) {
         targetOption(
           .pairedHost, title: "Your Mac", detail: "Continue on a paired Mac",
-          symbol: "laptopcomputer")
+          symbol: "laptopcomputer", disabled: !store.canStartPairedHostBuild)
         targetOption(
           .mdxCloud, title: "MDx Cloud", detail: "Run in a verified environment",
           symbol: "cloud.fill", disabled: !store.canStartCloudBuild)
@@ -105,17 +112,24 @@ struct ForgeView: View {
       )
 
       if repositoryOptions.isEmpty {
-        TextField("Repository ID", text: $repositoryID)
-          .textInputAutocapitalization(.never)
-          .autocorrectionDisabled()
-          .submitLabel(.done)
-          .focused($focusedField, equals: .repository)
-          .onSubmit { focusedField = nil }
-          .padding(12)
-          .background(.quaternary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-          .accessibilityIdentifier("forge.repository")
+        if store.snapshot.connection == .offline {
+          TextField("Repository ID", text: $repositoryID)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .submitLabel(.done)
+            .focused($focusedField, equals: .repository)
+            .onSubmit { focusedField = nil }
+            .padding(12)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .accessibilityIdentifier("forge.repository")
+        } else if selectedTarget == .mdxCloud {
+          Label(
+            "No verified cloud repository is ready yet.",
+            systemImage: "cloud.badge.exclamationmark"
+          )
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
 
-        if selectedTarget == .mdxCloud {
           NavigationLink {
             CloudSetupView()
               .mobileFocusedDestination()
@@ -124,6 +138,14 @@ struct ForgeView: View {
               .frame(maxWidth: .infinity)
           }
           .buttonStyle(.bordered)
+        } else {
+          Label(
+            "Start from MDx on your Mac for now, or choose a verified cloud repository.",
+            systemImage: "laptopcomputer.trianglebadge.exclamationmark"
+          )
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
+          .accessibilityIdentifier("forge.repository-unavailable")
         }
       } else {
         Picker("Repository", selection: $repositoryID) {
@@ -134,7 +156,15 @@ struct ForgeView: View {
         .pickerStyle(.menu)
         .accessibilityIdentifier("forge.repository")
 
-        if selectedProofCommands.isEmpty {
+        if selectedProofCommands.isEmpty && selectedTarget == .mdxCloud {
+          Label(
+            "Forge selects the repository proof plan when the build starts.",
+            systemImage: "checkmark.shield.fill"
+          )
+          .font(.caption)
+          .foregroundStyle(.secondary)
+          .accessibilityIdentifier("forge.proof-plan")
+        } else if selectedProofCommands.isEmpty {
           Label(
             "No proof command is configured for this repository.",
             systemImage: "exclamationmark.triangle.fill"
@@ -245,13 +275,12 @@ struct ForgeView: View {
   private var startBuildDisabled: Bool {
     intent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
       || repositoryID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-      || (selectedTarget == .pairedHost && !store.canSendCommands
-        && store.snapshot.connection != .offline)
-      || (selectedTarget == .mdxCloud && !cloudRepositoryReady
-        && store.snapshot.connection != .offline)
-      || selectedTarget == .customerManaged
+      || (store.snapshot.connection != .offline
+        && !store.buildTargetReady(
+          repositoryID: repositoryID.trimmingCharacters(in: .whitespacesAndNewlines),
+          targetKind: selectedTarget
+        ))
       || (store.snapshot.connection != .offline && store.modelReadiness?.ready == false)
-      || (store.snapshot.connection != .offline && selectedProofCommands.isEmpty)
       || store.isCommandInFlight
   }
 
@@ -262,10 +291,10 @@ struct ForgeView: View {
     if selectedTarget == .mdxCloud {
       return "The verified cloud sandbox runs proof and still stops at the human ship boundary."
     }
-    if store.canSendCommands {
+    if store.canStartPairedHostBuild {
       return "Forge starts on your paired Mac and stops at the human ship boundary."
     }
-    return "Pair this iPhone with MDx on your Mac before starting remote builds."
+    return "Start from MDx on your Mac for now, or choose a verified cloud environment."
   }
 
   private var boundarySymbol: String {
@@ -294,8 +323,16 @@ struct ForgeView: View {
     }
   }
 
-  private var cloudRepositoryReady: Bool {
-    store.cloudEnvironmentReady(
-      repoID: repositoryID.trimmingCharacters(in: .whitespacesAndNewlines))
+  private func reconcileTargetAndRepository() {
+    let selectedTargetReady =
+      selectedTarget == .pairedHost
+      ? store.canStartPairedHostBuild : selectedTarget == .mdxCloud && store.canStartCloudBuild
+    if !selectedTargetReady, let recommendedTarget = store.recommendedBuildTarget,
+      selectedTarget != recommendedTarget
+    {
+      selectedTarget = recommendedTarget
+      return
+    }
+    selectDefaultRepository()
   }
 }

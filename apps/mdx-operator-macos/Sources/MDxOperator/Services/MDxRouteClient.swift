@@ -1980,17 +1980,22 @@ struct MDxRouteClient {
       return Self.runOutcome(from: json, title: "Plan fleet build", idKeys: ["fleet_id", "plan_receipt_id"])
     }
     let priorRunIDs = await priorRunIDs(baseURL: baseURL)
+    var requestBody: [String: Any] = [
+      "intent": intent,
+      "repo_id": repoID,
+      "allowed_commands": allowedCommands,
+      "actor_id": actorID,
+      "fleet_width": fleetWidth
+    ]
+    requestBody.merge(
+      try await hostedExecutionFields(baseURL: baseURL, repoID: repoID),
+      uniquingKeysWith: { _, hostedValue in hostedValue }
+    )
     do {
       let json = try await postJSON(
         baseURL: baseURL,
         path: "/forge/runs.json",
-        body: [
-          "intent": intent,
-          "repo_id": repoID,
-          "allowed_commands": allowedCommands,
-          "actor_id": actorID,
-          "fleet_width": fleetWidth
-        ],
+        body: requestBody,
         timeout: 30
       )
       return Self.runOutcome(from: json, title: "Start run", idKeys: ["run_id"])
@@ -2007,6 +2012,29 @@ struct MDxRouteClient {
       }
       throw error
     }
+  }
+
+  /// Hosted starts must name the verified cloud environment that will execute
+  /// the proof. Without these fields the server intentionally treats the run as
+  /// local and rejects cloud-capable checks against this Mac's toolchain state.
+  private func hostedExecutionFields(baseURL: URL, repoID: String) async throws -> [String: Any] {
+    guard !Self.isTrustedLocalBaseURL(baseURL) else { return [:] }
+    let targets = try await fetchJSON(baseURL: baseURL, path: "/mobile/handoff-targets.json")
+    guard let environment = targets.array(at: "cloud_environments").first(where: {
+      $0.string(at: "repository_id", fallback: "") == repoID
+        && $0.bool(at: "verified", fallback: false)
+    }) else {
+      throw RouteClientError.missingCloudEnvironment(repoID)
+    }
+    let environmentID = environment.string(at: "environment_id", fallback: "")
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !environmentID.isEmpty else {
+      throw RouteClientError.missingCloudEnvironment(repoID)
+    }
+    return [
+      "execution_backend": "hosted_sandbox",
+      "cloud_environment_id": environmentID
+    ]
   }
 
   func ratifyFleetPlan(baseURL: URL, fleetID: String, reason: String, actorID: String) async throws -> RunActionOutcome {
@@ -4006,7 +4034,7 @@ func friendlyLoadError(_ error: Error) -> String {
       return "MDx answered with an error (HTTP \(status))."
     case .refused(let reason):
       return reason
-    case .untrustedHost:
+    case .untrustedHost, .missingCloudEnvironment:
       return routeError.localizedDescription
     case .invalidResponse, .invalidJSON:
       return "MDx sent back something unexpected."
@@ -4029,6 +4057,7 @@ enum RouteClientError: LocalizedError {
   case httpStatus(Int)
   case refused(String)
   case untrustedHost(String)
+  case missingCloudEnvironment(String)
 
   var errorDescription: String? {
     switch self {
@@ -4042,6 +4071,8 @@ enum RouteClientError: LocalizedError {
       return reason
     case .untrustedHost(let path):
       return "MDx blocked \(path) because the configured API host is not local. Use the local route server or add an authenticated trusted remote profile first."
+    case .missingCloudEnvironment(let repoID):
+      return "MDx Cloud does not have a verified environment for \(repoID). Verify the repository environment before starting this build."
     }
   }
 }

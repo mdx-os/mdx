@@ -141,6 +141,7 @@ struct RunRecoveryBanner: View {
 
 struct ReviewPacketView: View {
   let packet: ReviewPacket
+  let proofRecovered: Bool
 
   var body: some View {
     VStack(alignment: .leading, spacing: 14) {
@@ -161,7 +162,10 @@ struct ReviewPacketView: View {
         }
         StatusPill(status: "\(packet.checksPassed) passed", tone: packet.checksPassed > 0 ? .positive : .neutral)
         if packet.checksFailed > 0 {
-          StatusPill(status: "\(packet.checksFailed) failed", tone: .locked)
+          StatusPill(
+            status: proofRecovered ? "\(packet.checksFailed) earlier failures" : "\(packet.checksFailed) failed",
+            tone: proofRecovered ? .neutral : .locked
+          )
         }
         if packet.shipDecided {
           StatusPill(status: "Shipped", tone: .positive)
@@ -210,8 +214,12 @@ struct ReviewPacketView: View {
   private var proofLines: [String] {
     var lines: [String] = []
     if packet.checksPassed > 0 || packet.checksFailed > 0 {
-      let failed = packet.checksFailed > 0 ? ", \(packet.checksFailed) failed" : ""
-      lines.append("\(packet.checksPassed) check\(packet.checksPassed == 1 ? "" : "s") passed\(failed).")
+      if proofRecovered && packet.checksFailed > 0 {
+        lines.append("The selected proof now passes. \(packet.checksFailed) earlier failed attempt\(packet.checksFailed == 1 ? "" : "s") remain in history.")
+      } else {
+        let failed = packet.checksFailed > 0 ? ", \(packet.checksFailed) failed" : ""
+        lines.append("\(packet.checksPassed) check\(packet.checksPassed == 1 ? "" : "s") passed\(failed).")
+      }
     }
     lines.append(contentsOf: packet.checkNames.map(readableEvidenceLine))
     lines.append(contentsOf: packet.satisfiedChecks.map(readableEvidenceLine).filter { !looksRaw($0) })

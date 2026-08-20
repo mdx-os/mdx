@@ -1,5 +1,9 @@
 import { redirect } from "@sveltejs/kit";
-import { resolveOAuthProvider, safeReturnPath } from "../../../lib/session.server.js";
+import {
+  oauthProviderQueryParams,
+  resolveOAuthProvider,
+  safeReturnPath
+} from "../../../lib/session.server.js";
 
 export async function GET({ locals, url }) {
   if (!locals.supabase) {
@@ -13,7 +17,10 @@ export async function GET({ locals, url }) {
   callback.searchParams.set("next", safeReturnPath(url.searchParams.get("next")));
   const { data, error } = await locals.supabase.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: callback.toString() }
+    options: {
+      redirectTo: callback.toString(),
+      queryParams: oauthProviderQueryParams(provider)
+    }
   });
   if (error || !data?.url) {
     return new Response(JSON.stringify({ error: "supabase_oauth_start_failed" }), {

@@ -104,7 +104,39 @@ struct ForgeRun: Identifiable, Equatable {
   }
 
   var selectedProofTurnedGreen: Bool {
-    selectedProofRedOnArrival && events.contains(where: \.isPostChangeProofPass)
+    selectedProofRedOnArrival && proofRecoveredAfterFailure
+  }
+
+  /// The selected proof can fail while Forge is still working, then pass after
+  /// a correction. The aggregate failed-check count preserves those attempts,
+  /// so the final operator-facing state must follow the latest proof outcome
+  /// instead of treating any historical failure as the current result.
+  var proofRecoveredAfterFailure: Bool {
+    if checksFailed > 0, projectedSelectedProofPassed { return true }
+    // Older projections do not carry selected_proof_status. Keep the existing
+    // baseline turnaround contract as the narrow compatibility fallback, and
+    // let the latest relevant event decide the final proof outcome.
+    guard selectedProofRedOnArrival else { return false }
+    for event in events.reversed() {
+      if event.isPostChangeProofPass { return true }
+      if event.isProofFailure { return false }
+    }
+    return false
+  }
+
+  private var projectedSelectedProofPassed: Bool {
+    let marker = "selected_proof_status="
+    // Prefer the terminal summary, then walk backward through events. Extract
+    // only the status token so punctuation added for display cannot turn a
+    // passed proof back into a false negative.
+    let lines = [finalLine] + events.reversed().map { "\($0.summary) \($0.detail)" }
+    for line in lines {
+      guard let range = line.lowercased().range(of: marker) else { continue }
+      let value = line[range.upperBound...]
+        .prefix { $0.isLetter || $0 == "_" || $0 == "-" }
+      return ["passed", "green", "succeeded"].contains(value.lowercased())
+    }
+    return false
   }
 
   var selectedProofRedOnArrival: Bool {
@@ -135,7 +167,7 @@ struct ForgeRun: Identifiable, Equatable {
     guard !isRunning else { return false }
     // A recovered baseline (red on arrival, green on this branch) keeps a
     // failed-check count, but the run itself ended green.
-    if selectedProofTurnedGreen { return true }
+    if proofRecoveredAfterFailure { return true }
     if checksFailed > 0 { return false }
     return terminalState == "SUCCEEDED" || terminalState == "NO_CHANGE"
   }
@@ -151,6 +183,9 @@ struct ForgeRun: Identifiable, Equatable {
 
   var proofTroubleTitle: String {
     let s = status.lowercased()
+    if !isRunning && proofRecoveredAfterFailure {
+      return "Ready for review: proof turned green"
+    }
     if isReviewableWithProofCaveat && selectedProofTurnedGreen {
       return "Ready for review: proof turned green"
     }
@@ -170,6 +205,9 @@ struct ForgeRun: Identifiable, Equatable {
         : "\(checksFailed) checks failed."
       if isReviewableWithProofCaveat && selectedProofTurnedGreen {
         return "The selected check failed before the change and passes on this branch."
+      }
+      if !isRunning && proofRecoveredAfterFailure {
+        return "The selected check failed during the run and now passes on this branch. Earlier attempts remain in proof history."
       }
       if isReviewableWithProofCaveat {
         return "\(checkLine) The branch is still reviewable because the selected proof was already red before this change."

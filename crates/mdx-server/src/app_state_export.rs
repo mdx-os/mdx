@@ -6,7 +6,8 @@ use mdx_core::{
     MemoryRecord, MessagePresenceRequest, MessageRealtimeCutoverPreflight, MessageThreadMessage,
     PagesPublication, PagesSearchPreflight, PostgresAppStateWriteReport, PostgresAppStateWriter,
     PostgresMigrationEvidence, Receipt, TwinSessionDraftRequest, WorkerRuntimeRequest,
-    render_postgres_app_state_export_sql, validate_migration_contracts,
+    render_postgres_app_state_export_sql, render_postgres_ledger_export_sql,
+    validate_migration_contracts,
 };
 use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
@@ -101,6 +102,113 @@ pub(crate) fn route_app_state_writer_enabled() -> bool {
         == Some("1")
 }
 
+/// Reconcile both directions of the snapshot/Postgres durability pair before
+/// traffic is accepted. Postgres may replace a stale snapshot, or an ahead
+/// snapshot may append its missing canonical suffix to Postgres.
+pub(crate) fn reconcile_snapshot(kernel: &Arc<RwLock<MdxKernel>>) -> Result<bool, String> {
+    run_snapshot_reconciliation(
+        || align_snapshot(kernel),
+        || catch_up_postgres_from_snapshot(kernel),
+    )
+}
+
+fn run_snapshot_reconciliation<Align, CatchUp>(
+    align: Align,
+    catch_up: CatchUp,
+) -> Result<bool, String>
+where
+    Align: FnOnce() -> Result<bool, String>,
+    CatchUp: FnOnce() -> Result<(), String>,
+{
+    let restored_from_postgres = align()?;
+    catch_up()?;
+    Ok(restored_from_postgres)
+}
+
+fn catch_up_postgres_from_snapshot(kernel: &Arc<RwLock<MdxKernel>>) -> Result<(), String> {
+    if !route_app_state_writer_enabled() {
+        return Ok(());
+    }
+    let Ok(url) = std::env::var("DATABASE_URL") else {
+        return Ok(());
+    };
+    if url.trim().is_empty() {
+        return Ok(());
+    }
+    let receipt_count = write_shared_kernel_ledger_postgres(kernel)?;
+    println!("mdx kernel postgres catch-up complete: {receipt_count} canonical receipts");
+    Ok(())
+}
+
+fn write_shared_kernel_ledger_postgres(kernel: &Arc<RwLock<MdxKernel>>) -> Result<usize, String> {
+    let writer = observed_app_state_writer()?;
+    let (persisted_rows, persisted_head) =
+        crate::postgres_exec::query_ledger_cursor(writer.database_url())?;
+    let receipts = {
+        let kernel = kernel
+            .read()
+            .map_err(|_| "kernel lock poisoned".to_string())?;
+        let entries = kernel.ledger().entries();
+        let start = verified_delta_start(entries, persisted_rows, persisted_head.as_deref())?;
+        entries[start..].to_vec()
+    };
+    let receipt_count = receipts.len();
+    let tenant_batches = receipts.into_iter().fold(
+        BTreeMap::<String, Vec<Receipt>>::new(),
+        |mut batches, receipt| {
+            batches
+                .entry(receipt.tenant_id.as_str().to_string())
+                .or_default()
+                .push(receipt);
+            batches
+        },
+    );
+    let tenant_ids = tenant_batches.keys().cloned().collect::<Vec<_>>();
+    crate::postgres_exec::execute_generated_tenant_batches(
+        writer.database_url(),
+        &tenant_ids,
+        |tenant_id| {
+            render_postgres_ledger_export_sql(
+                &tenant_batches[tenant_id],
+                "startup_canonical_catch_up",
+            )
+        },
+    )?;
+    Ok(receipt_count)
+}
+
+/// Align a restored disk snapshot with Postgres before the server accepts
+/// traffic. Returns true when Postgres replaced the snapshot and restored its
+/// paired Memory records.
+pub(crate) fn align_snapshot(kernel: &Arc<RwLock<MdxKernel>>) -> Result<bool, String> {
+    if !route_app_state_writer_enabled() {
+        return Ok(false);
+    }
+    let Ok(url) = std::env::var("DATABASE_URL") else {
+        return Ok(false);
+    };
+    if url.trim().is_empty() {
+        return Ok(false);
+    }
+    let mut booted = kernel
+        .write()
+        .map_err(|_| "kernel lock poisoned at boot".to_string())?;
+    let Some((count, memory_count)) =
+        crate::postgres_exec::align_snapshot_with_postgres(&url, &mut booted)?
+    else {
+        return Ok(false);
+    };
+    println!("mdx kernel advanced to {count} receipts from postgres ledger_entries");
+    println!("mdx kernel restored {memory_count} memory records from postgres memory_records");
+    let rendered = crate::kernel_snapshot::render_snapshots(&booted);
+    if let Err(error) =
+        rendered.and_then(|rendered| crate::kernel_snapshot::write_snapshots(&rendered))
+    {
+        eprintln!("mdx-server snapshot write failed after postgres alignment: {error}");
+    }
+    Ok(true)
+}
+
 pub(crate) fn write_kernel_app_state_postgres(
     kernel: &MdxKernel,
 ) -> Result<PostgresAppStateWriteReport, String> {
@@ -119,14 +227,14 @@ fn write_shared_kernel_app_state_postgres(
     kernel: &Arc<RwLock<MdxKernel>>,
 ) -> Result<PostgresAppStateWriteReport, String> {
     let writer = observed_app_state_writer()?;
-    let (persisted_count, persisted_head) =
+    let (persisted_rows, persisted_head) =
         crate::postgres_exec::query_ledger_cursor(writer.database_url())?;
     let (receipts, memory) = {
         let kernel = kernel
             .read()
             .map_err(|_| "kernel lock poisoned".to_string())?;
         let entries = kernel.ledger().entries();
-        let start = verified_delta_start(entries, persisted_count, persisted_head.as_deref())?;
+        let start = verified_delta_start(entries, persisted_rows, persisted_head.as_deref())?;
         (entries[start..].to_vec(), kernel.memory_records().to_vec())
     };
     write_owned_app_state_with_writer(&writer, receipts, memory)
@@ -134,26 +242,24 @@ fn write_shared_kernel_app_state_postgres(
 
 fn verified_delta_start(
     receipts: &[Receipt],
-    persisted_count: usize,
+    persisted_rows: usize,
     persisted_head: Option<&str>,
 ) -> Result<usize, String> {
-    if persisted_count > receipts.len() {
-        return Err(format!(
-            "postgres ledger has {persisted_count} receipts but the kernel has only {}",
-            receipts.len()
-        ));
-    }
-    if persisted_count == 0 {
+    if persisted_rows == 0 {
         if persisted_head.is_some() {
             return Err("postgres ledger reports a head for an empty chain".to_string());
         }
         return Ok(0);
     }
-    let expected = receipts[persisted_count - 1].hash.as_str();
-    if persisted_head != Some(expected) {
-        return Err("postgres ledger head does not match the kernel prefix".to_string());
-    }
-    Ok(persisted_count)
+    let head = persisted_head
+        .ok_or_else(|| "postgres ledger has rows but no declared head".to_string())?;
+    receipts
+        .iter()
+        .position(|receipt| receipt.hash == head)
+        .map(|index| index + 1)
+        .ok_or_else(|| {
+            "postgres declared ledger head does not exist in the kernel chain".to_string()
+        })
 }
 
 fn write_app_state_with_writer(
@@ -524,8 +630,43 @@ fn observed_app_state_writer() -> Result<PostgresAppStateWriter, String> {
 mod export_schedule_tests {
     use super::{
         ExportSchedule, group_app_state_by_tenant, local_app_state_export_kernel,
-        verified_delta_start,
+        run_snapshot_reconciliation, verified_delta_start,
     };
+    use std::cell::Cell;
+
+    #[test]
+    fn startup_reconciliation_catches_postgres_up_after_alignment() {
+        for restored_from_postgres in [false, true] {
+            let caught_up = Cell::new(false);
+            assert_eq!(
+                run_snapshot_reconciliation(
+                    || Ok(restored_from_postgres),
+                    || {
+                        caught_up.set(true);
+                        Ok(())
+                    }
+                )
+                .expect("startup reconciliation"),
+                restored_from_postgres
+            );
+            assert!(caught_up.get());
+        }
+    }
+
+    #[test]
+    fn startup_reconciliation_never_exports_after_alignment_refusal() {
+        let caught_up = Cell::new(false);
+        let error = run_snapshot_reconciliation(
+            || Err("declared chains diverge".to_string()),
+            || {
+                caught_up.set(true);
+                Ok(())
+            },
+        )
+        .expect_err("alignment refusal must stop startup");
+        assert_eq!(error, "declared chains diverge");
+        assert!(!caught_up.get());
+    }
 
     #[test]
     fn durable_cursor_selects_only_the_unexported_receipt_suffix() {
@@ -539,7 +680,14 @@ mod export_schedule_tests {
             persisted
         );
         assert!(verified_delta_start(receipts, persisted, Some("wrong-head")).is_err());
-        assert!(verified_delta_start(receipts, receipts.len() + 1, Some(head)).is_err());
+        // Preserved historical branches can make the durable row count larger
+        // than the canonical kernel prefix. The declared head, not raw count,
+        // is the safe incremental cursor.
+        assert_eq!(
+            verified_delta_start(receipts, receipts.len() + 7, Some(head))
+                .expect("declared head remains authoritative"),
+            persisted
+        );
     }
 
     #[test]

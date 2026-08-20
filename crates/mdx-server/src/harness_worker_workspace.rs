@@ -9,10 +9,11 @@
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Mutex, MutexGuard};
-use std::time::Duration;
+use std::sync::{Mutex, MutexGuard, OnceLock};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 static WORKSPACE_COUNTER: AtomicU64 = AtomicU64::new(0);
+static WORKSPACE_GENERATION: OnceLock<String> = OnceLock::new();
 static WORKTREE_GIT_LOCK: Mutex<()> = Mutex::new(());
 const WORKTREE_GIT_ATTEMPTS: usize = 5;
 #[cfg(unix)]
@@ -59,9 +60,10 @@ impl WorkerWorkspace {
         let repo_root = repo_root.into();
         let counter = WORKSPACE_COUNTER.fetch_add(1, Ordering::Relaxed);
         let id = format!(
-            "mdx_ws_{}_{}_{}",
+            "mdx_ws_{}_{}_{}_{}",
             sanitize(run_scope),
             std::process::id(),
+            workspace_generation(),
             counter
         );
         let path = std::env::temp_dir().join(&id);
@@ -99,9 +101,10 @@ impl WorkerWorkspace {
         }
         let counter = WORKSPACE_COUNTER.fetch_add(1, Ordering::Relaxed);
         let id = format!(
-            "mdx_ws_{}_{}_{}",
+            "mdx_ws_{}_{}_{}_{}",
             sanitize(run_scope),
             std::process::id(),
+            workspace_generation(),
             counter
         );
         let path = std::env::temp_dir().join(&id);
@@ -419,9 +422,13 @@ fn run_worktree_git(repo_root: &Path, args: &[&str]) -> Option<GitRun> {
     last
 }
 
-/// Remove only MDx-owned temp worktrees whose encoded owner PID is no longer
-/// live. Git's own prune then collects registrations whose directories already
-/// disappeared. A live owner or an unrecognized path is always preserved.
+/// Remove only stale MDx-owned temp worktrees. The generation component is
+/// required because container runtimes commonly reuse PID 1 after a restart:
+/// a PID-only owner would make the new server preserve the dead server's
+/// worktree and then collide with its reset workspace counter. Git's own prune
+/// collects registrations whose directories already disappeared. A live owner
+/// from another process, a current-generation owner, or an unrecognized path
+/// is always preserved.
 pub(crate) fn reconcile_stale_worktrees(repo_root: &Path) -> WorktreeReconciliation {
     let mut report = WorktreeReconciliation::default();
     let Some(listed) = run_worktree_git(repo_root, &["worktree", "list", "--porcelain", "-z"])
@@ -442,10 +449,14 @@ pub(crate) fn reconcile_stale_worktrees(repo_root: &Path) -> WorktreeReconciliat
         .map(PathBuf::from)
         .collect();
     for path in paths {
-        let Some(pid) = mdx_workspace_owner_pid(&path) else {
+        let Some(owner) = mdx_workspace_owner(&path) else {
             continue;
         };
-        if crate::forge_workspace_checkpoint::process_is_alive(pid) {
+        let owned_by_current_generation = owner.pid == std::process::id()
+            && owner.generation.as_deref() == Some(workspace_generation());
+        let owned_by_other_live_process = owner.pid != std::process::id()
+            && crate::forge_workspace_checkpoint::process_is_alive(owner.pid);
+        if owned_by_current_generation || owned_by_other_live_process {
             report.live_worktrees_preserved += 1;
             continue;
         }
@@ -480,7 +491,25 @@ pub(crate) fn reconcile_stale_worktrees(repo_root: &Path) -> WorktreeReconciliat
     report
 }
 
-fn mdx_workspace_owner_pid(path: &Path) -> Option<u32> {
+#[derive(Debug, PartialEq, Eq)]
+struct WorkspaceOwner {
+    pid: u32,
+    generation: Option<String>,
+}
+
+fn workspace_generation() -> &'static str {
+    WORKSPACE_GENERATION
+        .get_or_init(|| {
+            let nanos = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos();
+            format!("g{nanos:x}")
+        })
+        .as_str()
+}
+
+fn mdx_workspace_owner(path: &Path) -> Option<WorkspaceOwner> {
     let expected_parent = std::env::temp_dir().canonicalize().ok()?;
     let parent = path.parent()?.canonicalize().ok()?;
     if parent != expected_parent {
@@ -492,7 +521,21 @@ fn mdx_workspace_owner_pid(path: &Path) -> Option<u32> {
     }
     let mut parts = name.rsplit('_');
     let _counter = parts.next()?.parse::<u64>().ok()?;
-    parts.next()?.parse::<u32>().ok()
+    let owner_or_generation = parts.next()?;
+    if let Ok(pid) = owner_or_generation.parse::<u32>() {
+        return Some(WorkspaceOwner {
+            pid,
+            generation: None,
+        });
+    }
+    if !owner_or_generation.starts_with('g') {
+        return None;
+    }
+    let pid = parts.next()?.parse::<u32>().ok()?;
+    Some(WorkspaceOwner {
+        pid,
+        generation: Some(owner_or_generation.to_string()),
+    })
 }
 
 fn run_git_stdin(repo_root: &Path, args: &[&str], stdin: &[u8]) -> Option<GitRun> {
@@ -1355,7 +1398,7 @@ mod tests {
     }
 
     #[test]
-    fn startup_reconciliation_removes_dead_owned_worktrees_only() {
+    fn startup_reconciliation_removes_dead_and_prior_generation_worktrees() {
         let repo_root = temp_git_repo("worktree_reconcile");
         std::fs::write(repo_root.join("tracked.txt"), "initial\n").expect("tracked");
         assert!(run_git(&repo_root, &["add", "-A"]).expect("add").success);
@@ -1379,30 +1422,42 @@ mod tests {
             .duration_since(std::time::UNIX_EPOCH)
             .expect("time")
             .as_nanos();
-        let stale = std::env::temp_dir().join(format!("mdx_ws_reconcile_{nonce}_99999999_0"));
-        let live =
-            std::env::temp_dir().join(format!("mdx_ws_reconcile_{nonce}_{}_1", std::process::id()));
-        assert!(
-            run_worktree_git(
-                &repo_root,
-                &["worktree", "add", "--detach", path_str(&stale), "HEAD"],
-            )
-            .expect("stale worktree")
-            .success
-        );
-        assert!(
-            run_worktree_git(
-                &repo_root,
-                &["worktree", "add", "--detach", path_str(&live), "HEAD"],
-            )
-            .expect("live worktree")
-            .success
-        );
+        let stale_dead =
+            std::env::temp_dir().join(format!("mdx_ws_reconcile_{nonce}_99999999_gdead_0"));
+        let stale_generation = std::env::temp_dir().join(format!(
+            "mdx_ws_reconcile_{nonce}_{}_gprior_1",
+            std::process::id()
+        ));
+        let stale_legacy =
+            std::env::temp_dir().join(format!("mdx_ws_reconcile_{nonce}_{}_2", std::process::id()));
+        let live = std::env::temp_dir().join(format!(
+            "mdx_ws_reconcile_{nonce}_{}_{}_3",
+            std::process::id(),
+            workspace_generation()
+        ));
+        for (path, label) in [
+            (&stale_dead, "dead worktree"),
+            (&stale_generation, "prior-generation worktree"),
+            (&stale_legacy, "legacy same-pid worktree"),
+            (&live, "live worktree"),
+        ] {
+            assert!(
+                run_worktree_git(
+                    &repo_root,
+                    &["worktree", "add", "--detach", path_str(path), "HEAD"],
+                )
+                .unwrap_or_else(|| panic!("{label}"))
+                .success,
+                "{label} should be created"
+            );
+        }
 
         let report = reconcile_stale_worktrees(&repo_root);
-        assert_eq!(report.stale_worktrees_removed, 1);
+        assert_eq!(report.stale_worktrees_removed, 3);
         assert_eq!(report.live_worktrees_preserved, 1);
-        assert!(!stale.exists());
+        assert!(!stale_dead.exists());
+        assert!(!stale_generation.exists());
+        assert!(!stale_legacy.exists());
         assert!(live.exists());
         assert!(report.errors.is_empty(), "{:?}", report.errors);
 

@@ -8,6 +8,7 @@ import SwiftUI
 /// the list. Copy and iconography are unchanged; only the chrome went native.
 struct SidebarView: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(CloudAuthStore.self) private var auth
 
   /// List selection is the app route. Reading it from the store keeps the
   /// highlight in sync when navigation happens elsewhere (welcome, palette,
@@ -64,7 +65,10 @@ struct SidebarView: View {
     return fullName.isEmpty ? NSUserName() : fullName
   }()
 
-  private var userDisplayName: String { Self.cachedDisplayName }
+  private var userDisplayName: String {
+    let cloudName = auth.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+    return cloudName.isEmpty ? Self.cachedDisplayName : cloudName
+  }
 }
 
 /// One navigation row: icon, title, and (for full rows) a one-line subtitle,
@@ -214,12 +218,18 @@ struct SidebarBackground: View {
 
 struct SidebarAccountFooter: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(CloudAuthStore.self) private var auth
   let name: String
   @State private var hovering = false
 
   private var accountRole: String? {
     guard let role = store.identitySession?.roleLabel, !role.isEmpty else { return nil }
     return role
+  }
+
+  private var accountDetail: String? {
+    let email = auth.email.trimmingCharacters(in: .whitespacesAndNewlines)
+    return email.isEmpty ? accountRole : email
   }
 
   var body: some View {
@@ -235,10 +245,10 @@ struct SidebarAccountFooter: View {
         Text(name)
           .font(.caption.weight(.semibold))
           .lineLimit(1)
-        // Connection already lives in the HealthPill just above, so the
-        // account row shows the person's role, or nothing.
-        if let role = accountRole {
-          Text(role)
+        // Connection already lives in the HealthPill just above. A hosted
+        // session shows the exact account; local mode falls back to the role.
+        if let accountDetail {
+          Text(accountDetail)
             .font(.caption2)
             .foregroundStyle(.secondary)
             .lineLimit(1)

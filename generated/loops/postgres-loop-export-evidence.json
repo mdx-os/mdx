@@ -1,7 +1,7 @@
 {
   "name": "postgres-loop-export-evidence",
   "source": "loop declarations",
-  "migration_count": 45,
+  "migration_count": 48,
   "loop_receipt_counts": [
     { "loop_id": "aegis_scanner_agent", "ledger_receipts": 10 },
     { "loop_id": "charter_attestation_agent", "ledger_receipts": 10 },

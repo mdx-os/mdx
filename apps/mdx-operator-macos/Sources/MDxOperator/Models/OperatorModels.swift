@@ -1082,3 +1082,17 @@ enum LoadPhase: Equatable {
     }
   }
 }
+
+enum RepoLoadRecovery {
+  static let maxAttempts = 3
+
+  /// A short bounded retry covers hosted cold starts without turning a real
+  /// outage into an endless spinner. Attempt zero is the initial request.
+  static func delayNanoseconds(afterAttempt attempt: Int) -> UInt64? {
+    switch attempt {
+    case 0: return 1_000_000_000
+    case 1: return 2_000_000_000
+    default: return nil
+    }
+  }
+}

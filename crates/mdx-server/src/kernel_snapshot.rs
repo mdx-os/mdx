@@ -33,8 +33,10 @@ use mdx_core::{
     MemoryGraphNode, MemoryLifecycleEvent, MemoryProvenance, MemoryRecallRanking, MemoryRecord,
     MemorySurfaceAccess, Receipt,
 };
+use serde::ser::{SerializeSeq, Serializer};
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
-use std::io::Write;
+use std::io::{BufReader, Write};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex, OnceLock, RwLock};
 use std::time::{Duration, Instant};
@@ -106,9 +108,8 @@ pub(crate) struct RenderedSnapshots {
 
 pub(crate) fn render_snapshots(kernel: &MdxKernel) -> Result<RenderedSnapshots, String> {
     let memory = render_memory_snapshot(&kernel.memory_brain_snapshot());
-    let ledger = render_snapshot(kernel.ledger().entries(), kernel.ids_counter());
     Ok(RenderedSnapshots {
-        ledger: render_snapshot_bundle(&ledger, &memory)?,
+        ledger: render_snapshot_bundle(kernel.ledger().entries(), kernel.ids_counter(), &memory)?,
         memory,
     })
 }
@@ -123,46 +124,108 @@ pub(crate) fn write_snapshots(rendered: &RenderedSnapshots) -> Result<(), String
     write_memory_snapshot(&rendered.memory)
 }
 
-fn render_snapshot_bundle(ledger: &str, memory: &str) -> Result<String, String> {
-    let mut bundled: serde_json::Value = serde_json::from_str(ledger)
-        .map_err(|error| format!("bundle rendered ledger snapshot: {error}"))?;
-    bundled["bundle_version"] = serde_json::json!(SNAPSHOT_BUNDLE_VERSION);
-    bundled["memory_snapshot"] = serde_json::from_str(memory)
+fn render_snapshot_bundle(
+    entries: &[Receipt],
+    ids_counter: u64,
+    memory: &str,
+) -> Result<String, String> {
+    let memory_snapshot = serde_json::from_str::<serde_json::Value>(memory)
         .map_err(|error| format!("bundle rendered Memory snapshot: {error}"))?;
-    Ok(bundled.to_string())
+    serde_json::to_string(&SnapshotBundleRef {
+        name: "mdx-kernel-ledger-snapshot",
+        version: SNAPSHOT_VERSION,
+        ids_counter,
+        receipt_count: entries.len(),
+        receipts: ReceiptSlice(entries),
+        bundle_version: SNAPSHOT_BUNDLE_VERSION,
+        memory_snapshot,
+    })
+    .map_err(|error| format!("serialize bundled kernel snapshot: {error}"))
+}
+
+#[derive(Serialize)]
+struct LedgerSnapshotRef<'a> {
+    name: &'static str,
+    version: u64,
+    ids_counter: u64,
+    receipt_count: usize,
+    receipts: ReceiptSlice<'a>,
+}
+
+#[derive(Serialize)]
+struct SnapshotBundleRef<'a> {
+    name: &'static str,
+    version: u64,
+    ids_counter: u64,
+    receipt_count: usize,
+    receipts: ReceiptSlice<'a>,
+    bundle_version: u64,
+    memory_snapshot: serde_json::Value,
+}
+
+struct ReceiptSlice<'a>(&'a [Receipt]);
+
+impl Serialize for ReceiptSlice<'_> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut sequence = serializer.serialize_seq(Some(self.0.len()))?;
+        for receipt in self.0 {
+            sequence.serialize_element(&ReceiptSnapshotRef::from(receipt))?;
+        }
+        sequence.end()
+    }
+}
+
+#[derive(Serialize)]
+struct ReceiptSnapshotRef<'a> {
+    receipt_id: &'a str,
+    tenant_id: &'a str,
+    trace_id: &'a str,
+    actor_id: &'a str,
+    loop_id: &'a str,
+    workflow_id: &'a str,
+    kind: &'a str,
+    policy_decision_id: &'a Option<String>,
+    payload: &'a BTreeMap<String, String>,
+    previous_hash: &'a Option<String>,
+    receipt_timestamp: &'a str,
+    hash_version: u64,
+    hash: &'a str,
+}
+
+impl<'a> From<&'a Receipt> for ReceiptSnapshotRef<'a> {
+    fn from(receipt: &'a Receipt) -> Self {
+        Self {
+            receipt_id: &receipt.receipt_id,
+            tenant_id: receipt.tenant_id.as_str(),
+            trace_id: receipt.trace_id.as_str(),
+            actor_id: receipt.actor_id.as_str(),
+            loop_id: receipt.loop_id.as_str(),
+            workflow_id: receipt.workflow_id.as_str(),
+            kind: &receipt.kind,
+            policy_decision_id: &receipt.policy_decision_id,
+            payload: &receipt.payload,
+            previous_hash: &receipt.previous_hash,
+            receipt_timestamp: &receipt.receipt_timestamp,
+            hash_version: receipt.hash_version,
+            hash: &receipt.hash,
+        }
+    }
 }
 
 /// Serialize the ledger and id counter. Called with the kernel lock held;
 /// the caller writes the returned bytes after releasing the lock.
 pub(crate) fn render_snapshot(entries: &[Receipt], ids_counter: u64) -> String {
-    let receipts: Vec<serde_json::Value> = entries
-        .iter()
-        .map(|receipt| {
-            serde_json::json!({
-                "receipt_id": receipt.receipt_id,
-                "tenant_id": receipt.tenant_id.as_str(),
-                "trace_id": receipt.trace_id.as_str(),
-                "actor_id": receipt.actor_id.as_str(),
-                "loop_id": receipt.loop_id.as_str(),
-                "workflow_id": receipt.workflow_id.as_str(),
-                "kind": receipt.kind,
-                "policy_decision_id": receipt.policy_decision_id,
-                "payload": receipt.payload,
-                "previous_hash": receipt.previous_hash,
-                "receipt_timestamp": receipt.receipt_timestamp,
-                "hash_version": receipt.hash_version,
-                "hash": receipt.hash,
-            })
-        })
-        .collect();
-    serde_json::json!({
-        "name": "mdx-kernel-ledger-snapshot",
-        "version": SNAPSHOT_VERSION,
-        "ids_counter": ids_counter,
-        "receipt_count": receipts.len(),
-        "receipts": receipts,
+    serde_json::to_string(&LedgerSnapshotRef {
+        name: "mdx-kernel-ledger-snapshot",
+        version: SNAPSHOT_VERSION,
+        ids_counter,
+        receipt_count: entries.len(),
+        receipts: ReceiptSlice(entries),
     })
-    .to_string()
+    .expect("serializing the typed kernel snapshot cannot fail")
 }
 
 static SNAPSHOT_SEQ: AtomicU64 = AtomicU64::new(0);
@@ -583,69 +646,81 @@ pub(crate) fn restore_into(kernel: &mut MdxKernel) -> Result<Option<usize>, Stri
 /// Restore from an explicit snapshot path. `restore_into` targets the
 /// serving-path const; tests target a temp path.
 fn restore_from(path: &str, kernel: &mut MdxKernel) -> Result<Option<usize>, String> {
-    let raw = match std::fs::read_to_string(path) {
-        Ok(raw) => raw,
+    let file = match std::fs::File::open(path) {
+        Ok(file) => file,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(format!("read {path}: {error}")),
     };
-    let parsed: serde_json::Value =
-        serde_json::from_str(&raw).map_err(|error| format!("parse {path}: {error}"))?;
-    if parsed["version"].as_u64() != Some(SNAPSHOT_VERSION) {
+    let parsed: LedgerSnapshotOwned = serde_json::from_reader(BufReader::new(file))
+        .map_err(|error| format!("parse {path}: {error}"))?;
+    if parsed.version != SNAPSHOT_VERSION {
         return Err(format!(
             "{path}: unsupported snapshot version {}",
-            parsed["version"]
+            parsed.version
         ));
     }
-    let entries = parsed["receipts"]
-        .as_array()
-        .ok_or_else(|| format!("{path}: receipts is not an array"))?
-        .iter()
-        .map(receipt_from_value)
-        .collect::<Result<Vec<Receipt>, String>>()?;
+    let ids_counter = parsed.ids_counter;
+    let entries = parsed
+        .receipts
+        .into_iter()
+        .map(Receipt::from)
+        .collect::<Vec<_>>();
     let count = kernel
         .restore_ledger_entries(entries)
         .map_err(|error| format!("{path}: {error}"))?;
-    kernel.restore_ids_counter(parsed["ids_counter"].as_u64().unwrap_or(0));
+    kernel.restore_ids_counter(ids_counter);
     Ok(Some(count))
 }
 
-fn receipt_from_value(value: &serde_json::Value) -> Result<Receipt, String> {
-    let field = |name: &str| -> Result<String, String> {
-        value[name]
-            .as_str()
-            .map(str::to_string)
-            .ok_or_else(|| format!("snapshot receipt missing {name}"))
-    };
-    let payload = value["payload"]
-        .as_object()
-        .ok_or_else(|| "snapshot receipt missing payload".to_string())?
-        .iter()
-        .map(|(key, val)| {
-            val.as_str()
-                .map(|text| (key.clone(), text.to_string()))
-                .ok_or_else(|| format!("snapshot payload value for {key} is not a string"))
-        })
-        .collect::<Result<BTreeMap<String, String>, String>>()?;
-    Ok(Receipt {
-        receipt_id: field("receipt_id")?,
-        tenant_id: mdx_core::TenantId::new(field("tenant_id")?),
-        trace_id: mdx_core::TraceId::new(field("trace_id")?),
-        actor_id: mdx_core::ActorId::new(field("actor_id")?),
-        loop_id: mdx_core::LoopId::new(field("loop_id")?),
-        workflow_id: mdx_core::WorkflowId::new(field("workflow_id")?),
-        kind: field("kind")?,
-        policy_decision_id: value["policy_decision_id"].as_str().map(str::to_string),
-        payload,
-        previous_hash: value["previous_hash"].as_str().map(str::to_string),
-        receipt_timestamp: value["receipt_timestamp"]
-            .as_str()
-            .map(str::to_string)
-            .unwrap_or_default(),
-        hash_version: value["hash_version"]
-            .as_u64()
-            .unwrap_or(mdx_core::RECEIPT_HASH_VERSION_TIMELESS),
-        hash: field("hash")?,
-    })
+#[derive(Deserialize)]
+struct LedgerSnapshotOwned {
+    version: u64,
+    #[serde(default)]
+    ids_counter: u64,
+    receipts: Vec<ReceiptSnapshotOwned>,
+}
+
+#[derive(Deserialize)]
+struct ReceiptSnapshotOwned {
+    receipt_id: String,
+    tenant_id: String,
+    trace_id: String,
+    actor_id: String,
+    loop_id: String,
+    workflow_id: String,
+    kind: String,
+    policy_decision_id: Option<String>,
+    payload: BTreeMap<String, String>,
+    previous_hash: Option<String>,
+    #[serde(default)]
+    receipt_timestamp: String,
+    #[serde(default = "timeless_receipt_hash_version")]
+    hash_version: u64,
+    hash: String,
+}
+
+fn timeless_receipt_hash_version() -> u64 {
+    mdx_core::RECEIPT_HASH_VERSION_TIMELESS
+}
+
+impl From<ReceiptSnapshotOwned> for Receipt {
+    fn from(receipt: ReceiptSnapshotOwned) -> Self {
+        Self {
+            receipt_id: receipt.receipt_id,
+            tenant_id: mdx_core::TenantId::new(receipt.tenant_id),
+            trace_id: mdx_core::TraceId::new(receipt.trace_id),
+            actor_id: mdx_core::ActorId::new(receipt.actor_id),
+            loop_id: mdx_core::LoopId::new(receipt.loop_id),
+            workflow_id: mdx_core::WorkflowId::new(receipt.workflow_id),
+            kind: receipt.kind,
+            policy_decision_id: receipt.policy_decision_id,
+            payload: receipt.payload,
+            previous_hash: receipt.previous_hash,
+            receipt_timestamp: receipt.receipt_timestamp,
+            hash_version: receipt.hash_version,
+            hash: receipt.hash,
+        }
+    }
 }
 
 /// Serialize the durable memory core. mdx-core carries no serde, so the
@@ -811,28 +886,36 @@ fn restore_memory_from_bundle_path(
     ledger_path: &str,
     kernel: &mut MdxKernel,
 ) -> Result<Option<usize>, String> {
-    let raw = match std::fs::read_to_string(ledger_path) {
-        Ok(raw) => raw,
+    let file = match std::fs::File::open(ledger_path) {
+        Ok(file) => file,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(format!("read {ledger_path}: {error}")),
     };
-    let parsed: serde_json::Value =
-        serde_json::from_str(&raw).map_err(|error| format!("parse {ledger_path}: {error}"))?;
-    let Some(memory) = parsed.get("memory_snapshot") else {
+    let parsed: MemorySnapshotEnvelope = serde_json::from_reader(BufReader::new(file))
+        .map_err(|error| format!("parse {ledger_path}: {error}"))?;
+    let Some(memory) = parsed.memory_snapshot else {
         return Ok(None);
     };
-    if parsed["bundle_version"].as_u64() != Some(SNAPSHOT_BUNDLE_VERSION) {
+    if parsed.bundle_version != Some(SNAPSHOT_BUNDLE_VERSION) {
         return Err(format!(
-            "{ledger_path}: unsupported snapshot bundle version {}",
-            parsed["bundle_version"]
+            "{ledger_path}: unsupported snapshot bundle version {:?}",
+            parsed.bundle_version
         ));
     }
-    let snapshot = parse_memory_snapshot_value(memory)
+    let snapshot = parse_memory_snapshot_value(&memory)
         .map_err(|error| format!("{ledger_path}: embedded Memory snapshot: {error}"))?;
     let count = kernel
         .restore_memory_brain_snapshot(snapshot)
         .map_err(|error| format!("{ledger_path}: embedded Memory snapshot: {error}"))?;
     Ok(Some(count))
+}
+
+#[derive(Deserialize)]
+struct MemorySnapshotEnvelope {
+    #[serde(default)]
+    bundle_version: Option<u64>,
+    #[serde(default)]
+    memory_snapshot: Option<serde_json::Value>,
 }
 
 fn restore_memory_from_path(path: &str, kernel: &mut MdxKernel) -> Result<Option<usize>, String> {
@@ -1124,24 +1207,37 @@ mod tests {
         let entries = chained_entries(3);
         let rendered = render_snapshot(&entries, 7);
 
-        let parsed: serde_json::Value = serde_json::from_str(&rendered).expect("parse");
-        let restored_entries: Vec<Receipt> = parsed["receipts"]
-            .as_array()
-            .expect("receipts array")
-            .iter()
-            .map(|value| receipt_from_value(value).expect("receipt"))
-            .collect();
+        let parsed: LedgerSnapshotOwned = serde_json::from_str(&rendered).expect("parse");
+        let ids_counter = parsed.ids_counter;
+        let restored_entries = parsed.receipts.into_iter().map(Receipt::from).collect();
 
         let mut restored = MdxKernel::boot_local();
         let count = restored
             .restore_ledger_entries(restored_entries)
             .expect("verified chain restores");
-        restored.restore_ids_counter(parsed["ids_counter"].as_u64().unwrap_or(0));
+        restored.restore_ids_counter(ids_counter);
         assert_eq!(count, 3);
         assert_eq!(restored.ids_counter(), 7);
         assert_eq!(
             restored.ledger().entries().last().map(|r| r.hash.clone()),
             entries.last().map(|r| r.hash.clone())
+        );
+    }
+
+    #[test]
+    fn empty_ledger_bundle_is_structurally_serialized() {
+        let kernel = MdxKernel::boot_local();
+        let rendered = render_snapshots(&kernel).expect("render snapshots");
+        let parsed: serde_json::Value = serde_json::from_str(&rendered.ledger).expect("parse");
+
+        assert_eq!(parsed["name"], "mdx-kernel-ledger-snapshot");
+        assert_eq!(parsed["version"], SNAPSHOT_VERSION);
+        assert_eq!(parsed["receipt_count"], 0);
+        assert_eq!(parsed["receipts"], serde_json::json!([]));
+        assert_eq!(parsed["bundle_version"], SNAPSHOT_BUNDLE_VERSION);
+        assert_eq!(
+            parsed["memory_snapshot"]["version"],
+            MEMORY_SNAPSHOT_VERSION
         );
     }
 
@@ -1193,18 +1289,14 @@ mod tests {
     /// A fresh kernel whose ledger matches the given kernel's rendered
     /// ledger snapshot - the boot-time restore sequence, without disk.
     fn kernel_with_restored_ledger(rendered_ledger: &str) -> MdxKernel {
-        let parsed: serde_json::Value = serde_json::from_str(rendered_ledger).expect("parse");
-        let entries: Vec<Receipt> = parsed["receipts"]
-            .as_array()
-            .expect("receipts array")
-            .iter()
-            .map(|value| receipt_from_value(value).expect("receipt"))
-            .collect();
+        let parsed: LedgerSnapshotOwned = serde_json::from_str(rendered_ledger).expect("parse");
+        let ids_counter = parsed.ids_counter;
+        let entries = parsed.receipts.into_iter().map(Receipt::from).collect();
         let mut restored = MdxKernel::boot_local();
         restored
             .restore_ledger_entries(entries)
             .expect("ledger restores");
-        restored.restore_ids_counter(parsed["ids_counter"].as_u64().unwrap_or(0));
+        restored.restore_ids_counter(ids_counter);
         restored
     }
 

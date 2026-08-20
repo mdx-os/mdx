@@ -1377,7 +1377,9 @@ pub fn render_postgres_ledger_export_sql(receipts: &[Receipt], loop_id: &str) ->
     sql
 }
 
-fn render_postgres_receipt_insert_sql(receipt: &Receipt) -> String {
+/// Render the single-receipt statement used by every Postgres ledger writer.
+/// The receipt must already belong to a fully verified ledger chain.
+pub fn render_postgres_receipt_insert_sql(receipt: &Receipt) -> String {
     format!(
         "INSERT INTO ledger_entries (receipt_id, tenant_id, trace_id, actor_id, loop_id, workflow_id, kind, policy_decision_id, payload, previous_hash, receipt_timestamp, hash_version, hash) VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}::jsonb, {}, {}, {}, {}) ON CONFLICT (receipt_id) DO NOTHING;\n",
         sql_string_literal(&receipt.receipt_id),
@@ -6255,9 +6257,10 @@ pub fn validate_migration_contracts() -> Result<MigrationReport, String> {
     // applies it per row-secured table through a dynamic block.
     // +1 more: the ctx vector migration re-declares the ctx_memory_vectors
     // policy when it widens the embedding dimensions.
-    // +26: Memory Brain, flywheel, and Model Fabric tables are created after the live-path migration and
-    // therefore declare their own explicit persist-plane policies.
-    let expected_policies = RLS_TABLES.len() + RESOURCE_AWARE_RLS_OVERRIDES.len() + 28;
+    // +28: Memory Brain, flywheel, Model Fabric, and ledger archive tables are
+    // created after the live-path migration and therefore declare their own
+    // explicit persist-plane policies.
+    let expected_policies = RLS_TABLES.len() + RESOURCE_AWARE_RLS_OVERRIDES.len() + 30;
     if report.policy_definitions != expected_policies {
         return Err(format!(
             "expected {expected_policies} RLS policy definitions, found {}",
@@ -6325,6 +6328,9 @@ fn migration_sources() -> Vec<&'static str> {
         include_str!("../../../migrations/0042_model_fabric_runtime.sql"),
         include_str!("../../../migrations/0043_marketplace_pack_actions.sql"),
         include_str!("../../../migrations/0044_allow_macos_dmg_release_artifacts.sql"),
+        include_str!("../../../migrations/0045_ledger_canonical_cursor_indexes.sql"),
+        include_str!("../../../migrations/0046_forge_outcome_no_change.sql"),
+        include_str!("../../../migrations/0047_ledger_branch_repair_archive.sql"),
     ]
 }
 const RLS_TABLES: &[&str] = &[
@@ -6453,6 +6459,9 @@ const RLS_TABLES: &[&str] = &[
     "auth_approved_model_policies",
     "auth_session_evidence",
     "auth_tenant_policy_preflights",
+    "ledger_repair_runs",
+    "ledger_branch_entry_archives",
+    "ledger_branch_reference_archives",
 ];
 
 // RLS v2 (migration 0027) and RLS v3 (migration 0028) replace the tenant-only
@@ -6613,6 +6622,8 @@ const TENANT_OWNED_TABLES: &[&str] = &[
     "auth_approved_model_policies",
     "auth_session_evidence",
     "auth_tenant_policy_preflights",
+    "ledger_branch_entry_archives",
+    "ledger_branch_reference_archives",
 ];
 #[cfg(test)]
 mod tests;

@@ -1,6 +1,6 @@
 {
   "name": "mdx-native local",
-  "migrations": 45,
+  "migrations": 48,
   "mode": "deterministic-local",
   "live_substrate": [
     { "substrate": "postgres", "local_adapter": "PostgresStorage when DATABASE_URL and observed migrations are supplied", "live_adapter": "PostgresStorage", "status": "LIVE-LOCAL", "turn_on_signal": "production Postgres connection approval remains before production live", "blocking_rails": ["production-database-url", "production-credential-approval", "production-backup-policy"], "first_local_proof": "DATABASE_URL=postgres://mdx:mdx@localhost:5432/mdx make local-full-check" },

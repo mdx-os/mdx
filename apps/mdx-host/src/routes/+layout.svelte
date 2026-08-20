@@ -208,6 +208,18 @@
       page.url.pathname.startsWith("/redeem") ||
       page.url.pathname === "/auth/sign-in"
   );
+  // Full-page children own their main landmark. Product modules rely on this
+  // layout for that landmark, but wrapping a public, welcome, evidence, help,
+  // or Console page in another <main> creates an invalid nested landmark and
+  // makes assistive navigation ambiguous.
+  const childOwnsMain = $derived(
+    onConsole ||
+      isLanding ||
+      onWelcome ||
+      onPublicGate ||
+      page.url.pathname === "/help" ||
+      page.url.pathname.startsWith("/evidence/")
+  );
   const onPublicExperience = $derived(data.publicExperience === true);
 
   const platformSignals = $derived([
@@ -486,9 +498,15 @@
   </aside>
   {/if}
 
-  <main bind:this={hostStage} id="main" class="host-stage" class:bare={isLanding || onWelcome || onPublicGate}>
-    {@render children()}
-  </main>
+  {#if childOwnsMain}
+    <div bind:this={hostStage} id="main" class="host-stage" class:bare={isLanding || onWelcome || onPublicGate}>
+      {@render children()}
+    </div>
+  {:else}
+    <main bind:this={hostStage} id="main" class="host-stage">
+      {@render children()}
+    </main>
+  {/if}
 
   {#if feedbackSurface && !onWelcome}
     <div class="host-feedback" class:avoid-composer={feedbackAvoidsComposer}>

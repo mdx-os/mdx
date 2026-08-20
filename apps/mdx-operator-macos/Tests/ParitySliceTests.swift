@@ -51,6 +51,58 @@ final class ParitySliceTests: XCTestCase {
     XCTAssertFalse(
       StartBuildSheet.executionLocation(for: URL(string: "https://mdx.example.com")!).canStart
     )
+    XCTAssertEqual(
+      StartBuildSheet.executionLocation(
+        for: URL(string: "https://mdx.example.com")!,
+        cloudAuthorized: true
+      ),
+      .mdxCloud
+    )
+    XCTAssertTrue(
+      StartBuildSheet.executionLocation(
+        for: URL(string: "https://mdx.example.com")!,
+        cloudAuthorized: true
+      ).canStart
+    )
+  }
+
+  @MainActor
+  func testQuickBuildUsesTheConnectedRepositoryProofPlan() {
+    let connectedRepo = ForgeRepo(
+      id: "repo_mdx_rust",
+      label: "mdx-rust",
+      kind: "connected",
+      originURL: "https://github.com/mdx-os/mdx-rust",
+      suggestedCheckCommands: ["cargo test"]
+    )
+
+    XCTAssertEqual(
+      OperatorStore.preferredProofCommands(
+        repoID: connectedRepo.id,
+        repos: [connectedRepo],
+        fallback: ["make source-map-check"]
+      ),
+      ["cargo test"]
+    )
+    XCTAssertEqual(
+      OperatorStore.preferredProofCommands(
+        repoID: "repo_without_profile",
+        repos: [connectedRepo],
+        fallback: ["npm test"]
+      ),
+      ["npm test"]
+    )
+  }
+
+  @MainActor
+  func testCloudStoreReplacementDoesNotFabricateAnotherProcessLaunch() {
+    let restoringStore = OperatorStore(startBackgroundTasks: false)
+    let authorizedStore = OperatorStore(startBackgroundTasks: false)
+
+    XCTAssertEqual(
+      authorizedStore.launchedAfterUncleanExit,
+      restoringStore.launchedAfterUncleanExit
+    )
   }
 
   func testRunListDoesNotPresentRecordedEvidenceAsLiveWork() {

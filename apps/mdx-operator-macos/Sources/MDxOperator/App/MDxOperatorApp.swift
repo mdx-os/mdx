@@ -120,6 +120,13 @@ enum RunNotifier {
   }
 }
 
+@MainActor
+enum CloudStoreViewIdentity {
+  static func value(for store: OperatorStore) -> ObjectIdentifier {
+    ObjectIdentifier(store)
+  }
+}
+
 @main
 struct MDxApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -151,6 +158,10 @@ struct MDxApp: App {
     WindowGroup("MDx") {
       CloudGateView {
         ContentView()
+          // Authorization installs a tenant-fresh store. Key the product
+          // subtree to that store so route tasks cannot remain attached to
+          // the suspended pre-auth instance after session restoration.
+          .id(CloudStoreViewIdentity.value(for: store))
       }
         .environment(auth)
         .environment(store)

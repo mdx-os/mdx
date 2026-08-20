@@ -2,6 +2,21 @@ import XCTest
 @testable import MDxWorkbench
 
 final class IdentitySessionTests: XCTestCase {
+  @MainActor
+  func testCloudStoreReplacementChangesProductViewIdentity() {
+    let restoringStore = OperatorStore()
+    let authorizedStore = OperatorStore()
+
+    XCTAssertNotEqual(
+      CloudStoreViewIdentity.value(for: restoringStore),
+      CloudStoreViewIdentity.value(for: authorizedStore)
+    )
+    XCTAssertEqual(
+      CloudStoreViewIdentity.value(for: authorizedStore),
+      CloudStoreViewIdentity.value(for: authorizedStore)
+    )
+  }
+
   func testVerifiedHostedIdentityWinsOverLocalFallback() async {
     let client = MDxRouteClient(session: ParityFixtureURLProtocol.makeSession())
     let result = await client.loadIdentity(baseURL: ParityFixtureURLProtocol.baseURL)

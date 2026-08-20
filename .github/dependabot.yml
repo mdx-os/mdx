@@ -7,12 +7,8 @@ updates:
     open-pull-requests-limit: 1
     groups:
       cargo-weekly:
-        applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -21,12 +17,8 @@ updates:
     open-pull-requests-limit: 1
     groups:
       npm-weekly:
-        applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -35,12 +27,8 @@ updates:
     open-pull-requests-limit: 1
     groups:
       github-actions-weekly:
-        applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
 
   - package-ecosystem: "docker"
     directory: "/deploy/docker-compose"
@@ -49,9 +37,5 @@ updates:
     open-pull-requests-limit: 1
     groups:
       docker-weekly:
-        applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"

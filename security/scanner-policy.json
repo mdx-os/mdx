@@ -111,7 +111,17 @@
       "block_on_unavailable": false,
       "applies_when": { "files_exist": ["Cargo.lock"] },
       "availability_command": ["osv-scanner", "--version"],
-      "command": ["osv-scanner", "scan", "--recursive", "--format", "json", "."]
+      "command": [
+        "osv-scanner",
+        "scan",
+        "source",
+        "--lockfile",
+        "Cargo.lock",
+        "--lockfile",
+        "pnpm-lock.yaml",
+        "--format",
+        "json"
+      ]
     },
     "rust-unsafe-inventory": {
       "category": "rust-unsafe",
@@ -173,8 +183,6 @@
         "node_modules",
         "--skip-dirs",
         ".svelte-kit",
-        "--skip-dirs",
-        "apps/mdx-operator-macos/.build",
         "--skip-dirs",
         ".mdx-local",
         "--skip-dirs",
