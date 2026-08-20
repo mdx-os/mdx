@@ -510,7 +510,9 @@ fn stream_provider(
             };
             (
                 agent
-                    .post(&format!("{}/v1/messages", call.base_url))
+                    // base_url already includes /v1 (e.g. https://api.anthropic.com/v1).
+                    // Appending /v1/messages produced /v1/v1/messages and a 401.
+                    .post(&format!("{}/messages", call.base_url.trim_end_matches('/')))
                     .set("x-api-key", &call.api_key)
                     .set("anthropic-version", "2023-06-01")
                     .set("Content-Type", "application/json"),

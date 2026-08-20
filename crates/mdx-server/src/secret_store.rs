@@ -160,29 +160,32 @@ impl SecretStore {
                 });
         }
         if let Some(name) = credential_ref.strip_prefix("secret:session/") {
-            return self.in_memory_key_for_tenant(tenant_id, name).map(|value| {
+            // GUI connect stores a process-only session ref. After a kernel
+            // restart the in-memory paste is gone, but the same env name
+            // (provider.env / Keychain) should still power Twin. Never borrow a
+            // different provider's key: only this ref's env name is eligible.
+            return self.provider_key_for_tenant(tenant_id, name).map(|value| {
                 CredentialResolution {
                     value,
-                    source: "session",
-                }
-            });
-        }
-        if let Some(name) = credential_ref.strip_prefix("secret:local_keychain/") {
-            return self.keychain_key_for_tenant(tenant_id, name).map(|value| {
-                CredentialResolution {
-                    value,
-                    source: "local_keychain",
+                    source: self.provider_key_source_for_tenant(tenant_id, name),
                 }
             });
         }
         if let Some(name) = credential_ref
-            .strip_prefix("keychain:")
+            .strip_prefix("secret:local_keychain/")
             .or_else(|| credential_ref.strip_prefix("secret:keychain/"))
+            .or_else(|| credential_ref.strip_prefix("keychain:"))
         {
-            return self.keychain_key_for_tenant(tenant_id, name).map(|value| {
+            // Resolve with the same precedence as every other credential:
+            // a live GUI paste (in-memory), then the deployment/dogfood env
+            // (provider.env), then the durable Keychain copy. Preferring
+            // Keychain first let a stale Keychain entry shadow a freshly
+            // configured provider.env key and 401 forever. Never borrow a
+            // different provider's key: only this ref's env name is eligible.
+            return self.provider_key_for_tenant(tenant_id, name).map(|value| {
                 CredentialResolution {
                     value,
-                    source: "local_keychain",
+                    source: self.provider_key_source_for_tenant(tenant_id, name),
                 }
             });
         }
@@ -796,6 +799,44 @@ mod tests {
                 )
                 .is_none()
         );
+    }
+
+    #[test]
+    fn session_credential_refs_fall_back_to_matching_env_key() {
+        const ENV_KEY: &str = "MDX_TEST_SESSION_FALLBACK_KEY";
+        let previous = std::env::var(ENV_KEY).ok();
+        unsafe { std::env::set_var(ENV_KEY, "from-provider-env") };
+        let store = SecretStore::default();
+        let resolved = store
+            .credential_for_connection("local_tenant", &format!("secret:session/{ENV_KEY}"), "IGNORED")
+            .expect("session ref should use the matching env key after restart");
+        match previous {
+            Some(value) => unsafe { std::env::set_var(ENV_KEY, value) },
+            None => unsafe { std::env::remove_var(ENV_KEY) },
+        }
+        assert_eq!(resolved.value, "from-provider-env");
+        assert_eq!(resolved.source, "env");
+    }
+
+    #[test]
+    fn keychain_credential_refs_fall_back_to_matching_env_key() {
+        const ENV_KEY: &str = "MDX_TEST_KEYCHAIN_FALLBACK_KEY";
+        let previous = std::env::var(ENV_KEY).ok();
+        unsafe { std::env::set_var(ENV_KEY, "from-provider-env-keychain-ref") };
+        let store = SecretStore::default();
+        let resolved = store
+            .credential_for_connection(
+                "local_tenant",
+                &format!("secret:local_keychain/{ENV_KEY}"),
+                "IGNORED",
+            )
+            .expect("keychain ref should use the matching env key when cache is empty");
+        match previous {
+            Some(value) => unsafe { std::env::set_var(ENV_KEY, value) },
+            None => unsafe { std::env::remove_var(ENV_KEY) },
+        }
+        assert_eq!(resolved.value, "from-provider-env-keychain-ref");
+        assert_eq!(resolved.source, "env");
     }
 
     #[test]
