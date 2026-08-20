@@ -2446,16 +2446,16 @@ fn local_json_routes_declare_response_schema_paths() {
 #[test]
 fn migration_contracts_have_tenant_ids_and_rls() {
     let report = validate_migration_contracts().expect("migration contracts");
-    assert_eq!(report.migration_count, 45);
+    assert_eq!(report.migration_count, 48);
     assert!(report.tenant_owned_tables >= TENANT_OWNED_TABLES.len());
     assert_eq!(report.rls_enabled_tables, RLS_TABLES.len());
-    // +28 in both: the live-path migration declares the dynamic persist-plane
+    // +30 in both: the live-path migration declares the dynamic persist-plane
     // policy once, the ctx vector migration re-declares its access policy, and
-    // the post-live-path Memory Brain, flywheel, and Model Fabric tables declare explicit
-    // persist-plane policies.
+    // the post-live-path Memory Brain, flywheel, Model Fabric, and ledger archive
+    // tables declare explicit persist-plane policies.
     assert_eq!(
         report.policy_definitions,
-        RLS_TABLES.len() + RESOURCE_AWARE_RLS_OVERRIDES.len() + 28
+        RLS_TABLES.len() + RESOURCE_AWARE_RLS_OVERRIDES.len() + 30
     );
     assert_eq!(report.policy_drop_guards, report.policy_definitions);
 }

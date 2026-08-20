@@ -872,6 +872,11 @@ fn append_twin_sql(sql: &mut String, receipts: &[Receipt], memory: &[MemoryRecor
     for retrieval in receipts_by_kind(receipts, "twin.session.memory.retrieved") {
         let draft_id = payload(retrieval, "source_draft_receipt_id");
         if let Some(draft) = receipt_by_id(receipts, draft_id) {
+            let memory_record_id = payload(retrieval, "memory_record_id");
+            let durable_memory_id = memory
+                .iter()
+                .any(|record| record.memory_id == memory_record_id)
+                .then_some(memory_record_id);
             let scoring = receipts_by_kind(receipts, "twin.session.memory.scored")
                 .into_iter()
                 .find(|scoring| payload(scoring, "source_draft_receipt_id") == draft_id);
@@ -880,7 +885,7 @@ fn append_twin_sql(sql: &mut String, receipts: &[Receipt], memory: &[MemoryRecor
                 sql_string_literal(&retrieval.receipt_id),
                 sql_string_literal(retrieval.tenant_id.as_str()),
                 sql_string_literal(payload(draft, "session_id")),
-                sql_string_literal(payload(retrieval, "memory_record_id")),
+                sql_optional_string(durable_memory_id),
                 sql_string_literal(payload(retrieval, "retrieval_driver")),
                 sql_string_literal(payload(retrieval, "retrieval_scope")),
                 sql_string_literal(&retrieval.receipt_id),

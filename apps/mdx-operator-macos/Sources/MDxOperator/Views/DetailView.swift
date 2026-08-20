@@ -3,6 +3,7 @@ import SwiftUI
 
 struct DetailView: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(CloudAuthStore.self) private var auth
   @Binding var searchText: String
   @State private var selectedAction: GovernedActionKind = .requestBuild
   @State private var highlightedRunID: String?
@@ -70,6 +71,19 @@ struct DetailView: View {
 
   /// Bindings into the observable store for non-body scopes.
   private var bindableStore: Bindable<OperatorStore> { Bindable(store) }
+
+  private var isHosted: Bool {
+    store.snapshot.baseURL.scheme?.lowercased() == "https"
+  }
+
+  private var connectionName: String {
+    isHosted ? "MDx Cloud" : "This Mac"
+  }
+
+  private var identityDisplayName: String? {
+    let name = auth.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+    return name.isEmpty ? nil : name
+  }
 
   private func routeSearch(_ query: String) {
     switch store.selectedAppRoute {
@@ -208,7 +222,11 @@ struct DetailView: View {
   private var routeSubtitleText: String {
     switch store.selectedAppRoute {
     case .home:
-      return isConnected ? "Here is what is live, waiting, and safe to ask about." : "Connect local MDx to see live work and decisions."
+      return isConnected
+        ? "Here is what is live, waiting, and safe to ask about."
+        : (isHosted
+          ? "Reconnect to MDx Cloud to see live work and decisions."
+          : "Connect local MDx to see live work and decisions.")
     case .forge:
       return currentSignalText
     case .twin:
@@ -321,7 +339,9 @@ struct DetailView: View {
 
   private var workspaceIntentText: String {
     if !isConnected {
-      return "Start the local MDx route server, then refresh."
+      return isHosted
+        ? "Retry the private workspace connection."
+        : "Start the local MDx route server, then refresh."
     }
     if store.snapshot.workspaceIntent.localizedCaseInsensitiveContains("future Forge shell") {
       return "MDx is ready to take a governed build request when you are."
@@ -894,7 +914,7 @@ struct DetailView: View {
 
   private var hostPanel: some View {
     VStack(alignment: .leading, spacing: 18) {
-      SectionHeader(title: "Local host", subtitle: store.snapshot.baseURL.absoluteString)
+      SectionHeader(title: connectionName, subtitle: store.snapshot.baseURL.absoluteString)
 
       VStack(alignment: .leading, spacing: 10) {
         InfoRow(label: "Connection", value: store.snapshot.connectionStatus.displayName)
@@ -921,7 +941,11 @@ struct DetailView: View {
       SectionHeader(title: "You", subtitle: "Who you are here, what you are cleared to do, and this app's connections.")
 
       if let session = store.identitySession {
-        IdentityCard(session: session)
+        IdentityCard(
+          session: session,
+          displayName: identityDisplayName,
+          workspaceName: isHosted ? "Personal beta workspace" : "Local workspace"
+        )
       }
       if let clearance = store.clearance {
         ClearanceCard(clearance: clearance)
@@ -950,7 +974,10 @@ struct DetailView: View {
       .mdxGlassSurface(interactive: true)
 
       VStack(alignment: .leading, spacing: 12) {
-        InfoRow(label: "Local host", value: store.snapshot.baseURL.absoluteString)
+        if isHosted, !auth.email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+          InfoRow(label: "Signed in as", value: auth.email)
+        }
+        InfoRow(label: connectionName, value: store.snapshot.baseURL.absoluteString)
         InfoRow(label: "Connection", value: store.snapshot.connectionStatus.displayName)
         Button {
           store.showSettings()

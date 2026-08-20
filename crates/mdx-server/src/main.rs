@@ -257,6 +257,9 @@ fn run() -> Result<(), String> {
             println!("{}", app_state_export::write_local_app_state_postgres()?);
             Ok(())
         }
+        Some("repair-postgres-ledger-from-snapshot") => {
+            postgres_exec::ledger_repair::run().map(|report| println!("{report}"))
+        }
         Some("write-postgres-storage-receipts") => {
             let loop_id = args
                 .get(2)
@@ -386,7 +389,7 @@ fn run() -> Result<(), String> {
             Ok(())
         }
         _ => Err(
-            "usage: mdx-server run-loop <loop_id> | harness inspect | harness-inspect | run-loop-postgres <loop_id> | run-local-loops | export-loop-ledger-sql <loop_id> | export-postgres-storage-write-sql <loop_id> | export-memory-store-sql | memory-benchmark-run | memory-backfill-from-ledger | export-app-state-sql | write-postgres-app-state | bootstrap-beta-auth <tenant_id> <target_auth_user_id> <mapped_role> | write-postgres-storage-receipts <loop_id> | write-postgres-provider-evidence <loops> <receipts> <chain_heads> <previous_hash> | local-loop-budgets | serve 127.0.0.1:8787 | check-migrations | check-postgres-boundary | status [--json]"
+            "usage: mdx-server run-loop <loop_id> | harness inspect | harness-inspect | run-loop-postgres <loop_id> | run-local-loops | export-loop-ledger-sql <loop_id> | export-postgres-storage-write-sql <loop_id> | export-memory-store-sql | memory-benchmark-run | memory-backfill-from-ledger | export-app-state-sql | write-postgres-app-state | repair-postgres-ledger-from-snapshot | bootstrap-beta-auth <tenant_id> <target_auth_user_id> <mapped_role> | write-postgres-storage-receipts <loop_id> | write-postgres-provider-evidence <loops> <receipts> <chain_heads> <previous_hash> | local-loop-budgets | serve 127.0.0.1:8787 | check-migrations | check-postgres-boundary | status [--json]"
                 .to_string(),
         ),
     }
@@ -533,13 +536,12 @@ fn serve(addr: &str) -> Result<(), String> {
     let listener = TcpListener::bind(addr).map_err(|error| format!("bind {addr}: {error}"))?;
     println!("mdx local server listening on http://{addr}");
     let kernel = Arc::new(RwLock::new(MdxKernel::boot_local()));
-    // Durable ledger restore comes first: in a snapshotting mode the receipts
-    // on disk are the kernel's memory, and a snapshot that does not verify
-    // refuses boot rather than silently starting empty over real evidence.
-    // Provider standing rides in those receipts, so the file-based provider
-    // restore runs only when no snapshot was restored.
+    // Durable ledger restore comes first. Invalid snapshots refuse boot rather
+    // than starting empty over real evidence. File provider restore only runs
+    // when no receipt snapshot was restored.
     let mut restored_from_snapshot = false;
     let mut ledger_file_restored = false;
+    let mut memory_restored_from_postgres = false;
     if kernel_snapshot::enabled(mode) {
         let mut booted = kernel
             .write()
@@ -561,6 +563,9 @@ fn serve(addr: &str) -> Result<(), String> {
                 ));
             }
         }
+    }
+    if restored_from_snapshot {
+        memory_restored_from_postgres = app_state_export::reconcile_snapshot(&kernel)?;
     }
     // No snapshot, but the persistence plane is configured: the database is
     // the source of truth (new host, lost disk). Restore the chain from
@@ -601,7 +606,7 @@ fn serve(addr: &str) -> Result<(), String> {
     // refuses boot when its paired legacy ledger was restored; when the ledger
     // file itself is gone, the sibling is an orphan, not evidence, so it is set
     // aside and boot continues with empty Memory.
-    if kernel_snapshot::enabled(mode) {
+    if kernel_snapshot::enabled(mode) && !memory_restored_from_postgres {
         let mut booted = kernel
             .write()
             .map_err(|_| "kernel lock poisoned at boot".to_string())?;
@@ -727,7 +732,6 @@ fn serve(addr: &str) -> Result<(), String> {
     }
     Ok(())
 }
-
 fn max_open_connections_from_env() -> usize {
     std::env::var("MDX_MAX_OPEN_CONNECTIONS")
         .ok()
@@ -735,13 +739,11 @@ fn max_open_connections_from_env() -> usize {
         .filter(|cap| *cap > 0)
         .unwrap_or(256)
 }
-
 /// One admitted connection. Dropping the slot releases it, including on any
 /// panic inside the handler thread.
 struct ConnectionSlot {
     open: Arc<std::sync::atomic::AtomicUsize>,
 }
-
 impl ConnectionSlot {
     fn admit(open: &Arc<std::sync::atomic::AtomicUsize>, cap: usize) -> Option<Self> {
         let previous = open.fetch_add(1, std::sync::atomic::Ordering::SeqCst);

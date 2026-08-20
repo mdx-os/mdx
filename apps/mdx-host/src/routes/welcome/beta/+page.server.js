@@ -9,7 +9,6 @@
 // while someone on their own machine claims ownership and wires a provider
 // themselves. Operator-only surfaces are never offered to non-operators.
 import { hostedExperience } from "../../../lib/experienceProfile.server.js";
-import { isOperatorSession } from "../../../lib/session.js";
 
 async function readJson(fetchImpl, path) {
   try {
@@ -69,32 +68,30 @@ export async function load({ fetch, locals }) {
   };
 
   const hosted = hostedExperience();
-  const operator = isOperatorSession(locals?.session);
 
   const arrivalStep = hosted
-    ? { id: "install_completed", title: "Install the apps", body: "Get the notarized Mac app and your TestFlight handoff. Use the same invited account on every device.", href: "/download/macos" }
-    : { id: "install_completed", title: "Open your workspace", body: "See MDx running on this machine with your data kept in its local snapshot.", href: "/" };
+    ? { id: "install_completed", title: "Install the apps", body: "Get the notarized Mac app and your TestFlight handoff. Use the same invited account on every device.", href: "/download/macos", cta: "Get the apps" }
+    : { id: "install_completed", title: "Open your workspace", body: "See MDx running on this machine with your data kept in its local snapshot.", href: "/", cta: "Open MDx" };
 
   const modelStep = {
     id: "model_connected",
-    title: hosted && !operator ? "Ask Twin something real" : hosted ? "Check your models" : "Connect a model",
-    body: hosted && !operator
-      ? "Models are already connected. Ask a work question or bring a decision you are weighing."
-      : hosted
-        ? "Models are connected for the beta. Confirm they answer, or adjust them."
-        : "Confirm or connect a provider so Twin and Forge can really think.",
-    href: hosted ? (operator ? "/admin/models" : "/twin") : "/"
+    title: hosted ? "Ask Twin something real" : "Connect a model",
+    body: hosted
+      ? "Ask a work question or bring a decision you are weighing. Start small and see how the answer feels."
+      : "Confirm or connect a provider so Twin and Forge can really think.",
+    href: hosted ? "/twin" : "/",
+    cta: hosted ? "Open Twin" : "Connect"
   };
 
   const steps = [
     arrivalStep,
     modelStep,
-    { id: "first_page_draft", title: "Write your first Page", body: "Capture a note, decision, or plan. Keep it private until you choose to publish it.", href: "/pages" },
-    { id: "repo_connected", title: "Connect a repository", body: "Choose repository access in GitHub. MDx never asks for a personal access token.", href: "/forge" },
-    { id: "first_forge_request", title: "Try one bounded Forge job", body: "Open Forge, connect a safe repo if needed, and give it one small request. Forge plans before it touches anything.", href: "/forge" },
-    { id: "first_result_seen", title: "Review the result", body: "Read the checks and receipt, then approve, decline, or leave the branch for later.", href: "/forge/review" },
-    { id: "first_capability_inspected", title: "Inspect a capability", body: "Open one curated Marketplace capability and see exactly what it can touch.", href: "/marketplace" },
-    { id: "first_feedback_submitted", title: "Tell us one thing", body: "Use the feedback affordance on any surface. It only sends safe context.", href: "/" }
+    { id: "first_page_draft", title: "Write your first Page", body: "Capture a note, decision, or plan. Keep it private until you choose to publish it.", href: "/pages", cta: "Open Pages" },
+    { id: "repo_connected", title: "Connect a repository", body: "Choose repository access in GitHub. MDx never asks for a personal access token.", href: "/forge", cta: "Open Forge" },
+    { id: "first_forge_request", title: "Try one bounded Forge job", body: "Open Forge, connect a safe repo if needed, and give it one small request. Forge plans before it touches anything.", href: "/forge", cta: "Open Forge" },
+    { id: "first_result_seen", title: "Review the result", body: "Read the checks and receipt, then approve, decline, or leave the branch for later.", href: "/forge/review", cta: "Review" },
+    { id: "first_capability_inspected", title: "Inspect a capability", body: "Open one curated Marketplace capability and see exactly what it can touch.", href: "/marketplace", cta: "Open Marketplace" },
+    { id: "first_feedback_submitted", title: "Tell us one thing", body: "Use the feedback affordance on any surface. It only sends safe context.", href: "/", cta: "Open MDx" }
   ];
   const actorID = String(locals?.session?.actor_id ?? locals?.session?.user_id ?? "");
   const participantJourney = (Array.isArray(telemetry?.participant_journeys)
@@ -113,7 +110,7 @@ export async function load({ fetch, locals }) {
         ? "Marketplace is curated for beta. Community imports wait for scan review and stronger isolation."
         : "Marketplace is curated for beta.",
     boundary:
-      "This page only guides and reads safe posture flags. Nothing here runs, ships, or opens authority.",
-    safeNext: "Work down the steps in any order. Each one teaches the mental model and is resumable."
+      "Nothing starts a build, changes access, or ships from this page.",
+    safeNext: "Choose any starting point. You can come back later."
   };
 }

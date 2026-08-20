@@ -60,7 +60,7 @@
             <p class="step-title">{step.title}</p>
             <p class="step-text">{step.body}</p>
             <div class="step-acts">
-              <a class="go" href={step.href}>Start</a>
+              <a class="go" href={step.href}>{step.cta ?? "Start"}</a>
               <button type="button" class="mark" onclick={() => markDone(step)} disabled={done[step.id]}>
                 {done[step.id] ? "Done" : "Mark done"}
               </button>
@@ -80,7 +80,7 @@
                 <p class="step-title">{step.title}</p>
                 <p class="step-text">{step.body}</p>
                 <div class="step-acts">
-                  <a class="go" href={step.href}>Open</a>
+                  <a class="go" href={step.href}>{step.cta ?? "Open"}</a>
                   <button type="button" class="mark" onclick={() => markDone(step)} disabled={done[step.id]}>
                     {done[step.id] ? "Done" : "Mark done"}
                   </button>
@@ -112,7 +112,7 @@
     </aside>
   </div>
 
-  <p class="quiet">{data.boundary} Safe next: {data.safeNext}</p>
+  <p class="quiet">{data.boundary} {data.safeNext}</p>
 </section>
 
 <style>

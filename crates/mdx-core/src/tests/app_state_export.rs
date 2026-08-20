@@ -1,6 +1,48 @@
 use super::*;
 
 #[test]
+fn forge_outcome_constraint_accepts_every_kernel_disposition() {
+    let migration = include_str!("../../../../migrations/0046_forge_outcome_no_change.sql");
+
+    for disposition in FORGE_OUTCOME_DISPOSITIONS {
+        assert!(
+            migration.contains(&format!("'{disposition}'")),
+            "forge outcome migration must accept kernel disposition {disposition}"
+        );
+    }
+}
+
+#[test]
+fn historical_twin_retrieval_without_durable_memory_exports_a_null_reference() {
+    let mut kernel = MdxKernel::boot_local();
+    kernel.run_evals_runner_agent().expect("seed receipt");
+    let evidence_receipt_id = kernel.ledger().entries()[0].receipt_id.clone();
+    let report = kernel
+        .save_twin_session_draft_local(TwinSessionDraftRequest {
+            tenant_id: "local_tenant",
+            actor_id: "human:local_user",
+            session_id: "historical_twin_retrieval",
+            companion_id: "advisor",
+            companion_stance: "advisor",
+            persona_profile_id: "local_persona_v1",
+            prompt_shape: "operator_question",
+            evidence_receipt_id: &evidence_receipt_id,
+            draft_text: "Keep the retrieval as evidence after memory compaction.",
+            live_answer: None,
+            recall_packet: None,
+        })
+        .expect("twin draft");
+
+    let sql = render_postgres_app_state_export_sql(kernel.ledger().entries(), &[]);
+    let retrieval = sql
+        .lines()
+        .find(|line| line.starts_with("INSERT INTO twin_memory_retrievals"))
+        .expect("retrieval insert");
+    assert!(retrieval.contains(", NULL, 'local_memory_store'"));
+    assert!(!retrieval.contains(&sql_string_literal(&report.memory_record_id)));
+}
+
+#[test]
 fn direct_product_bet_mints_the_signal_receipt_required_by_postgres() {
     let mut kernel = MdxKernel::boot_local();
     let identity = GovernedWriteIdentity::local_demo("founder");
@@ -514,9 +556,9 @@ fn postgres_app_state_writer_accepts_observed_migrations() {
     let writer = PostgresAppStateWriter::connect_after_observed_migrations(
         Some("postgres://mdx:mdx@localhost/mdx"),
         PostgresMigrationEvidence {
-            migration_count: 45,
-            tenant_owned_tables: 123,
-            rls_enabled_tables: 125,
+            migration_count: 48,
+            tenant_owned_tables: 125,
+            rls_enabled_tables: 128,
             observed_by: "test".to_string(),
         },
     )
@@ -546,12 +588,27 @@ fn postgres_app_state_writer_rejects_migration_evidence_mismatch() {
     assert_eq!(
         result,
         Err(StorageAdapterError::MigrationEvidenceMismatch {
-            expected_migrations: 45,
+            expected_migrations: 48,
             observed_migrations: 8,
-            expected_tenant_owned_tables: 123,
+            expected_tenant_owned_tables: 125,
             observed_tenant_owned_tables: 67,
-            expected_rls_enabled_tables: 125,
+            expected_rls_enabled_tables: 128,
             observed_rls_enabled_tables: 70,
         })
     );
+}
+
+#[test]
+fn ledger_repair_archives_are_immutable() {
+    let joined = migration_sources().join("\n");
+    assert!(joined.contains("CREATE OR REPLACE FUNCTION mdx_refuse_ledger_archive_mutation()"));
+    for table in [
+        "ledger_repair_runs",
+        "ledger_branch_entry_archives",
+        "ledger_branch_reference_archives",
+    ] {
+        assert!(joined.contains(&format!(
+            "BEFORE UPDATE OR DELETE ON {table}\n  FOR EACH ROW EXECUTE FUNCTION mdx_refuse_ledger_archive_mutation()"
+        )));
+    }
 }

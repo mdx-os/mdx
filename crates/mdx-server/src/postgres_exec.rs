@@ -22,6 +22,9 @@ use rustls_pki_types::{CertificateDer, pem::PemObject};
 use std::collections::HashMap;
 use std::sync::{Mutex, OnceLock};
 
+#[path = "ledger_repair.rs"]
+pub(crate) mod ledger_repair;
+
 fn error_with_sources(prefix: &str, error: &(dyn std::error::Error + 'static)) -> String {
     let mut message = format!("{prefix}: {error}");
     let mut source = error.source();
@@ -97,7 +100,7 @@ fn tls_connector() -> Result<tokio_postgres_rustls::MakeRustlsConnect, String> {
     Ok(tokio_postgres_rustls::MakeRustlsConnect::new(config))
 }
 
-fn connect(database_url: &str) -> Result<postgres::Client, String> {
+pub(crate) fn connect(database_url: &str) -> Result<postgres::Client, String> {
     require_tls_in_production(database_url)?;
     postgres::Client::connect(database_url, tls_connector()?).map_err(|error| {
         // Surface the full cause chain: "TLS handshake failed" alone has
@@ -181,9 +184,10 @@ where
     Ok(())
 }
 
-/// Return the durable global receipt count and its one unreferenced chain
-/// head. Ambiguous heads refuse incremental export instead of guessing across
-/// a fork.
+/// Return the durable row count and the one declared head that is also a
+/// graph head. Historical branches remain immutable evidence, but they do not
+/// become the incremental export cursor merely because nothing references
+/// them. The tenant head table is the explicit canonical pointer.
 pub(crate) fn query_ledger_cursor(database_url: &str) -> Result<(usize, Option<String>), String> {
     let mut client = connect(database_url)?;
     let count = client
@@ -191,21 +195,30 @@ pub(crate) fn query_ledger_cursor(database_url: &str) -> Result<(usize, Option<S
         .map_err(|error| error_with_sources("postgres count ledger_entries", &error))?
         .get::<_, i64>(0)
         .max(0) as usize;
-    let heads = client
-        .query(
-            "SELECT hash FROM ledger_entries WHERE hash NOT IN (\
-             SELECT previous_hash FROM ledger_entries WHERE previous_hash IS NOT NULL\
-             ) LIMIT 2",
-            &[],
-        )
-        .map_err(|error| error_with_sources("postgres query ledger head", &error))?;
+    let heads = query_declared_global_heads(&mut client)?;
     match (count, heads.as_slice()) {
         (0, []) => Ok((0, None)),
         (0, _) => Err("ledger_entries has a head but no rows".to_string()),
-        (_, [head]) => Ok((count, Some(head.get(0)))),
-        (_, []) => Err("ledger_entries has rows but no global chain head".to_string()),
-        (_, _) => Err("ledger_entries has multiple global chain heads".to_string()),
+        (_, [head]) => Ok((count, Some(head.clone()))),
+        (_, []) => Err("ledger_entries has rows but no declared global chain head".to_string()),
+        (_, _) => Err("ledger_entries has multiple declared global chain heads".to_string()),
     }
+}
+
+pub(crate) fn query_declared_global_heads(
+    client: &mut impl postgres::GenericClient,
+) -> Result<Vec<String>, String> {
+    client
+        .query(
+            "SELECT DISTINCT heads.head_hash FROM ledger_chain_heads heads \
+             JOIN ledger_entries entry ON entry.hash = heads.head_hash \
+             WHERE NOT EXISTS (\
+               SELECT 1 FROM ledger_entries child WHERE child.previous_hash = entry.hash\
+             ) ORDER BY heads.head_hash LIMIT 2",
+            &[],
+        )
+        .map_err(|error| error_with_sources("postgres query declared ledger head", &error))
+        .map(|rows| rows.into_iter().map(|row| row.get(0)).collect())
 }
 
 /// Read the full receipt ledger back from the durable store, re-linked into
@@ -214,6 +227,31 @@ pub(crate) fn query_ledger_cursor(database_url: &str) -> Result<(usize, Option<S
 /// the database is the source of truth, not just an export target.
 pub(crate) fn query_ledger_entries(database_url: &str) -> Result<Vec<mdx_core::Receipt>, String> {
     let mut client = connect(database_url)?;
+    let declared_heads = query_declared_global_heads(&mut client)?;
+    let entries = query_all_ledger_entries_with_client(&mut client)?;
+    let declared_head = match (entries.is_empty(), declared_heads.as_slice()) {
+        (true, []) => return Ok(Vec::new()),
+        (true, _) => return Err("ledger_entries has a declared head but no rows".to_string()),
+        (false, [head]) => head.as_str(),
+        (false, []) => {
+            return Err("ledger_entries has rows but no declared global chain head".to_string());
+        }
+        (false, _) => {
+            return Err("ledger_entries has multiple declared global chain heads".to_string());
+        }
+    };
+    let (ordered, preserved_branch_rows) = canonical_ledger_entries(entries, declared_head)?;
+    if preserved_branch_rows > 0 {
+        eprintln!(
+            "mdx-server postgres restore selected the declared chain and preserved {preserved_branch_rows} noncanonical branch rows"
+        );
+    }
+    Ok(ordered)
+}
+
+pub(crate) fn query_all_ledger_entries_with_client(
+    client: &mut impl postgres::GenericClient,
+) -> Result<Vec<mdx_core::Receipt>, String> {
     let rows = client
         .query(
             "SELECT receipt_id, tenant_id, trace_id, actor_id, loop_id, workflow_id, kind, \
@@ -222,8 +260,7 @@ pub(crate) fn query_ledger_entries(database_url: &str) -> Result<Vec<mdx_core::R
             &[],
         )
         .map_err(|error| format!("postgres query ledger_entries: {error}"))?;
-    let mut by_previous: std::collections::HashMap<Option<String>, mdx_core::Receipt> =
-        std::collections::HashMap::new();
+    let mut entries = Vec::with_capacity(rows.len());
     for row in &rows {
         let payload_text: String = row.get(8);
         let payload_value: serde_json::Value = serde_json::from_str(&payload_text)
@@ -259,31 +296,41 @@ pub(crate) fn query_ledger_entries(database_url: &str) -> Result<Vec<mdx_core::R
                 .unwrap_or(mdx_core::RECEIPT_HASH_VERSION_TIMELESS),
             hash: row.get(12),
         };
-        if by_previous
-            .insert(receipt.previous_hash.clone(), receipt)
-            .is_some()
-        {
-            return Err(
-                "ledger_entries holds two receipts with the same previous_hash; the chain is ambiguous and the restore refuses to guess".to_string(),
-            );
+        entries.push(receipt);
+    }
+    Ok(entries)
+}
+
+pub(crate) fn canonical_ledger_entries(
+    entries: Vec<mdx_core::Receipt>,
+    declared_head: &str,
+) -> Result<(Vec<mdx_core::Receipt>, usize), String> {
+    let total = entries.len();
+    let mut by_hash = std::collections::HashMap::<String, mdx_core::Receipt>::new();
+    for receipt in entries {
+        let hash = receipt.hash.clone();
+        if by_hash.insert(hash.clone(), receipt).is_some() {
+            return Err(format!(
+                "ledger_entries holds duplicate receipt hash {hash}"
+            ));
         }
     }
-    // Walk the chain from the genesis receipt. A row count that does not
-    // match the walk means orphaned rows; the restore refuses rather than
-    // silently dropping evidence.
-    let mut ordered = Vec::with_capacity(rows.len());
-    let mut cursor: Option<String> = None;
-    while let Some(receipt) = by_previous.remove(&cursor) {
-        cursor = Some(receipt.hash.clone());
-        ordered.push(receipt);
+    let mut reversed = Vec::with_capacity(total);
+    let mut cursor = declared_head.to_string();
+    loop {
+        let receipt = by_hash
+            .remove(&cursor)
+            .ok_or_else(|| format!("declared ledger chain references missing hash {cursor}"))?;
+        let previous = receipt.previous_hash.clone();
+        reversed.push(receipt);
+        match previous {
+            Some(hash) => cursor = hash,
+            None => break,
+        }
     }
-    if !by_previous.is_empty() {
-        return Err(format!(
-            "ledger_entries holds {} receipts that do not link into the chain; the restore refuses to guess",
-            by_previous.len()
-        ));
-    }
-    Ok(ordered)
+    reversed.reverse();
+    let preserved_branch_rows = total.saturating_sub(reversed.len());
+    Ok((reversed, preserved_branch_rows))
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -481,9 +528,103 @@ pub(crate) fn restore_kernel(
     Ok(Some((ledger_count, memory_count)))
 }
 
+/// Reconcile a restored disk snapshot with the declared Postgres chain before
+/// the server accepts traffic. If Postgres is ahead and extends the snapshot,
+/// restore it. If the snapshot already contains the declared head, it is safe
+/// to keep and startup catch-up appends the missing canonical suffix. A real
+/// divergence refuses boot before either side can grow another branch.
+pub(crate) fn align_snapshot_with_postgres(
+    database_url: &str,
+    kernel: &mut mdx_core::MdxKernel,
+) -> Result<Option<(usize, usize)>, String> {
+    let (persisted_rows, persisted_head) = query_ledger_cursor(database_url)?;
+    if persisted_rows == 0 {
+        return Ok(None);
+    }
+    let persisted_head = persisted_head
+        .ok_or_else(|| "postgres ledger has rows but no declared head".to_string())?;
+    if kernel
+        .ledger()
+        .entries()
+        .iter()
+        .any(|receipt| receipt.hash == persisted_head)
+    {
+        return Ok(None);
+    }
+
+    let durable = query_ledger_entries(database_url)?;
+    if !receipt_hash_prefix(kernel.ledger().entries(), &durable) {
+        return Err(
+            "disk snapshot and declared postgres ledger diverge; boot refuses before accepting writes"
+                .to_string(),
+        );
+    }
+    restore_kernel(database_url, kernel)
+}
+
+fn receipt_hash_prefix(prefix: &[mdx_core::Receipt], full: &[mdx_core::Receipt]) -> bool {
+    prefix.len() <= full.len()
+        && prefix
+            .iter()
+            .zip(full)
+            .all(|(left, right)| left.hash == right.hash)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn declared_head_selects_one_chain_without_deleting_preserved_branches() {
+        let mut kernel = mdx_core::MdxKernel::boot_local();
+        kernel
+            .run_evals_runner_agent()
+            .expect("seed canonical chain");
+        let canonical = kernel.ledger().entries().to_vec();
+        assert!(canonical.len() > 2);
+        let declared_head = canonical.last().expect("canonical head").hash.clone();
+
+        let mut branch = canonical[canonical.len() - 2].clone();
+        branch.receipt_id.push_str("_historical_branch");
+        branch.hash.push_str("_historical_branch");
+        let mut rows = canonical.clone();
+        rows.push(branch);
+
+        let (restored, preserved) =
+            canonical_ledger_entries(rows, &declared_head).expect("declared chain");
+        assert_eq!(restored, canonical);
+        assert_eq!(preserved, 1);
+    }
+
+    #[test]
+    fn declared_head_refuses_a_missing_link() {
+        let mut kernel = mdx_core::MdxKernel::boot_local();
+        kernel
+            .run_evals_runner_agent()
+            .expect("seed canonical chain");
+        let mut entries = kernel.ledger().entries().to_vec();
+        let head = entries.last().expect("head").hash.clone();
+        entries.remove(entries.len() - 2);
+
+        let error = canonical_ledger_entries(entries, &head).expect_err("missing link must refuse");
+        assert!(error.contains("missing hash"), "{error}");
+    }
+
+    #[test]
+    fn snapshot_alignment_accepts_only_an_exact_hash_prefix() {
+        let mut kernel = mdx_core::MdxKernel::boot_local();
+        kernel.run_evals_runner_agent().expect("seed chain");
+        let entries = kernel.ledger().entries();
+        assert!(entries.len() > 2);
+
+        assert!(receipt_hash_prefix(&entries[..entries.len() - 1], entries));
+        assert!(receipt_hash_prefix(entries, entries));
+
+        let mut divergent = entries[..entries.len() - 1].to_vec();
+        divergent[1].hash.push_str("_diverged");
+        assert!(!receipt_hash_prefix(&divergent, entries));
+        assert!(!receipt_hash_prefix(entries, &entries[..entries.len() - 1]));
+    }
 
     #[test]
     fn durable_memory_rows_rejoin_their_receipt_provenance() {

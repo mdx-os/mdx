@@ -56,6 +56,7 @@ final class OperatorStore {
   var pendingBuildIntent: String?
   private var didAutoOpenBuildShot = false
   private(set) var repos: [ForgeRepo] = []
+  private(set) var repoLoadPhase: LoadPhase = .idle
   var selectedRepoID: String = ""
   private(set) var scout: ScoutResult?
   private(set) var scoutPhase: LoadPhase = .idle
@@ -235,6 +236,17 @@ final class OperatorStore {
   private static let filedReportsDefaultsKey = "MDxFiledReports"
   static let cleanExitDefaultsKey = "MDxCleanExit"
 
+  /// Capture and arm the process launch once. Hosted authorization replaces
+  /// the product store after sign-in; reading the just-armed false flag from
+  /// that replacement used to fabricate an unclean previous session.
+  private static let processLaunchedAfterUncleanExit: Bool = {
+    let defaults = UserDefaults.standard
+    let priorSessionWasUnclean = defaults.object(forKey: cleanExitDefaultsKey) != nil
+      && !defaults.bool(forKey: cleanExitDefaultsKey)
+    defaults.set(false, forKey: cleanExitDefaultsKey)
+    return priorSessionWasUnclean
+  }()
+
   private let client: MDxRouteClient
   private let logger = Logger(subsystem: "com.mdx.app", category: "Store")
 
@@ -275,14 +287,10 @@ final class OperatorStore {
        let reports = try? JSONDecoder().decode([FiledReport].self, from: data) {
       filedReports = reports
     }
-    // Crash detection: the flag is armed at launch and only cleared by a
-    // clean applicationWillTerminate. If it is still false now, the last
-    // session ended abruptly.
-    if UserDefaults.standard.object(forKey: Self.cleanExitDefaultsKey) != nil {
-      launchedAfterUncleanExit = !UserDefaults.standard.bool(forKey: Self.cleanExitDefaultsKey)
-    }
+    // Crash detection is sampled and armed once per process. A hosted sign-in
+    // swaps this store, but that is not another application launch.
+    launchedAfterUncleanExit = Self.processLaunchedAfterUncleanExit
     uncleanRelaunchThisSession = launchedAfterUncleanExit
-    UserDefaults.standard.set(false, forKey: Self.cleanExitDefaultsKey)
     // Instant resume: reopen on the surface the user left.
     if let savedRoute = UserDefaults.standard.string(forKey: Self.lastRouteDefaultsKey),
        let route = AppRoute(id: savedRoute) {
@@ -1102,7 +1110,11 @@ final class OperatorStore {
     }
     let width = request.fleetWidth ?? max(1, recommendation?.width ?? 1)
     let commands = request.proofCommands.isEmpty
-      ? (recommendation?.suggestedCheckCommands ?? [])
+      ? Self.preferredProofCommands(
+          repoID: repoID,
+          repos: repos,
+          fallback: recommendation?.suggestedCheckCommands ?? []
+        )
       : request.proofCommands
     logger.info("Autostarting native proof build: width=\(width, privacy: .public)")
     _ = await startRun(
@@ -1175,13 +1187,32 @@ final class OperatorStore {
       return nil
     }
     let width = max(1, recommendation?.width ?? 1)
-    let commands = recommendation?.suggestedCheckCommands ?? []
+    let commands = Self.preferredProofCommands(
+      repoID: selectedRepoID,
+      repos: repos,
+      fallback: recommendation?.suggestedCheckCommands ?? []
+    )
     return await startRun(
       intent: trimmed,
       repoID: selectedRepoID,
       fleetWidth: width,
       allowedCommands: commands
     )
+  }
+
+  /// A connected repository's profiled proof plan is authoritative. The work
+  /// classifier operates across MDx's own stack and can otherwise suggest a
+  /// valid command for the wrong repository. Fall back only when the selected
+  /// repository has no profiled checks yet.
+  static func preferredProofCommands(
+    repoID: String,
+    repos: [ForgeRepo],
+    fallback: [String]
+  ) -> [String] {
+    guard let repo = repos.first(where: { $0.id == repoID }),
+          !repo.suggestedCheckCommands.isEmpty
+    else { return fallback }
+    return repo.suggestedCheckCommands
   }
 
   var selectedMission: ForgeMission? {
@@ -3256,11 +3287,27 @@ final class OperatorStore {
   }
 
   func loadRepos() async {
-    guard let loaded = try? await client.loadRepos(baseURL: Self.configuredBaseURL()) else { return }
-    repos = loaded
-    if selectedRepoID.isEmpty || !loaded.contains(where: { $0.id == selectedRepoID }) {
-      selectedRepoID = loaded.first(where: { $0.id == "mdx-self" })?.id ?? loaded.first?.id ?? ""
+    repoLoadPhase = .loading
+    var lastError: Error?
+    for attempt in 0..<RepoLoadRecovery.maxAttempts {
+      do {
+        let loaded = try await client.loadRepos(baseURL: Self.configuredBaseURL())
+        repos = loaded
+        repoLoadPhase = loaded.isEmpty ? .empty : .loaded(Date())
+        if selectedRepoID.isEmpty || !loaded.contains(where: { $0.id == selectedRepoID }) {
+          selectedRepoID = loaded.first(where: { $0.id == "mdx-self" })?.id ?? loaded.first?.id ?? ""
+        }
+        return
+      } catch {
+        lastError = error
+        logger.info("Repo load attempt \(attempt + 1, privacy: .public) failed: \(friendlyLoadError(error), privacy: .public)")
+        guard let delay = RepoLoadRecovery.delayNanoseconds(afterAttempt: attempt) else { break }
+        try? await Task.sleep(nanoseconds: delay)
+        guard !Task.isCancelled else { return }
+      }
     }
+    let message = lastError.map(friendlyLoadError) ?? "MDx could not load your repositories."
+    repoLoadPhase = repos.isEmpty ? .failed(message) : .stale(message)
   }
 
   /// The active repo behind the persistent context switcher, or nil before repos

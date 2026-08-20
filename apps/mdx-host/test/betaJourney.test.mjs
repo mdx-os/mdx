@@ -32,12 +32,32 @@ test("hosted beta onboarding covers install, Twin, Pages, GitHub, and Forge", as
     const byID = new Map(data.steps.map((step) => [step.id, step]));
     assert.equal(data.steps.length, 8);
     assert.equal(byID.get("install_completed")?.href, "/download/macos");
+    assert.equal(byID.get("install_completed")?.cta, "Get the apps");
     assert.match(byID.get("model_connected")?.title ?? "", /Twin/);
     assert.equal(byID.get("model_connected")?.href, "/twin");
+    assert.equal(byID.get("model_connected")?.cta, "Open Twin");
     assert.equal(byID.get("first_page_draft")?.href, "/pages");
     assert.match(byID.get("repo_connected")?.body ?? "", /never asks for a personal access token/i);
     assert.equal(byID.get("first_forge_request")?.href, "/forge");
     assert.match(byID.get("first_forge_request")?.body ?? "", /connect a safe repo if needed/i);
+  } finally {
+    if (previousProfile === undefined) delete process.env.MDX_EXPERIENCE_PROFILE;
+    else process.env.MDX_EXPERIENCE_PROFILE = previousProfile;
+  }
+});
+
+test("hosted operator onboarding starts with Twin instead of an admin screen", async () => {
+  const previousProfile = process.env.MDX_EXPERIENCE_PROFILE;
+  process.env.MDX_EXPERIENCE_PROFILE = "public-beta";
+  try {
+    const data = await load({
+      locals: { session: { actor_id: "owner_a", role: "owner" } },
+      fetch: async () => Response.json({}, { status: 404 })
+    });
+    const firstUse = data.steps.find((step) => step.id === "model_connected");
+    assert.equal(firstUse?.title, "Ask Twin something real");
+    assert.equal(firstUse?.href, "/twin");
+    assert.equal(firstUse?.cta, "Open Twin");
   } finally {
     if (previousProfile === undefined) delete process.env.MDX_EXPERIENCE_PROFILE;
     else process.env.MDX_EXPERIENCE_PROFILE = previousProfile;
@@ -51,4 +71,13 @@ test("beta onboarding keeps the first viewport focused on three useful starts", 
   assert.match(page, /const featuredIDs = \["model_connected", "first_forge_request", "install_completed"\]/);
   assert.match(page, /Explore the rest/);
   assert.doesNotMatch(page, /Eight small steps/);
+});
+
+test("welcome copy stays specific without unproven beta claims", () => {
+  const page = readFileSync(new URL("../src/routes/welcome/meet/+page.svelte", import.meta.url), "utf8");
+  assert.doesNotMatch(page, /learns your style/i);
+  assert.doesNotMatch(page, /Real work, not a demo/i);
+  assert.doesNotMatch(page, /Receipt-backed/i);
+  assert.doesNotMatch(page, /Nothing is lost/i);
+  assert.match(page, /inspect their scope before adding one/i);
 });

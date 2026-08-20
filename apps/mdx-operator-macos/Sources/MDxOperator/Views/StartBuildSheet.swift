@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StartBuildSheet: View {
   @Environment(OperatorStore.self) private var store
+  @Environment(CloudAuthStore.self) private var auth
   @Environment(\.dismiss) private var dismiss
 
   @State private var intent = ""
@@ -33,7 +34,7 @@ struct StartBuildSheet: View {
         proofControl
         widthControl
         if !repoReady {
-          runtimeWorkspaceCallout
+          repoUnavailableCallout
         }
         if directWorkerLimitExceeded {
           directWorkerLimitCallout
@@ -157,8 +158,20 @@ struct StartBuildSheet: View {
         ForEach(store.repos) { repo in
           Button(repo.label) { store.selectedRepoID = repo.id }
         }
+        if store.repos.isEmpty {
+          switch store.repoLoadPhase {
+          case .loading:
+            Text("Loading repos…")
+          case .failed, .stale:
+            Button("Retry cloud repos") { Task { await store.loadRepos() } }
+          default:
+            Text("No repos connected")
+          }
+        }
         Divider()
-        Button("Connect a repo on this Mac…") { store.connectRepoFromPanel() }
+        if executionLocation == .thisMac {
+          Button("Connect a repo on this Mac…") { store.connectRepoFromPanel() }
+        }
         Button("Connect from a Git URL…") { showURLPrompt = true }
       } label: {
         HStack(spacing: 6) {
@@ -186,11 +199,18 @@ struct StartBuildSheet: View {
   }
 
   private var executionLocation: ForgeExecutionLocation {
-    Self.executionLocation(for: OperatorStore.configuredBaseURL())
+    Self.executionLocation(
+      for: OperatorStore.configuredBaseURL(),
+      cloudAuthorized: auth.state == .authorized
+    )
   }
 
-  static func executionLocation(for baseURL: URL) -> ForgeExecutionLocation {
-    MDxRouteClient.isTrustedLocalBaseURL(baseURL) ? .thisMac : .cloudProfileRequired
+  static func executionLocation(
+    for baseURL: URL,
+    cloudAuthorized: Bool = false
+  ) -> ForgeExecutionLocation {
+    if MDxRouteClient.isTrustedLocalBaseURL(baseURL) { return .thisMac }
+    return cloudAuthorized ? .mdxCloud : .cloudProfileRequired
   }
 
   private var executionLocationDisclosure: some View {
@@ -234,17 +254,24 @@ struct StartBuildSheet: View {
     width <= 4 && width > directWorkersAvailable
   }
 
-  private var runtimeWorkspaceCallout: some View {
+  private var repoUnavailableCallout: some View {
     HStack(alignment: .center, spacing: 10) {
-      Image(systemName: "macwindow")
+      Image(systemName: executionLocation == .mdxCloud ? "icloud" : "macwindow")
         .foregroundStyle(Color.accentColor)
-      Text("Forge will use the local MDx runtime workspace. Connect a repo when you want this run aimed at another checkout.")
+      Text(executionLocation == .mdxCloud
+        ? "MDx Cloud has not returned your repos yet. Retry without leaving this build."
+        : "Forge will use the local MDx runtime workspace. Connect a repo when you want this run aimed at another checkout.")
         .font(.callout)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
       Spacer(minLength: 8)
-      Button("Connect") { store.connectRepoFromPanel() }
-        .controlSize(.small)
+      if executionLocation == .mdxCloud {
+        Button("Retry") { Task { await store.loadRepos() } }
+          .controlSize(.small)
+      } else {
+        Button("Connect") { store.connectRepoFromPanel() }
+          .controlSize(.small)
+      }
     }
     .padding(12)
     .background(
@@ -701,11 +728,13 @@ struct StartBuildSheet: View {
 
 enum ForgeExecutionLocation: Equatable {
   case thisMac
+  case mdxCloud
   case cloudProfileRequired
 
   var title: String {
     switch self {
     case .thisMac: return "Runs on This Mac"
+    case .mdxCloud: return "Runs in MDx Cloud"
     case .cloudProfileRequired: return "Cloud sign-in needed"
     }
   }
@@ -714,6 +743,8 @@ enum ForgeExecutionLocation: Equatable {
     switch self {
     case .thisMac:
       return "Forge uses the local MDx runtime, this checkout, and model access from Keychain. The run keeps this location with its record."
+    case .mdxCloud:
+      return "Forge uses your signed-in private workspace and its verified execution environment. The run and its proof stay with your account."
     case .cloudProfileRequired:
       return "A server address alone cannot start governed work. Cloud opens after MDx has a signed-in profile and stores its refresh access in Keychain."
     }
@@ -722,11 +753,12 @@ enum ForgeExecutionLocation: Equatable {
   var systemImage: String {
     switch self {
     case .thisMac: return "macbook"
+    case .mdxCloud: return "icloud"
     case .cloudProfileRequired: return "icloud.slash"
     }
   }
 
-  var canStart: Bool { self == .thisMac }
+  var canStart: Bool { self != .cloudProfileRequired }
 }
 
 private struct WidthChoice: Identifiable, Equatable {

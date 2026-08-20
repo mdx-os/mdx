@@ -18,6 +18,17 @@ test("navigation resets the shell-owned scroll container", () => {
   assert.match(layout, /<main bind:this=\{hostStage\}/);
 });
 
+test("full-page children own the one main landmark", () => {
+  assert.match(layout, /const childOwnsMain = \$derived\(/);
+  assert.match(layout, /onConsole \|\|[\s\S]*?isLanding \|\|[\s\S]*?onWelcome \|\|[\s\S]*?onPublicGate/);
+  assert.match(layout, /page\.url\.pathname === "\/help"/);
+  assert.match(layout, /page\.url\.pathname\.startsWith\("\/evidence\/"\)/);
+  assert.match(
+    layout,
+    /\{#if childOwnsMain\}[\s\S]*?<div bind:this=\{hostStage\} id="main"[\s\S]*?\{:else\}[\s\S]*?<main bind:this=\{hostStage\} id="main"/
+  );
+});
+
 test("public website routes use native document scrolling", () => {
   assert.match(layout, /page\.url\.pathname === "\/open-source"/);
   assert.match(layout, /page\.url\.pathname === "\/downloads"/);

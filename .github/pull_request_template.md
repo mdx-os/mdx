@@ -4,7 +4,7 @@ What problem or opportunity does this pull request address?
 
 ## Changed
 
-- 
+-
 
 ## Validation
 

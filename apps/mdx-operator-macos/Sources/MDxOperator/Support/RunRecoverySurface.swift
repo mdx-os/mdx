@@ -19,9 +19,9 @@ struct RunRecoverySurface: Equatable {
 
   init(run: ForgeRun) {
     title = run.proofTroubleTitle
-    isProofCaveat = run.isReviewableWithProofCaveat
+    isProofCaveat = run.isReviewableWithProofCaveat || (!run.isRunning && run.proofRecoveredAfterFailure)
     isBaselineRed = run.selectedProofRedOnArrival
-    proofTurnedGreen = run.selectedProofTurnedGreen
+    proofTurnedGreen = run.proofRecoveredAfterFailure
     branchIdentity = run.hasBranch ? run.branch.trimmingCharacters(in: .whitespacesAndNewlines) : ""
     showsOpenDiff = run.hasBranch
     showsRevisionControl = !run.isRunning && (run.control("revise") != nil || run.hasBranch)
@@ -32,8 +32,10 @@ struct RunRecoverySurface: Equatable {
       recoveryLine = "The selected check failed before the change and now passes. Forge is finishing the evidence packet."
     } else if run.isRunning {
       recoveryLine = "\(detail) Forge is still trying to work through it; steer only if the direction is wrong."
-    } else if run.isReviewableWithProofCaveat && run.selectedProofTurnedGreen {
+    } else if run.selectedProofTurnedGreen {
       recoveryLine = "\(detail) Review the diff and confirm the before-and-after proof matches the intended behavior. Request a revision only if it does not."
+    } else if run.proofRecoveredAfterFailure {
+      recoveryLine = "\(detail) Review the diff and confirm the final proof matches the intended behavior. Request a revision only if it does not."
     } else if run.isReviewableWithProofCaveat {
       recoveryLine = "\(detail) Review the diff, then request a focused revision only if the branch caused or worsened the failure."
     } else if run.selectedProofRedOnArrival {
@@ -44,10 +46,10 @@ struct RunRecoverySurface: Equatable {
       recoveryLine = "\(detail) Start a narrower run so the next attempt has a smaller proof target."
     }
 
-    if run.isReviewableWithProofCaveat && run.selectedProofTurnedGreen {
+    if run.proofRecoveredAfterFailure {
       revisionControlLabel = "Request revision"
       revisionControlSymbol = "arrow.triangle.branch"
-      suggestedRevisionNote = "The selected proof turned green on this branch. Review whether the diff and before-and-after evidence match the intended behavior, then revise only what remains wrong: "
+      suggestedRevisionNote = "The selected proof turned green on this branch. Review whether the diff and final evidence match the intended behavior, then revise only what remains wrong: "
     } else if run.isReviewableWithProofCaveat {
       revisionControlLabel = "Request revision"
       revisionControlSymbol = "arrow.triangle.branch"

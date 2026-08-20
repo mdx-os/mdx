@@ -54,9 +54,14 @@ final class ForgeAnywhereStore: ObservableObject {
   private var lastActionSessionID: String?
   private var startedSessionReconciliationTask: Task<Void, Never>?
   private var acceptedSessions: [String: ForgeWorkSession] = [:]
+  private var buildTargetsPairingID: String?
 
   var canSendCommands: Bool {
     !fixtureMode && apiURL != nil && activeDeviceID != nil && activeHostID != nil
+  }
+
+  var canStartPairedHostBuild: Bool {
+    canSendCommands && !buildRepositories(for: .pairedHost).isEmpty
   }
 
   var canEnableNotifications: Bool {
@@ -66,13 +71,39 @@ final class ForgeAnywhereStore: ObservableObject {
 
   var canStartCloudBuild: Bool {
     !fixtureMode && apiURL != nil && activeDeviceID != nil
-      && (cloudSetup?.readyEnvironmentCount ?? 0) > 0
+      && hasVerifiedCloudEnvironment
+  }
+
+  var recommendedBuildTarget: ExecutionTargetKind? {
+    if canStartPairedHostBuild { return .pairedHost }
+    if canStartCloudBuild { return .mdxCloud }
+    return nil
+  }
+
+  func buildTargetReady(repositoryID: String, targetKind: ExecutionTargetKind) -> Bool {
+    switch targetKind {
+    case .pairedHost:
+      canStartPairedHostBuild
+        && !buildProofCommands(repositoryID: repositoryID, targetKind: targetKind).isEmpty
+    case .mdxCloud:
+      canStartCloudBuild && cloudEnvironmentReady(repoID: repositoryID)
+    case .customerManaged:
+      false
+    }
+  }
+
+  private var hasVerifiedCloudEnvironment: Bool {
+    (cloudSetup?.environments.contains(where: \.readyForCloudBuilds) ?? false)
+      || (handoffTargets?.cloudEnvironments.contains(where: \.verified) ?? false)
   }
 
   func cloudEnvironmentReady(repoID: String) -> Bool {
-    cloudSetup?.environments.contains(where: {
+    (cloudSetup?.environments.contains(where: {
       $0.repoID == repoID && $0.readyForCloudBuilds
-    }) ?? false
+    }) ?? false)
+      || (handoffTargets?.cloudEnvironments.contains(where: {
+        $0.repositoryID == repoID && $0.verified
+      }) ?? false)
   }
 
   func buildRepositories(for targetKind: ExecutionTargetKind) -> [MobileBuildRepositoryOption] {
@@ -90,7 +121,7 @@ final class ForgeAnywhereStore: ObservableObject {
           )
         } ?? []
     case .mdxCloud:
-      options =
+      let setupOptions: [MobileBuildRepositoryOption] =
         cloudSetup?.environments
         .filter(\.readyForCloudBuilds)
         .map { environment in
@@ -103,6 +134,17 @@ final class ForgeAnywhereStore: ObservableObject {
             suggestedChecks: []
           )
         } ?? []
+      let handoffOptions: [MobileBuildRepositoryOption] =
+        handoffTargets?.cloudEnvironments
+        .filter(\.verified)
+        .map { environment in
+          MobileBuildRepositoryOption(
+            id: environment.repositoryID,
+            displayName: environment.repositoryID,
+            suggestedChecks: []
+          )
+        } ?? []
+      options = setupOptions + handoffOptions
     case .customerManaged:
       options = []
     }
@@ -200,12 +242,20 @@ final class ForgeAnywhereStore: ObservableObject {
     snapshot: ForgeAnywhereSnapshot,
     apiURL: URL? = nil,
     fixtureMode: Bool = true,
-    accessTokenProvider: MobileAccessTokenProvider? = nil
+    accessTokenProvider: MobileAccessTokenProvider? = nil,
+    cloudSetup: MobileCloudSetupProjection? = nil,
+    handoffTargets: MobileHandoffTargets? = nil,
+    activeDeviceID: String? = nil,
+    activeHostID: String? = nil
   ) {
     self.snapshot = snapshot
     self.apiURL = apiURL
     self.fixtureMode = fixtureMode
     self.accessTokenProvider = accessTokenProvider
+    self.cloudSetup = cloudSetup
+    self.handoffTargets = handoffTargets
+    self.activeDeviceID = activeDeviceID
+    self.activeHostID = activeHostID
     offlineDrafts = fixtureMode ? [] : OfflineDraftStore().load()
     selectedSessionID = snapshot.sessions.first?.id
     cursors = Dictionary(uniqueKeysWithValues: snapshot.sessions.map { ($0.id, $0.replayCursor) })
@@ -251,13 +301,16 @@ final class ForgeAnywhereStore: ObservableObject {
     if let identity = try? identityManager.loadOrCreate() {
       activeDeviceID = identity.deviceID
     }
-    await refreshCloudSetup()
-    await refreshHandoffTargets()
-    await refreshModelReadiness()
+    await refreshBuildTargets()
     relayTask?.cancel()
     relayTask = Task { [weak self] in
       await self?.runRelay(apiURL: apiURL)
     }
+  }
+
+  func refreshBuildTargets() async {
+    await refreshCloudSetup()
+    await refreshModelReadiness()
   }
 
   func refreshForReview() async {
@@ -280,6 +333,7 @@ final class ForgeAnywhereStore: ObservableObject {
       await refreshHandoffTargets()
     } catch {
       cloudStatus = error.localizedDescription
+      await refreshHandoffTargets()
     }
   }
 
@@ -439,9 +493,13 @@ final class ForgeAnywhereStore: ObservableObject {
       return
     }
     let sessionID = "forge_run_mobile_\(UUID().uuidString.lowercased())"
-    let cloudEnvironmentID = cloudSetup?.environments.first(where: {
-      $0.repoID == repositoryID && $0.readyForCloudBuilds
-    })?.environmentID
+    let cloudEnvironmentID =
+      cloudSetup?.environments.first(where: {
+        $0.repoID == repositoryID && $0.readyForCloudBuilds
+      })?.environmentID
+      ?? handoffTargets?.cloudEnvironments.first(where: {
+        $0.repositoryID == repositoryID && $0.verified
+      })?.environmentID
     let allowedCommands = buildProofCommands(
       repositoryID: repositoryID,
       targetKind: targetKind
@@ -664,6 +722,7 @@ final class ForgeAnywhereStore: ObservableObject {
     activeUserID = nil
     activeHostID = nil
     activeHostName = nil
+    buildTargetsPairingID = nil
     lastActionURL = nil
     lastActionSessionID = nil
     lastRefreshAt = nil
@@ -1086,6 +1145,36 @@ final class ForgeAnywhereStore: ObservableObject {
     }
   }
 
+  func canonicalProjectionReconciliationTask(
+    refreshInterval: Duration = .seconds(5),
+    loadProjection: @escaping @Sendable () async throws -> MobileSessionProjection
+  ) -> Task<Void, Never> {
+    Task { [weak self] in
+      while !Task.isCancelled {
+        do {
+          try await Task.sleep(for: refreshInterval)
+          guard let self else { return }
+          let hasActiveSession = snapshot.sessions.contains(where: { session in
+            switch session.state {
+            case .queued, .running, .paused, .needsUser:
+              true
+            case .draft, .reviewReady, .completed, .failed, .stopped:
+              false
+            }
+          })
+          guard hasActiveSession else { continue }
+          let projection = try await loadProjection()
+          guard !Task.isCancelled else { return }
+          apply(projection: projection, pairedHostCount: snapshot.pairedHostCount)
+        } catch is CancellationError {
+          return
+        } catch {
+          self?.logger.debug("Canonical mobile projection refresh failed; relay remains active")
+        }
+      }
+    }
+  }
+
   private func refreshProjection() async {
     guard let apiURL else { return }
     do {
@@ -1229,6 +1318,11 @@ final class ForgeAnywhereStore: ObservableObject {
         activeDeviceID = identity.deviceID
         activeHostID = activePairing.hostID
         activeHostName = trust.hosts.first { $0.hostID == activePairing.hostID }?.displayName
+        let pairingID = "\(trust.tenantID):\(identity.deviceID):\(activePairing.hostID)"
+        if buildTargetsPairingID != pairingID {
+          buildTargetsPairingID = pairingID
+          await refreshBuildTargets()
+        }
         let projection = try await forge.sessions()
         apply(
           projection: projection,
@@ -1296,6 +1390,9 @@ final class ForgeAnywhereStore: ObservableObject {
     let subscribeData = try JSONEncoder().encode(subscribe)
     try await socket.send(.data(subscribeData))
     setConnection(.connected, status: "Forge is connected")
+    let canonicalProjectionReconciliation = canonicalProjectionReconciliationTask {
+      try await forge.sessions()
+    }
     let heartbeat = Task {
       while !Task.isCancelled {
         try await Task.sleep(for: .seconds(25))
@@ -1307,6 +1404,7 @@ final class ForgeAnywhereStore: ObservableObject {
       }
     }
     defer {
+      canonicalProjectionReconciliation.cancel()
       heartbeat.cancel()
       socket.cancel(with: .goingAway, reason: nil)
       try? credentialStore.delete(account: "mobile-relay-token")

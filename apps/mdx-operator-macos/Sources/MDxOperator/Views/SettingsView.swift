@@ -320,6 +320,16 @@ struct SettingsView: View {
         }
       }
 
+      if isHosted, !auth.email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        SettingsGroup {
+          SettingsInfoRow(
+            title: "Signed-in account",
+            subtitle: "Use this same account on web, Mac, and iPhone.",
+            value: auth.email
+          )
+        }
+      }
+
       if let clearance = store.clearance {
         ClearanceCard(clearance: clearance)
       }

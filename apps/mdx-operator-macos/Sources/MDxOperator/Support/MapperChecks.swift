@@ -576,6 +576,81 @@ enum MapperChecks {
       expect(surface.keepsFailedBranchRecoveryReadable == true, "proof turnaround keeps review controls readable")
     }
 
+    let recoveredDuringRun = MDxRouteClient.forgeRuns(from: [
+      "runs": [[
+        "run_id": "forge_proof_recovered_during_run",
+        "status": "done",
+        "terminal_state": "SUCCEEDED",
+        "stage": "ready_for_review",
+        "branch": "forge/run-forge_proof_recovered_during_run-mdx_ws_790",
+        "checks_passed": 2,
+        "checks_failed": 3,
+        "events": [
+          [
+            "event": "check_failed",
+            "stage": "proof",
+            "detail": "run_command npm test exit=1 tail=one regression remained"
+          ],
+          [
+            "event": "proof_output",
+            "stage": "proof",
+            "summary": "Proof check passed",
+            "detail": "run_command npm test exit=0 tail=84 passing"
+          ],
+          [
+            "event": "finished",
+            "stage": "done",
+            "detail": "status=RUN_FINISHED_DONE selected_proof_status=passed"
+          ]
+        ]
+      ]]
+    ])
+    expect(recoveredDuringRun.first?.selectedProofRedOnArrival == false, "mid-run proof failure is not mislabeled as baseline red")
+    expect(recoveredDuringRun.first?.proofRecoveredAfterFailure == true, "a later green proof supersedes an earlier failed attempt")
+    expect(recoveredDuringRun.first?.terminalStateIsPositive == true, "recovered proof keeps terminal stages positive")
+    expect(recoveredDuringRun.first?.proofTroubleTitle.contains("turned green") == true, "recovered proof gets a review-ready title")
+    if let recovered = recoveredDuringRun.first {
+      let surface = RunRecoverySurface(run: recovered)
+      expect(surface.isProofCaveat == true, "recovered proof uses the honest green caveat surface")
+      expect(surface.recoveryLine.localizedCaseInsensitiveContains("final proof"), "recovered proof points review at the final evidence")
+      expect(surface.revisionControlLabel == "Request revision", "recovered proof keeps the bounded revision action")
+    }
+
+    let recoveredWithPunctuation = MDxRouteClient.forgeRuns(from: [
+      "runs": [[
+        "run_id": "forge_proof_recovered_with_punctuation",
+        "status": "done",
+        "terminal_state": "SUCCEEDED",
+        "stage": "ready_for_review",
+        "checks_passed": 1,
+        "checks_failed": 1,
+        "final_line": "status=RUN_FINISHED_DONE selected_proof_status=passed.",
+        "events": [[
+          "event": "check_failed",
+          "stage": "proof",
+          "detail": "run_command npm test exit=1"
+        ]]
+      ]]
+    ])
+    expect(recoveredWithPunctuation.first?.proofRecoveredAfterFailure == true, "proof status tolerates display punctuation")
+
+    let legacyLatestFailure = MDxRouteClient.forgeRuns(from: [
+      "runs": [[
+        "run_id": "forge_legacy_latest_failure",
+        "status": "done",
+        "terminal_state": "FAILED",
+        "stage": "proof",
+        "selected_proof_status": "red_on_arrival",
+        "checks_passed": 1,
+        "checks_failed": 2,
+        "events": [
+          ["event": "proof_output", "stage": "proof", "summary": "Proof check passed", "detail": "exit=0"],
+          ["event": "check_failed", "stage": "proof", "detail": "exit=1"]
+        ]
+      ]]
+    ])
+    expect(legacyLatestFailure.first?.proofRecoveredAfterFailure == false, "legacy fallback follows the latest proof event")
+
     let failedBranchRun = MDxRouteClient.forgeRuns(from: [
       "runs": [[
         "run_id": "forge_failed_with_branch",
@@ -1635,6 +1710,10 @@ enum MapperChecks {
       FirstWin.blockedReason(connected: true, modelConnected: true, repoCount: 1) == nil,
       "an eligible workspace has no blocked reason"
     )
+    expect(RepoLoadRecovery.maxAttempts == 3, "repo cold-start recovery is bounded")
+    expect(RepoLoadRecovery.delayNanoseconds(afterAttempt: 0) == 1_000_000_000, "first repo retry is prompt")
+    expect(RepoLoadRecovery.delayNanoseconds(afterAttempt: 1) == 2_000_000_000, "second repo retry backs off")
+    expect(RepoLoadRecovery.delayNanoseconds(afterAttempt: 2) == nil, "repo retry stops after the bounded attempts")
   }
 
   /// Honest diagnostics accounting: a kernel-unreachable transport failure is an

@@ -2,7 +2,7 @@
   // Welcome to MDx: the friendly first hello. It introduces the five surfaces
   // in human terms (what you DO with each, not what they are inside), then tells
   // the honest compounding story - how your work becomes shared context the
-  // whole system can cite - with a live, receipt-backed readout (zeros on a new
+  // whole system can cite - with a live activity readout (zeros on a new
   // workspace, which is the truth). This is the front of the activation journey.
   let { data } = $props();
 
@@ -11,35 +11,35 @@
       name: "Twin",
       href: "/twin",
       tag: "Your helper",
-      line: "Ask it anything and it gets things done with you - reads your docs, drafts, decides, and routes work across MDx. It learns your style and can run privately on your own machine.",
+      line: "Bring it a question, a draft, or a decision. Twin works with the context available to your workspace and helps route the next step across MDx.",
       icon: "M4 5h16v10H8l-4 4z"
     },
     {
       name: "Forge",
       href: "/forge",
-      tag: "Ships code",
-      line: "Hand it a build or a fix. It reads the repo, proposes a plan, and works under your sign-off - one agent or a fleet in parallel - then brings you a branch to review. Nothing ships without you.",
+      tag: "Builds code",
+      line: "Give it a small build or fix. Forge reads the repo, proposes a plan, and works under your sign-off. You review the branch before anything ships.",
       icon: "M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"
     },
     {
       name: "Message",
       href: "/message",
       tag: "Coordinates",
-      line: "Where people and agents work together. Agents post, you approve or steer with one tap, and every decision lands with its receipt.",
+      line: "Where people and agents coordinate. See requests, steer the work, and keep decisions with the activity that produced them.",
       icon: "M4 5h16v11H8l-4 4z"
     },
     {
       name: "Pages",
       href: "/pages",
-      tag: "Remembers",
-      line: "What your company knows - decisions, standards, and docs your agents can draw on. Write your coding guidelines once and every build is grounded in them.",
+      tag: "Keeps context",
+      line: "Keep decisions, standards, and working docs together so MDx can use the context you choose to share.",
       icon: "M5 4h9l5 5v11H5z"
     },
     {
       name: "Marketplace",
       href: "/marketplace",
       tag: "Extends",
-      line: "Add capabilities your agents can safely lean on - each one scanned and scoped before it can act, recommended for the work you actually do.",
+      line: "Explore capabilities available to the beta and inspect their scope before adding one to your workspace.",
       icon: "M4 7h16l-1 5H5z M5 12v7h14v-7 M9 7V5h6v2"
     }
   ];
@@ -74,7 +74,7 @@
   <header class="meet-head">
     <span class="eyebrow">The five surfaces</span>
     <h2 class="meet-h2">One system, five ways in.</h2>
-    <p class="sub">Each does a real job on its own - and they're far better together. Here's what each one is for.</p>
+    <p class="sub">Each has a clear job. Start with the one that matches the work in front of you.</p>
   </header>
 
   <ul class="surfaces">
@@ -99,7 +99,7 @@
     <div class="fw-head">
       <span class="eyebrow">The good part</span>
       <h2>It gets more useful the more you use it.</h2>
-      <p class="fw-lead">Every surface feeds the others. A build in Forge leaves a lesson. That lesson becomes context your next build - and Twin - can draw on. A decision or a standard in Pages grounds the next plan. Nothing is lost: your work becomes a shared memory the whole system can cite.</p>
+      <p class="fw-lead">Work can carry context forward. A completed Forge build can leave a lesson for a later build. A decision in Pages can inform the next plan. MDx shows what it has recorded so you can decide what should be reused.</p>
     </div>
 
     <div class="fw-loop" role="img" aria-label="The five surfaces feed each other in a loop">
@@ -112,7 +112,7 @@
 
     <div class="fw-readout" aria-live="polite">
       {#if fwTotal === 0}
-        <p class="fw-empty">Your workspace is new - so these are zero, honestly. Your first build will leave the first lesson here, and you'll watch the numbers climb as you work.</p>
+        <p class="fw-empty">This workspace has not recorded any of these yet. As you complete work, this area shows the outcomes and context MDx has kept.</p>
       {:else}
         <div class="fw-stats">
           <div class="fw-stat"><strong>{fw.outcomes}</strong><span>build outcomes</span></div>
@@ -120,7 +120,7 @@
           <div class="fw-stat"><strong>{fw.installs}</strong><span>{fw.installs === 1 ? "capability" : "capabilities"}</span></div>
           <div class="fw-stat"><strong>{fw.memories}</strong><span>active {fw.memories === 1 ? "memory" : "memories"}</span></div>
         </div>
-        <p class="fw-note">{fw.cited ? "A later build already cited a lesson an earlier one left - the loop is turning." : "Receipt-backed, and growing with every run. Real work, not a demo."}</p>
+        <p class="fw-note">{fw.cited ? "A later build cited a lesson left by an earlier one." : "These counts come from activity recorded in this workspace."}</p>
       {/if}
     </div>
   </section>

@@ -838,7 +838,7 @@ struct RunDetailView: View {
         EmptyStateView(text: message)
       case .loaded, .empty:
         if let packet = store.reviewPacket {
-          ReviewPacketView(packet: packet)
+          ReviewPacketView(packet: packet, proofRecovered: run.proofRecoveredAfterFailure)
         } else {
           EmptyStateView(text: "No review packet was returned for this run.")
         }

@@ -5,6 +5,7 @@ import {
   applyKernelIdentityHeaders,
   safeReturnPath,
   resolveOAuthProvider,
+  oauthProviderQueryParams,
   adminAccess
 } from "../src/lib/session.server.js";
 import { handle } from "../src/hooks.server.js";
@@ -255,6 +256,12 @@ test("the OAuth entry accepts Apple without widening unknown providers", () => {
   assert.equal(resolveOAuthProvider("azure"), "azure");
   assert.equal(resolveOAuthProvider("untrusted"), "google");
   assert.equal(resolveOAuthProvider(null, "apple"), "apple");
+});
+
+test("Google sign-in asks people to choose the invited account", () => {
+  assert.deepEqual(oauthProviderQueryParams("google"), { prompt: "select_account" });
+  assert.equal(oauthProviderQueryParams("apple"), undefined);
+  assert.equal(oauthProviderQueryParams("azure"), undefined);
 });
 
 test("identity-provider returns never leak one-time URL values through referrers or caches", async () => {
