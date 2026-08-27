@@ -9,8 +9,8 @@
     "smoke:mdx-host": "pnpm --dir apps/mdx-host smoke"
   },
   "devDependencies": {
-    "@agentclientprotocol/sdk": "1.2.1",
-    "@anthropic-ai/claude-agent-sdk": "0.3.206"
+    "@agentclientprotocol/sdk": "1.4.0",
+    "@anthropic-ai/claude-agent-sdk": "0.3.241"
   },
   "pnpm": {
     "overrides": {
