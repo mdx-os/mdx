@@ -43,7 +43,7 @@ jobs:
       SUPABASE_RELEASE_BUCKET: mdx-canary-releases
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
 
@@ -133,7 +133,7 @@ jobs:
           aws s3 cp dist/manifest.json "s3://$SUPABASE_RELEASE_BUCKET/latest/manifest.json" --endpoint-url "$SUPABASE_RELEASE_S3_ENDPOINT" --content-type application/json --no-progress
 
       - name: Upload notarization evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: macos-canary-${{ env.MDX_MARKETING_VERSION }}-${{ env.MDX_BUILD_VERSION }}-evidence
           path: |
