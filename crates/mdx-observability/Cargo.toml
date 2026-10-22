@@ -10,7 +10,7 @@ publish = false
 [dependencies]
 mdx-core = { path = "../mdx-core" }
 serde_json = "1"
-ureq = { version = "2", features = ["json"] }
+ureq = { version = "3", features = ["json"] }
 url = "2"
 
 [lib]
